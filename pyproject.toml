@@ -1,6 +1,5 @@
 [project]
 name = "rtmf6"
-version = "0.0.0"
 description = "Reactive transport modeling with MODFLOW 6"
 authors = [{name = "Mike Müller", email = "mmueller@hydrocomputing.com"}]
 readme = "README.md"
@@ -32,12 +31,13 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Hydrology"
 ]
 dependencies = []
+dynamic = ["version"]
 
 [project.scripts]
 rtmf6 = "rtmf6.main:main"
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [tool.pixi.project]
@@ -46,6 +46,19 @@ platforms = ["osx-arm64"]
 
 [tool.pixi.pypi-dependencies]
 rtmf6 = { path = ".", editable = true }
+
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests"]
+
+[tool.setuptools.package-dir]
+pymf6 = "src/pymf6"
+
+[tool.setuptools_scm]
+write_to = "src/rtmf6/_version.py"
 
 [project.optional-dependencies]
 test = ["pytest"]

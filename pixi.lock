@@ -885,9 +885,9 @@ packages:
   timestamp: 1709150578093
 - kind: pypi
   name: rtmf6
-  version: 0.0.0
+  version: 0.1.dev5+g905b7e1.d20240421
   path: .
-  sha256: d54f1570406a11c8587e74a23c4e882237a7aed9ad16a1b465b6befcd44a2007
+  sha256: 2d17b34c55c975671cd5c38140c3efc28484816e83f5da0e822f06e204e63bca
   requires_dist:
   - pytest ; extra == 'test'
   requires_python: '>=3.11'
