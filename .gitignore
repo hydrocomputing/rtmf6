@@ -2,3 +2,5 @@
 .pixi
 *.egg-info
 .hydro
+__pycache__/
+dist
