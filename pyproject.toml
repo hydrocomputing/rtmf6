@@ -1,0 +1,28 @@
+[project]
+name = "rtmf6"
+version = "0.0.0"
+description = "Reactive transport modeling with MODFLOW 6"
+authors = [{name = "Mike Müller", email = "mmueller@hydrocomputing.com"}]
+requires-python = ">= 3.11"
+dependencies = []
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["osx-arm64"]
+
+[tool.pixi.pypi-dependencies]
+rtmf6 = { path = ".", editable = true }
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }
+
+[tool.pixi.tasks]
