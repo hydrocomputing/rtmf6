@@ -3,8 +3,38 @@ name = "rtmf6"
 version = "0.0.0"
 description = "Reactive transport modeling with MODFLOW 6"
 authors = [{name = "Mike Müller", email = "mmueller@hydrocomputing.com"}]
+readme = "README.md"
 requires-python = ">= 3.11"
+keywords = [
+    "MODFLOW6",
+    "pymf6",
+    "PHREEQC",
+    "PhreeqcRM",
+    "PhreeqPy",
+    "groundwater",
+    "modeling",
+    "reactive transport"
+    ]
+license = {text = "MIT License"}
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Environment :: Console",
+  "Framework :: Jupyter :: JupyterLab",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Operating System :: MacOS :: MacOS X",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Hydrology"
+]
 dependencies = []
+
+[project.scripts]
+rtmf6 = "rtmf6.main:main"
 
 [build-system]
 requires = ["setuptools"]
@@ -26,3 +56,7 @@ default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
 
 [tool.pixi.tasks]
+
+[tool.pixi.dependencies]
+twine = ">=5.0.0,<5.1"
+build = ">=0.7.0,<0.8"
