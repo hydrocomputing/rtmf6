@@ -4,3 +4,4 @@
 .hydro
 __pycache__/
 dist
+src/rtmf6/_version.py
