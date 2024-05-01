@@ -7,3 +7,4 @@ dist
 src/rtmf6/_version.py
 build/**
 tests/models/**
+scratch/**
