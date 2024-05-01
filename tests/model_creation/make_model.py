@@ -12,10 +12,10 @@ def make_chd(
     chd = []
     for lay in range(nlay):
         for row in range(nrow):
-            chd.append([(lay, row, 0), head_left, initial_concentration * 2])
+            chd.append([(lay, row, 0), head_left, float(initial_concentration * 2)])
         for row in range(nrow):
             chd.append(
-                [(lay, row, ncol - 1), head_right, initial_concentration]
+                [(lay, row, ncol - 1), head_right, float(initial_concentration)]
             )
     stress_period_data = {}
     for index in range(repeat_times + 1):
@@ -92,7 +92,7 @@ def make_input_data(model_name='advect'):
     model_path = Path(__file__).parent / f'../models/{model_name}'
     model_data = make_model_data(
         model_path=model_path,
-        initial_concentration=20,
+        initial_concentration=18.5,
     )
     make_input(model_data)
 
