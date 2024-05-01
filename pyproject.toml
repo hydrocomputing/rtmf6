@@ -74,11 +74,17 @@ build = ">=0.7.0,<0.8"
 build-wheel = "python -m build --wheel"
 pypi-upload = "python -m  twine upload --config-file=/Users/mike/.pypirc_hydro"
 
-[tool.pixi.feature.helper.pypi-dependencies]
+[tool.pixi.feature.develop.dependencies]
+jupyterlab = '*'
+
+[tool.pixi.feature.develop.pypi-dependencies]
+pymf6 = { path = "../pymf6", editable = true }
 pymf6tools = { path = "../pymf6tools", editable = true }
 
-[tool.pixi.feature.helper.tasks]
+[tool.pixi.feature.develop.tasks]
 helper_exe = { cmd = "python", cwd = "tests" }
+jupyter = { cmd = "jupyter-lab", cwd = "scratch" }
+python_dev = "python"
 
 [tool.pixi.feature.test.dependencies]
 pytest = "*"
@@ -91,4 +97,4 @@ test = "pytest --md=report.md"
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
 build = { features = ["build"], solve-group = "default" }
-helper = { features = ["helper"], solve-group = "default" }
+develop = { features = ["develop"], solve-group = "default" }
