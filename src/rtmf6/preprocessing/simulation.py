@@ -1,0 +1,86 @@
+"""
+Modify an existing simulation.
+
+The calls SImulation allows to clone all input files and modify selected
+input values.
+"""
+
+from copy import deepcopy
+from pathlib import Path
+
+import flopy
+
+import pymf6
+
+
+class Simulation:
+    """Existing MF6 simulation."""
+
+    def __init__(
+        self,
+        model_path,
+        model_name=None,
+        exe_name=None,
+        sim=None,
+        verbosity_level=0,
+    ):
+        self.model_path = model_path
+        if model_name is None:
+            self.model_name = model_path.name
+        else:
+            self.model_name = model_name
+        if exe_name is None:
+            exe_name = exe_name = pymf6.__mf6_exe__
+        self._model_suffixes = pymf6.__model_prefixes__
+        if sim:
+            self._sim = sim
+        else:
+            self._sim = flopy.mf6.MFSimulation.load(
+                sim_ws=model_path,
+                exe_name=exe_name,
+                verbosity_level=verbosity_level,
+            )
+        self.models = {}
+        for model_type in ['flow', 'transport', 'energy']:
+            model = self._sim.get_model(
+                f'{self._model_suffixes[model_type]}{self.model_name}'
+            )
+            if model:
+                self.models[model_type] = model
+
+    def __getattr__(self, name):
+        return getattr(self._sim, name)
+
+    def clone(self, target_path=None, sub=None, sub_models_path='sub_models'):
+        """Clone a simulation."""
+        if target_path is None:
+            if sub is None:
+                raise ValueError('must specify either target_path or sub')
+            target_path = self.model_path / sub_models_path / sub
+        new_sim = deepcopy(self._sim)
+        new_sim.set_sim_path(target_path)
+        return Simulation(
+            model_path=target_path, model_name=self.model_name, sim=new_sim
+        )
+
+    def set_const_init_conc(self, value):
+        """Set a constant concentration value."""
+        flow = self.models['flow']
+        const_conc = flow.package_dict['ic'].data_list[0]
+        const_conc.set_data(value)
+
+    def get_stress_period_data(self, model_type, package_name):
+        """Get stress period dat for a package."""
+        package = self.models[model_type].package_dict[package_name]
+        return package.stress_period_data.data
+
+    def set_stress_period_data(self, model_type, package_name, data):
+        """Set stress period dat for a package."""
+        package = self.models[model_type].package_dict[package_name]
+        package.stress_period_data.set_data(data)
+
+    def write_back(self):
+        """Write the modifies input data back."""
+        target_path = Path(self._sim.sim_path)
+        target_path.mkdir(exist_ok=True)
+        self._sim.write_simulation()
