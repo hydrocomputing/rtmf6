@@ -40,13 +40,6 @@ rtmf6 = "rtmf6.main:main"
 requires = ["setuptools", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
-[tool.pixi.project]
-channels = ["conda-forge"]
-platforms = ["osx-arm64"]
-
-[tool.pixi.pypi-dependencies]
-rtmf6 = { path = ".", editable = true }
-
 [tool.setuptools]
 zip-safe = false
 
@@ -55,21 +48,47 @@ where = ["src"]
 exclude = ["tests"]
 
 [tool.setuptools.package-dir]
-pymf6 = "src/pymf6"
+pymf6 = "src/rtmf6"
 
 [tool.setuptools_scm]
 write_to = "src/rtmf6/_version.py"
 
-[project.optional-dependencies]
-test = ["pytest"]
 
+[tool.pixi.project]
+channels = ["conda-forge", "hydrocomputing"]
+platforms = ["osx-arm64"]
+
+[tool.pixi.dependencies]
+matplotlib = "*"
+pandas = "*"
+pymf6 = "*"
+
+[tool.pixi.pypi-dependencies]
+rtmf6 = { path = ".", editable = true }
+
+[tool.pixi.feature.build.dependencies]
+twine = ">=5.0.0,<5.1"
+build = ">=0.7.0,<0.8"
+
+[tool.pixi.feature.build.tasks]
+build-wheel = "python -m build --wheel"
+pypi-upload = "python -m  twine upload --config-file=/Users/mike/.pypirc_hydro"
+
+[tool.pixi.feature.helper.pypi-dependencies]
+pymf6tools = { path = "../pymf6tools", editable = true }
+
+[tool.pixi.feature.helper.tasks]
+helper_exe = { cmd = "python", cwd = "tests" }
+
+[tool.pixi.feature.test.dependencies]
+pytest = "*"
+pytest-md = "*"
+
+[tool.pixi.feature.test.tasks]
+test = "pytest --md=report.md"
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
-
-[tool.pixi.tasks]
-
-[tool.pixi.dependencies]
-twine = ">=5.0.0,<5.1"
-build = ">=0.7.0,<0.8"
+build = { features = ["build"], solve-group = "default" }
+helper = { features = ["helper"], solve-group = "default" }
