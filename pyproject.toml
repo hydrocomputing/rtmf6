@@ -76,15 +76,20 @@ pypi-upload = "python -m  twine upload --config-file=/Users/mike/.pypirc_hydro"
 
 [tool.pixi.feature.develop.dependencies]
 jupyterlab = '*'
+yaml-cpp = '*'
 
 [tool.pixi.feature.develop.pypi-dependencies]
 pymf6 = { path = "../pymf6", editable = true }
 pymf6tools = { path = "../pymf6tools", editable = true }
+phreeqpy = { path = "../phreeqpy_project/phreeqpy", editable = true }
+phreeqcrm = { path = "../phreeqcrm/dist/phreeqcrm-0.0.6-cp312-cp312-macosx_14_0_arm64.whl" }
+
 
 [tool.pixi.feature.develop.tasks]
 helper_exe = { cmd = "python", cwd = "tests" }
 jupyter = { cmd = "jupyter-lab", cwd = "scratch" }
 python_dev = "python"
+python_phreepy = { cmd = "python", cwd = "tests/phreeqpy" }
 
 [tool.pixi.feature.test.dependencies]
 pytest = "*"

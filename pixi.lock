@@ -371,11 +371,14 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xorg-libxdmcp-1.1.3-h27ca646_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xz-5.2.6-h57fd34a_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-0.2.5-h3422bc3_2.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-cpp-0.8.0-h13dd4ca_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zeromq-4.3.5-h5119023_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.17.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.5-h4f39d0f_0.conda
       - pypi: https://files.pythonhosted.org/packages/11/b5/05190307ff4ec8ed8436edbcffce9a169a19fba7a659ce98c889ffeed02a/flopy-3.6.0-py3-none-any.whl
       - pypi: .
+      - pypi: ../phreeqcrm/dist/phreeqcrm-0.0.6-cp312-cp312-macosx_14_0_arm64.whl
+      - pypi: ../phreeqpy_project/phreeqpy
       - pypi: ../pymf6
       - pypi: ../pymf6tools
   test:
@@ -2967,6 +2970,27 @@ packages:
   - pkg:pypi/pexpect
   size: 53600
   timestamp: 1706113273252
+- kind: pypi
+  name: phreeqcrm
+  version: 0.0.6
+  path: ../phreeqcrm/dist/phreeqcrm-0.0.6-cp312-cp312-macosx_14_0_arm64.whl
+  requires_dist:
+  - numpy
+  - pyyaml
+  requires_python: '>=3.8'
+- kind: pypi
+  name: phreeqpy
+  version: 0.5.3.dev8+ge8d220de.d20240502
+  path: ../phreeqpy_project/phreeqpy
+  sha256: 6818a4f1a9c16b718898492b0c05a5fac8a31b3c169c31811f8b897100c01467
+  requires_dist:
+  - pywin32 ; os_name == 'nt'
+  - phreeqcrm ; platform_python_implementation == 'CPython' and extra == 'phreeqcrm'
+  - yaml-cpp ; platform_python_implementation == 'CPython' and extra == 'phreeqcrm'
+  - pandas ; platform_python_implementation == 'CPython' and extra == 'phreeqcrm'
+  - matplotlib ; platform_python_implementation == 'CPython' and extra == 'phreeqcrm'
+  requires_python: '>=3.9'
+  editable: true
 - kind: conda
   name: pickleshare
   version: 0.7.5
@@ -3216,7 +3240,7 @@ packages:
   timestamp: 1700608076927
 - kind: pypi
   name: pymf6
-  version: 1.4.1.dev0+gfedfe139.d20240501
+  version: 1.4.1.dev1+gf8525bef
   path: ../pymf6
   sha256: 390393c30b5f57926d0edc7a8548ef5a3733d68da848b12750f0585708671bbb
   requires_dist:
@@ -3240,7 +3264,7 @@ packages:
   timestamp: 1714407388249
 - kind: pypi
   name: pymf6tools
-  version: 0.1.1.dev63+g9d4969c3.d20240501
+  version: 0.1.1.dev63+g9d4969c3.d20240502
   path: ../pymf6tools
   sha256: 324a4b2cbf735b1ef6a063f143f56cbb5afb6972ef6e34b1026acb5f306c8044
   requires_dist:
@@ -3725,9 +3749,9 @@ packages:
   timestamp: 1707923464809
 - kind: pypi
   name: rtmf6
-  version: 0.0.3.dev2+gaf8a5c66.d20240501
+  version: 0.0.3.dev8+gd7057357.d20240502
   path: .
-  sha256: be9991dd2775313e66371618a44c98dda10a5d15c875d2ad8484c1b0af6b86eb
+  sha256: 818b8a324e4f2f638a06d17c607994b4b1f1efa388508737d7072db23048cee8
   requires_python: '>=3.11'
   editable: true
 - kind: conda
@@ -4217,6 +4241,20 @@ packages:
   license_family: MIT
   size: 88016
   timestamp: 1641347076660
+- kind: conda
+  name: yaml-cpp
+  version: 0.8.0
+  build: h13dd4ca_0
+  subdir: osx-arm64
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-cpp-0.8.0-h13dd4ca_0.conda
+  sha256: e65a52fb1c9821ba3a7a670d650314f8ff983865e77ba9f69f74e0906844943d
+  md5: e783a232972a5c7dca549111e63a78b2
+  depends:
+  - libcxx >=15.0.7
+  license: MIT
+  license_family: MIT
+  size: 130329
+  timestamp: 1695712959746
 - kind: conda
   name: zeromq
   version: 4.3.5
