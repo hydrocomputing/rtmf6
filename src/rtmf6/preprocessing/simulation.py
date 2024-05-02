@@ -65,8 +65,8 @@ class Simulation:
 
     def set_const_init_conc(self, value):
         """Set a constant concentration value."""
-        flow = self.models['flow']
-        const_conc = flow.package_dict['ic'].data_list[0]
+        transport = self.models['transport']
+        const_conc = transport.package_dict['ic'].data_list[0]
         const_conc.set_data(value)
 
     def get_stress_period_data(self, model_type, package_name):
