@@ -2,14 +2,15 @@
 
 import multiprocessing as mp
 from pathlib import Path
-from time import sleep
+
+from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
 
 from pymf6.api import States
 from pymf6.mf6 import MF6
 
 
 def run_model(
-    model_path, queue_in, queue_out, kpers=(1,), sim_file_name='mfsim.nam'
+    model_path, queue_from_mf6, queue_from_phrq, kpers=(1,), sim_file_name='mfsim.nam'
 ):
     """Run a model in its own process."""
     mf6 = MF6(nam_file=Path(model_path) / sim_file_name)
@@ -20,42 +21,57 @@ def run_model(
             and model.state == States.timestep_end
         ):
             var_name = f'SLN_{model.solution_id}/X'
-            queue_out.put(model.conc.flatten())
-            mf6._mf6.set_value(var_name, queue_in.get())
-    queue_out.put(None)
+            queue_from_mf6.put(mf6.vars[var_name])
+            mf6._mf6.set_value(var_name, queue_from_phrq.get())
+    queue_from_mf6.put(None)
 
 
-def main(model_path, sub_models_path='sub_models'):
+def main(model_path, phreeqcrm_yaml, reactions=True, sub_models_path='sub_models'):
     """Run all sub models."""
+    factor = 1_000
+    phreeqcrm_model = PhreeqcRMModel(str(phreeqcrm_yaml))
     processes = {}
-    queues_in = {}
-    queues_out = {}
+    queues_from_mf6 = {}
+    queues_from_phrq = {}
     for path in (model_path / sub_models_path).glob('*'):
         model_name = path.name
-        queue_in = mp.Queue()
-        queue_out = mp.Queue()
+        queue_from_mf6 = mp.Queue()
+        queue_from_phrq = mp.Queue()
         process = mp.Process(
             target=run_model,
-            args=(path, queue_in, queue_out))
+            kwargs=dict(model_path=path, queue_from_mf6=queue_from_mf6,
+                        queue_from_phrq=queue_from_phrq))
         processes[model_name] = process
-        queues_in[model_name] = queue_in
-        queues_out[model_name] = queue_out
+        queues_from_mf6[model_name] = queue_from_mf6
+        queues_from_phrq[model_name] = queue_from_phrq
         process.start()
     done = False
+
     while True:
-        conc_mf6 = {
-            component: queue.get() for component, queue in queues_out.items()}
-        for component, conc in conc_mf6.items():
-            if conc is None:
+        conc_mf6 = {component: queue.get() for component, queue in
+                    queues_from_mf6.items()}
+        for component, mf6_conc in conc_mf6.items():
+            if mf6_conc is None:
                 done = True
                 break
-            queues_in[component].put(conc * 0.99)
+            if reactions:
+                phreeqcrm_conc = phreeqcrm_model.concentrations[component]
+                phreeqcrm_conc[:] = mf6_conc / factor
+            else:
+                queues_from_phrq[component].put(mf6_conc)
         if done:
             break
+        if reactions:
+            phreeqcrm_model.write_conc_back()
+            phreeqcrm_model.update()
+            for component, mf6_conc in conc_mf6.items():
+                phreeqcrm_conc = phreeqcrm_model.concentrations[component]
+                queues_from_phrq[component].put(phreeqcrm_conc * factor)
     for process in processes.values():
         process.join()
 
 
 if __name__ == '__main__':
+
     mp.set_start_method('spawn')
     main()
