@@ -45,8 +45,8 @@ def make_model_data(model_path, initial_concentration):
         'name': model_path.name,
         'transport': True,
         'times': (
-            1000.0,  # perlen (double) is the length of a stress period.
-            1000,  # nstp (integer) is the number of time steps in a stress period.
+            2000.0,  # perlen (double) is the length of a stress period.
+            2000,  # nstp (integer) is the number of time steps in a stress period.
             1.0,  # tsmult (double) is the multiplier for the length of successive
             # time steps.
         ),
@@ -60,7 +60,7 @@ def make_model_data(model_path, initial_concentration):
         'delc': 10.0,
         'top': 15.0,
         'botm': [-5.0, -10.0, -15.0],
-        'k': [10, 0.000006, 0.5],  # initial value of k
+        'k': [2, 0.000006, 0.5],  # initial value of k
         'k33': [0.1, 0.002, 0.3],  # vertical anisotropy
         'sy': 0.2,
         'ss': 0.000001,
@@ -79,9 +79,9 @@ def make_model_data(model_path, initial_concentration):
         'river_active': False,
         'initial_concentration': initial_concentration,
         'scheme': 'TVD',  # 'UPSTREAM', #'TVD',  # or 'UPSTREAM'
-        'longitudinal_dispersivity': 1.0,
+        'longitudinal_dispersivity': 0.0,
         # Ratio of transverse to longitudinal dispersitivity
-        'dispersivity_ratio': 1.0,
+        'dispersivity_ratio': 0.0,
         'porosity': 0.2,
     }
     return model_data
@@ -92,7 +92,7 @@ def make_input_data(model_name='advect'):
     model_path = Path(__file__).parent / f'../models/{model_name}'
     model_data = make_model_data(
         model_path=model_path,
-        initial_concentration=18.5,
+        initial_concentration=0,
     )
     make_input(model_data)
 
