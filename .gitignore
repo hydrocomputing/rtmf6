@@ -8,3 +8,5 @@ src/rtmf6/_version.py
 build/**
 tests/models/**
 scratch/**
+tests/advect/models/**
+tests/_old/**
