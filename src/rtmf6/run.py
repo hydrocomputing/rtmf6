@@ -26,14 +26,14 @@ def run_model(
     queue_from_mf6.put(None)
 
 
-def main(model_path, phreeqcrm_yaml, reactions=True, sub_models_path='sub_models'):
+def main(model_path, phreeqcrm_yaml, reactions=True, component_models_path='component_models'):
     """Run all sub models."""
     factor = 1_000
     phreeqcrm_model = PhreeqcRMModel(str(phreeqcrm_yaml))
     processes = {}
     queues_from_mf6 = {}
     queues_from_phrq = {}
-    for path in (model_path / sub_models_path).glob('*'):
+    for path in (model_path / component_models_path).glob('*'):
         model_name = path.name
         queue_from_mf6 = mp.Queue()
         queue_from_phrq = mp.Queue()
@@ -46,8 +46,10 @@ def main(model_path, phreeqcrm_yaml, reactions=True, sub_models_path='sub_models
         queues_from_phrq[model_name] = queue_from_phrq
         process.start()
     done = False
-
+    step = 1
     while True:
+        step += 1
+        print(f'step: {step:5d}', end='\r')
         conc_mf6 = {component: queue.get() for component, queue in
                     queues_from_mf6.items()}
         for component, mf6_conc in conc_mf6.items():
