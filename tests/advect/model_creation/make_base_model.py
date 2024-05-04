@@ -31,22 +31,22 @@ def make_obs(ncol, nrow, nlay):
     return data
 
 
-def make_model_data(model_path, initial_concentration):
+def make_model_data(model_path, geometry, model_name=None, initial_concentration=0):
     """Create transport model data."""
     model_path = Path(model_path)
-    nlay = 3
-    nrow = 10
-    ncol = 10
+    nlay = geometry['nlay']
+    nrow = geometry['nrow']
+    ncol = geometry['ncol']
     repeat_times = 1
     head_left = 14
     head_right = 12
     model_data = {
         'model_path': model_path,
-        'name': model_path.name,
+        'name': model_name if model_name else model_path.name,
         'transport': True,
         'times': (
             2000.0,  # perlen (double) is the length of a stress period.
-            2000,  # nstp (integer) is the number of time steps in a stress period.
+            200000,  # nstp (integer) is the number of time steps in a stress period.
             1.0,  # tsmult (double) is the multiplier for the length of successive
             # time steps.
         ),
@@ -56,12 +56,12 @@ def make_model_data(model_path, initial_concentration):
         'nrow': nrow,
         'ncol': ncol,
         'nlay': nlay,
-        'delr': 10.0,
-        'delc': 10.0,
+        'delr': geometry['delr'],
+        'delc': geometry['delc'],
         'top': 15.0,
-        'botm': [-5.0, -10.0, -15.0],
-        'k': [2, 0.000006, 0.5],  # initial value of k
-        'k33': [0.1, 0.002, 0.3],  # vertical anisotropy
+        'botm': [-5.0, -10.0, -15.0][:nlay],
+        'k': [2, 0.000006, 0.5][:nlay],  # initial value of k
+        'k33': [0.1, 0.002, 0.3][:nlay],  # vertical anisotropy
         'sy': 0.2,
         'ss': 0.000001,
         'initial_head': 14.0,
@@ -78,23 +78,34 @@ def make_model_data(model_path, initial_concentration):
         'wells_active': False,
         'river_active': False,
         'initial_concentration': initial_concentration,
-        'scheme': 'TVD',  # 'UPSTREAM', #'TVD',  # or 'UPSTREAM'
-        'longitudinal_dispersivity': 0.0,
+        'scheme': 'TVD', # 'UPSTREAM', # 'TVD',  # 'TVD' or 'UPSTREAM'
+        'longitudinal_dispersivity': 0.0001,
         # Ratio of transverse to longitudinal dispersitivity
-        'dispersivity_ratio': 0.0,
+        'dispersivity_ratio': 0.01,
         'porosity': 0.2,
+        'hclose_transport': 0.1,
+        'nouter_transport': 500,
+        'ninner_transport': 1000,
+        'hclose_flow': 0.1,
+        'nouter_flow': 500,
+        'ninner_flow': 1000,
+
     }
     return model_data
 
 
-def make_input_data(model_name='advect'):
+def make_input_data(model_path, model_name, geometry):
     """Write model input files."""
-    model_path = Path(__file__).parent / f'../models/{model_name}'
+    model_path = Path(model_path) / 'base_model'
+    model_path.mkdir(exist_ok=True)
     model_data = make_model_data(
         model_path=model_path,
+        model_name=model_name,
         initial_concentration=0,
+        geometry=geometry,
     )
     make_input(model_data)
+    return model_path
 
 
 if __name__ == '__main__':

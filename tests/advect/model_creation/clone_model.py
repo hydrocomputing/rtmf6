@@ -6,8 +6,6 @@ as initial concentrations and concnetration values of boundary,
 and writes files back.
 """
 
-from pathlib import Path
-
 from rtmf6.preprocessing.simulation import Simulation
 
 
@@ -19,8 +17,8 @@ conc_values = {
     'Na': 1.0,
     'K': 0.2,
     'N': 1.2,
-    'O': 55.34157223695579,
-    'H': 110.68207753009322,
+    'O': 55.34157223695579 * 1000,
+    'H': 110.68207753009322 * 1000,
     'Charge': 0.0,
 }
 
@@ -96,27 +94,23 @@ def modfify_chd_data(chd_data, new_chd_data, coords=COORDS):
     return chd_data
 
 
-def make_sub_model(model_path, name, data, chd_name='chd-1'):
-    """Create sub model."""
-    sim = Simulation(model_path)
-    cloned = sim.clone(sub=name)
+def make_component_model(sim, component, data, coords, chd_name='chd-1'):
+    """Create one component model."""
+    cloned = sim.clone(component=component)
     cloned.set_const_init_conc(data['init_conc'])
     chd_data = sim.get_stress_period_data(
         model_type='flow', package_name=chd_name
     )
-    modfify_chd_data(chd_data, data['new_chd_data'])
+    modfify_chd_data(chd_data, data['new_chd_data'], coords=coords)
     cloned.set_stress_period_data(
         model_type='flow', package_name=chd_name, data=chd_data
     )
     cloned.write_back()
 
 
-def main(model_name='advect', concentrations=CONCENTRATIONS):
-    """Write model input files for all submodels."""
-    model_path = Path(__file__).parent / f'../models/{model_name}'
-    for name, data in concentrations.items():
-        make_sub_model(model_path=model_path, name=name, data=data)
-
-
-if __name__ == '__main__':
-    main()
+def make_all_component_models(model_path, model_name, concentrations=CONCENTRATIONS, coords=COORDS):
+    """Write model input files for all component models."""
+    sim = Simulation(model_path, model_name)
+    for component, data in concentrations.items():
+        make_component_model(sim,  component=component,
+                              data=data, coords=coords)

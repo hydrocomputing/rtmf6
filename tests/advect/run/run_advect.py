@@ -7,12 +7,12 @@ from rtmf6.run import main
 
 def run(model_name):
     model_path = Path(__file__).parent / f'../models/{model_name}'
-    phreeqcrm_yaml = Path(__file__).parent / '../phreeqpy/advect_cpp_exception.yaml'
+    phreeqcrm_yaml = model_path / f'{model_name}.yaml'
     main(model_path, phreeqcrm_yaml, reactions=True)
 
 if __name__ == '__main__':
     from timeit import default_timer
     start = default_timer()
     mp.set_start_method('spawn')
-    run('advect')
+    run('advect7')
     print(default_timer() - start)

@@ -1,8 +1,11 @@
+from pathlib import Path
+
 import phreeqcrm
 
 
-def create_yaml(file_name, nxyz=300, error_handler='error_code'):
+def create_yaml(file_name, data_path, nxyz=300, error_handler='error_code'):
     """Create model yaml file."""
+    data_path = Path(data_path)
     error_options = {
         'error_code': 0,
         'cpp_exception': 1,
@@ -53,13 +56,13 @@ def create_yaml(file_name, nxyz=300, error_handler='error_code'):
     yrm.YAMLSetSaturationUser(sat)
 
     # Load database
-    yrm.YAMLLoadDatabase("tests/phreeqpy/phreeqc.dat")
+    yrm.YAMLLoadDatabase(str(data_path / 'phreeqc.dat'))
 
     # Run file to define solutions and reactants for initial conditions, selected output
     workers = True             # Worker instances do the reaction calculations for transport
     initial_phreeqc = True     # InitialPhreeqc instance accumulates initial and boundary conditions
     utility = True             # Utility instance is available for processing
-    yrm.YAMLRunFile(workers, initial_phreeqc, utility, "tests/phreeqpy/advect.pqi")
+    yrm.YAMLRunFile(workers, initial_phreeqc, utility, str(data_path / 'advect.pqi'))
 
     # Clear contents of workers and utility
     initial_phreeqc = False
@@ -85,4 +88,5 @@ if __name__ == '__main__':
     for option in ['error_code', 'cpp_exception', 'graceful_exit']:
         create_yaml(
             file_name=f'advect_{option}.yaml',
+            data_path='.',
             error_handler=option)
