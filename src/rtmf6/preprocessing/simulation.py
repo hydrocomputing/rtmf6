@@ -51,16 +51,14 @@ class Simulation:
     def __getattr__(self, name):
         return getattr(self._sim, name)
 
-    def clone(self, target_path=None, sub=None, sub_models_path='sub_models'):
+    def clone(
+            self, component, component_models_path='component_models'):
         """Clone a simulation."""
-        if target_path is None:
-            if sub is None:
-                raise ValueError('must specify either target_path or sub')
-            target_path = self.model_path / sub_models_path / sub
+        new_sim_path = self.model_path.parent / component_models_path / component
         new_sim = deepcopy(self._sim)
-        new_sim.set_sim_path(target_path)
+        new_sim.set_sim_path(new_sim_path)
         return Simulation(
-            model_path=target_path, model_name=self.model_name, sim=new_sim
+            model_path=new_sim_path, model_name=self.model_name, sim=new_sim
         )
 
     def set_const_init_conc(self, value):
