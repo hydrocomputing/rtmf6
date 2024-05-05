@@ -1,0 +1,12 @@
+{
+    "name": "advect10r",
+    "geometry":
+    {
+        "nlay": 1,
+        "nrow": 1,
+        "ncol": 10,
+        "delr": 10.0,
+        "delc": 10.0
+    },
+    "time_steps": 2000
+}
