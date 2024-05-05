@@ -31,7 +31,7 @@ def make_obs(ncol, nrow, nlay):
     return data
 
 
-def make_model_data(model_path, geometry, model_name=None, initial_concentration=0):
+def make_model_data(model_path, geometry, time_steps, model_name=None, initial_concentration=0):
     """Create transport model data."""
     model_path = Path(model_path)
     nlay = geometry['nlay']
@@ -46,7 +46,7 @@ def make_model_data(model_path, geometry, model_name=None, initial_concentration
         'transport': True,
         'times': (
             2000.0,  # perlen (double) is the length of a stress period.
-            200000,  # nstp (integer) is the number of time steps in a stress period.
+            time_steps,  # nstp (integer) is the number of time steps in a stress period.
             1.0,  # tsmult (double) is the multiplier for the length of successive
             # time steps.
         ),
@@ -89,12 +89,15 @@ def make_model_data(model_path, geometry, model_name=None, initial_concentration
         'hclose_flow': 0.1,
         'nouter_flow': 500,
         'ninner_flow': 1000,
-
+        'gwf_oc_head': 'LAST',
+        'gwf_oc_budget': 'LAST',
+        'gwt_oc_conc': 'LAST',
+        'gwt_oc_budget': 'LAST',
     }
     return model_data
 
 
-def make_input_data(model_path, model_name, geometry):
+def make_input_data(model_path, model_name, specific_model_data):
     """Write model input files."""
     model_path = Path(model_path) / 'base_model'
     model_path.mkdir(exist_ok=True)
@@ -102,9 +105,10 @@ def make_input_data(model_path, model_name, geometry):
         model_path=model_path,
         model_name=model_name,
         initial_concentration=0,
-        geometry=geometry,
+        geometry=specific_model_data['geometry'],
+        time_steps=specific_model_data['time_steps']
     )
-    make_input(model_data)
+    make_input(model_data, verbosity_level=0)
     return model_path
 
 
