@@ -6,83 +6,79 @@ as initial concentrations and concnetration values of boundary,
 and writes files back.
 """
 
+from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
+
 from rtmf6.preprocessing.simulation import Simulation
 
 
-COORDS = {'left': 0, 'right': 9}
+def make_concentrations(phreeqcrm_yaml):
+    """Create concentrations values."""
+    phreeqcrm_model = PhreeqcRMModel(str(phreeqcrm_yaml))
+    bc_conc = phreeqcrm_model.get_initial_concentrations(0)
+    init_conc = phreeqcrm_model.get_initial_concentrations(1)
 
-conc_values = {
-    'Ca': 0.6,
-    'Cl': 1.2,
-    'Na': 1.0,
-    'K': 0.2,
-    'N': 1.2,
-    'O': 55.34157223695579 * 1000,
-    'H': 110.68207753009322 * 1000,
-    'Charge': 0.0,
-}
-
-CONCENTRATIONS = {
-    'Ca': {
-        'init_conc': 0.0,
-        'new_chd_data': {
-            0: {'left': 0.0, 'right': 0.0},
-            1: {'left': conc_values['Ca'], 'right': 0.0},
+    concentrations = {
+        'Ca': {
+            'init_conc': 0.0,
+            'new_chd_data': {
+                0: {'left': 0.0, 'right': 0.0},
+                1: {'left': bc_conc['Ca'], 'right': 0.0},
+            },
         },
-    },
-    'Cl': {
-        'init_conc': 0,
-        'new_chd_data': {
-            0: {'left': 0.0, 'right': 0.0},
-            1: {'left': conc_values['Cl'], 'right': 0.0},
+        'Cl': {
+            'init_conc': 0,
+            'new_chd_data': {
+                0: {'left': 0.0, 'right': 0.0},
+                1: {'left': bc_conc['Cl'], 'right': 0.0},
+            },
         },
-    },
-    'Na': {
-        'init_conc': conc_values['Na'],
-        'new_chd_data': {
-            0: {'left': conc_values['Na'], 'right': conc_values['Na']},
-            1: {'left': 0.0, 'right': 0.0},
+        'Na': {
+            'init_conc': init_conc['Na'],
+            'new_chd_data': {
+                0: {'left': init_conc['Na'], 'right': init_conc['Na']},
+                1: {'left': 0.0, 'right': 0.0},
+            },
         },
-    },
-    'K': {
-        'init_conc': conc_values['K'],
-        'new_chd_data': {
-            0: {'left': conc_values['K'], 'right': conc_values['K']},
-            1: {'left': 0.0, 'right': 0.0},
+        'K': {
+            'init_conc': init_conc['K'],
+            'new_chd_data': {
+                0: {'left': init_conc['K'], 'right': init_conc['K']},
+                1: {'left': 0.0, 'right': 0.0},
+            },
         },
-    },
-    'N': {
-        'init_conc': conc_values['N'],
-        'new_chd_data': {
-            0: {'left': conc_values['N'], 'right': conc_values['N']},
-            1: {'left': 0.0, 'right': 0.0},
+        'N': {
+            'init_conc': init_conc['N'],
+            'new_chd_data': {
+                0: {'left': init_conc['N'], 'right': init_conc['N']},
+                1: {'left': 0.0, 'right': 0.0},
+            },
         },
-    },
-    'O': {
-        'init_conc': conc_values['O'],
-        'new_chd_data': {
-            0: {'left': conc_values['O'], 'right': conc_values['O']},
-            1: {'left': conc_values['O'], 'right': conc_values['O']},
+        'O': {
+            'init_conc': init_conc['O'],
+            'new_chd_data': {
+                0: {'left': init_conc['O'], 'right': init_conc['O']},
+                1: {'left': init_conc['O'], 'right': init_conc['O']},
+            },
         },
-    },
-    'H': {
-        'init_conc': conc_values['H'],
-        'new_chd_data': {
-            0: {'left': conc_values['H'], 'right': conc_values['H']},
-            1: {'left': conc_values['H'], 'right': conc_values['H']},
+        'H': {
+            'init_conc': init_conc['H'],
+            'new_chd_data': {
+                0: {'left': init_conc['H'], 'right': init_conc['H']},
+                1: {'left': init_conc['H'], 'right': init_conc['H']},
+            },
         },
-    },
-    'Charge': {
-        'init_conc': conc_values['Charge'],
-        'new_chd_data': {
-            0: {'left': conc_values['Charge'], 'right': conc_values['Charge']},
-            1: {'left': conc_values['Charge'], 'right': conc_values['Charge']},
+        'Charge': {
+            'init_conc': init_conc['Charge'],
+            'new_chd_data': {
+                0: {'left': init_conc['Charge'], 'right': init_conc['Charge']},
+                1: {'left': init_conc['Charge'], 'right': init_conc['Charge']},
+            },
         },
-    },
-}
+    }
+    return concentrations
 
 
-def modfify_chd_data(chd_data, new_chd_data, coords=COORDS):
+def modfify_chd_data(chd_data, new_chd_data, coords):
     """Set new concentration values for CHD."""
     for stress_period_number, values in new_chd_data.items():
         chd_data_period = chd_data[stress_period_number]
@@ -108,8 +104,9 @@ def make_component_model(sim, component, data, coords, chd_name='chd-1'):
     cloned.write_back()
 
 
-def make_all_component_models(model_path, model_name, concentrations=CONCENTRATIONS, coords=COORDS):
+def make_all_component_models(model_path, model_name, phreeqcrm_yaml, coords):
     """Write model input files for all component models."""
+    concentrations = make_concentrations(phreeqcrm_yaml)
     sim = Simulation(model_path, model_name)
     for component, data in concentrations.items():
         make_component_model(sim,  component=component,
