@@ -28,7 +28,6 @@ def run_model(
 
 def main(model_path, phreeqcrm_yaml, reactions=True, component_models_path='component_models'):
     """Run all sub models."""
-    factor = 1_000
     phreeqcrm_model = PhreeqcRMModel(str(phreeqcrm_yaml))
     processes = {}
     queues_from_mf6 = {}
@@ -58,7 +57,7 @@ def main(model_path, phreeqcrm_yaml, reactions=True, component_models_path='comp
                 break
             if reactions:
                 phreeqcrm_conc = phreeqcrm_model.concentrations[component]
-                phreeqcrm_conc[:] = mf6_conc / factor
+                phreeqcrm_conc[:] = mf6_conc
             else:
                 queues_from_phrq[component].put(mf6_conc)
         if done:
@@ -68,7 +67,7 @@ def main(model_path, phreeqcrm_yaml, reactions=True, component_models_path='comp
             phreeqcrm_model.update()
             for component, mf6_conc in conc_mf6.items():
                 phreeqcrm_conc = phreeqcrm_model.concentrations[component]
-                queues_from_phrq[component].put(phreeqcrm_conc * factor)
+                queues_from_phrq[component].put(phreeqcrm_conc)
     for process in processes.values():
         process.join()
 
