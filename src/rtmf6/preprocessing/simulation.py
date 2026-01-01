@@ -64,17 +64,17 @@ class Simulation:
     def set_const_init_conc(self, value):
         """Set a constant concentration value."""
         transport = self.models['transport']
-        const_conc = transport.package_dict['ic'].data_list[0]
+        const_conc = transport.get_package('ic').data_list[-1]
         const_conc.set_data(value)
 
     def get_stress_period_data(self, model_type, package_name):
         """Get stress period dat for a package."""
-        package = self.models[model_type].package_dict[package_name]
+        package = self.models[model_type].get_package(package_name)
         return package.stress_period_data.data
 
     def set_stress_period_data(self, model_type, package_name, data):
         """Set stress period dat for a package."""
-        package = self.models[model_type].package_dict[package_name]
+        package = self.models[model_type].get_package(package_name)
         package.stress_period_data.set_data(data)
 
     def write_back(self):
