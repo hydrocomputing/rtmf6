@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from pymf6tools.make_model import make_input
+from pymf6_tools.make_model import make_input
 
 
 def make_chd(
