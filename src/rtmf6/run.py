@@ -13,14 +13,12 @@ def run_model(
     model_path, queue_from_mf6, queue_from_phrq, kpers=(1,), sim_file_name='mfsim.nam'
 ):
     """Run a model in its own process."""
-    mf6 = MF6(nam_file=Path(model_path) / sim_file_name)
-    for model in mf6.model_loop():
-        if (
-            model.kper in kpers
-            and model.type == 'gwt6'
-            and model.state == States.timestep_end
-        ):
-            var_name = f'SLN_{model.solution_id}/X'
+    mf6 = MF6(sim_path=Path(model_path))
+    gwt_models = mf6.models['gwt6']
+    gwt = gwt_models[list(gwt_models.keys())[0]]
+    for model_step in mf6.model_loop():
+        if gwt.kper in kpers and model_step.state == States.timestep_end:
+            var_name = f'SLN_{gwt.solution_id}/X'
             queue_from_mf6.put(mf6.vars[var_name])
             mf6._mf6.set_value(var_name, queue_from_phrq.get())
     queue_from_mf6.put(None)
