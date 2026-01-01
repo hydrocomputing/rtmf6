@@ -19,6 +19,7 @@ def do_steps(specific_model_data, base_path=None):
     """Do all preprocessing steps."""
     model_name = specific_model_data['name']
     geometry = specific_model_data['geometry']
+    nthread = specific_model_data['nthread']
     if base_path is None:
         base_path = Path(__file__).parent.parent
     models_path = base_path / 'models'
@@ -40,6 +41,7 @@ def do_steps(specific_model_data, base_path=None):
         file_name=yaml_path,
         data_path=phreeqcrm_data_path,
         nxyz=nxyz,
+        nthread=nthread,
     )
 
     print('making component models')

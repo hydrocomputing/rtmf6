@@ -3,7 +3,7 @@ from pathlib import Path
 import phreeqcrm
 
 
-def create_yaml(file_name, data_path, nxyz=300, error_handler='error_code'):
+def create_yaml(file_name, data_path, nxyz=300, nthread=1, error_handler='error_code'):
     """Create model yaml file."""
     data_path = Path(data_path)
     error_options = {
@@ -14,6 +14,8 @@ def create_yaml(file_name, data_path, nxyz=300, error_handler='error_code'):
     assert error_handler in error_options, f'error_handle needs to be one off {", ".join(error_options)}'
     # Create YAMLPhreeqcRM document
     yrm = phreeqcrm.YAMLPhreeqcRM()
+
+    yrm.YAMLThreadCount(nthread)
 
     # Set GridCellCount
     yrm.YAMLSetGridCellCount(nxyz)
