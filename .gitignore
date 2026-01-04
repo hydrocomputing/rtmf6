@@ -10,3 +10,6 @@ tests/models/**
 scratch/**
 tests/advect/models/**
 tests/_old/**
+.hidden
+.internal
+tests/advect
