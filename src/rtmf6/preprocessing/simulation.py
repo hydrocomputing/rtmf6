@@ -12,54 +12,70 @@ import flopy
 
 import pymf6
 
+from rtmf6.config import Config
+from rtmf6.preprocessing.adjust_prefixes import prefix_all
+
 
 class Simulation:
     """Existing MF6 simulation."""
 
     def __init__(
         self,
-        model_path,
-        model_name=None,
+        config,
+        model_path=None,
         exe_name=None,
         sim=None,
         verbosity_level=0,
     ):
-        self.model_path = model_path
-        if model_name is None:
-            self.model_name = model_path.name
-        else:
-            self.model_name = model_name
+        self.config = config
+        self._set_paths()
+        if model_path is None:
+            self.model_path = config.mf6_path
+        self.model_name = config.project_name
         if exe_name is None:
             exe_name = exe_name = pymf6.__mf6_exe__
-        self._model_suffixes = pymf6.__model_prefixes__
         if sim:
             self._sim = sim
         else:
             self._sim = flopy.mf6.MFSimulation.load(
-                sim_ws=model_path,
+                sim_ws=self.model_path,
                 exe_name=exe_name,
                 verbosity_level=verbosity_level,
             )
         self.models = {}
-        for model_type in ['flow', 'transport', 'energy']:
-            model = self._sim.get_model(
-                f'{self._model_suffixes[model_type]}{self.model_name}'
-            )
-            if model:
-                self.models[model_type] = model
+        for name, model in self._sim.model_dict.items():
+            self.models.setdefault(model.model_type, []).append(model)
+        self.needed_files = None
+
+    def _set_paths(self):
+        self.inputs_path = self.config.internal_paths.inputs_path
+        self.component_models_path = self.config.internal_paths.component_models_path
+        self.work_path_flopy = self.config.internal_paths.work_path_flopy
+        self.work_path_mf6 = self.config.internal_paths.work_path_mf6
 
     def __getattr__(self, name):
         return getattr(self._sim, name)
 
-    def clone(
-            self, component, component_models_path='component_models'):
+    def clone_model(self, new_sim_path):
         """Clone a simulation."""
-        new_sim_path = self.model_path.parent / component_models_path / component
         new_sim = deepcopy(self._sim)
         new_sim.set_sim_path(new_sim_path)
-        return Simulation(
-            model_path=new_sim_path, model_name=self.model_name, sim=new_sim
+        return self.__class__(
+            config=self.config,
+            model_path=new_sim_path,
+            sim=new_sim,
         )
+
+    def clone_base_model(self, skip=None):
+        """Clone the base model."""
+        for new_sim_path in [self.inputs_path, self.work_path_flopy]:
+            new_sim = self.clone_model(new_sim_path=new_sim_path)
+            new_sim.write_back()
+        self.needed_files = prefix_all(self.inputs_path / 'mfsim.nam', skip=skip)
+
+    def clone_component_model(self, component):
+        """Clone a component model."""
+        return self.clone_model(new_sim_path=self.component_models_path / component)
 
     def set_const_init_conc(self, value):
         """Set a constant concentration value."""
