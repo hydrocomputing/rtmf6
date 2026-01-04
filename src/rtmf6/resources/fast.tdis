@@ -1,0 +1,13 @@
+# Super short tiem step.
+BEGIN options
+  TIME_UNITS  days
+END options
+
+BEGIN dimensions
+  NPER  1
+END dimensions
+
+BEGIN perioddata
+       1.0e-12  1       1.00000000
+END perioddata
+
