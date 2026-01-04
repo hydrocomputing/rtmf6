@@ -39,3 +39,10 @@ class InternalPaths:
         self.component_models_path.mkdir(exist_ok=True, parents=True)
         self.work_path_flopy.mkdir(exist_ok=True, parents=True)
         self.work_path_mf6.mkdir(exist_ok=True, parents=True)
+
+
+class Resources():
+
+    def __init__(self):
+        self.path = Path(__file__).parent / 'resources'
+        self.tdis_fast = self.path / 'fast.tdis'
