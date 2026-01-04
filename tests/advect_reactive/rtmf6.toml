@@ -1,0 +1,7 @@
+[project]
+name = "advect10"
+directory = "."
+
+[options]
+has_tracer = true
+use_tracer = true
