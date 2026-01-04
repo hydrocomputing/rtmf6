@@ -54,21 +54,32 @@ pymf6 = "src/rtmf6"
 write_to = "src/rtmf6/_version.py"
 
 
-[tool.pixi.project]
-channels = ["conda-forge", "hydrocomputing"]
+[tool.pixi.workspace]
+channels = ["hydrocomputing", "conda-forge"]
 platforms = ["osx-arm64"]
 
 [tool.pixi.dependencies]
+python = "3.14.*"
 matplotlib = "*"
 pandas = "*"
 pymf6 = "*"
+phreeqcrm = "*"
+# phreeqpy = "*"
+gfortran = ">=15.2.0,<15.3"
+ipython = ">=9.8.0,<10"
+modflowapi = ">=0.3.0,<0.4"
+pymf6-tools = ">=0.1.3,<0.2"
+jupyterlab = ">=4.5.1,<5"
 
 [tool.pixi.pypi-dependencies]
 rtmf6 = { path = ".", editable = true }
+phreeqpy = { path = "../../phreeqpy_project/phreeqpy", editable = true }
+pymf6 = { path = "../pymf6", editable = true }
+pymf6-tools = { path = "../pymf6-tools", editable = true }
 
 [tool.pixi.feature.build.dependencies]
 twine = ">=5.0.0,<5.1"
-build = ">=0.7.0,<0.8"
+# build = ">=0.7.0,<1.0"
 
 [tool.pixi.feature.build.tasks]
 build-wheel = "python -m build --wheel"
@@ -77,12 +88,13 @@ pypi-upload = "python -m  twine upload --config-file=/Users/mike/.pypirc_hydro"
 [tool.pixi.feature.develop.dependencies]
 jupyterlab = '*'
 yaml-cpp = '*'
+flopy = ">=3.9.5,<4"
+modflowapi = ">=0.3.0,<0.4"
 
 [tool.pixi.feature.develop.pypi-dependencies]
-pymf6 = { path = "../pymf6", editable = true }
-pymf6tools = { path = "../pymf6tools", editable = true }
-phreeqpy = { path = "../phreeqpy_project/phreeqpy", editable = true }
-phreeqcrm = { path = "../phreeqcrm/dist/phreeqcrm-0.0.6-cp312-cp312-macosx_14_0_arm64.whl" }
+# pymf6 = { path = "../pymf6", editable = true }
+# pymf6-tools = { path = "../pymf6-tools", editable = true }
+phreeqpy = { path = "../../phreeqpy_project/phreeqpy", editable = true }
 
 
 [tool.pixi.feature.develop.tasks]
