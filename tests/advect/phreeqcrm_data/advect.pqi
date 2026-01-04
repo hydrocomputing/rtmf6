@@ -1,11 +1,14 @@
 SOLUTION 0  CaCl2
+   # Inflow at boundary
         units            mmol/kgw
         temp             25.0
         pH               7.0     charge
         pe               12.5    O2(g)   -0.68
         Ca               0.6
         Cl               1.2
+        Tracer           0.5
 SOLUTION 1
+    # Initial solution
         units            mmol/kgw
         temp             25.0
         pH               7.0     charge
@@ -13,6 +16,7 @@ SOLUTION 1
         Na               1.0
         K                0.2
         N(5)             1.2
+        Tracer           2.0
 END
 EXCHANGE 1
         -equilibrate 1

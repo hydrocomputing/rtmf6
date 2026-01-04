@@ -1,6 +1,8 @@
 """Create a simple test model."""
 
+import json
 from pathlib import Path
+import sys
 
 from pymf6_tools.make_model import make_input
 
@@ -9,17 +11,25 @@ def make_chd(
     initial_concentration, head_left, head_right, nrow, ncol, nlay, repeat_times
 ):
     """Create CHD BCs."""
-    chd = []
-    for lay in range(nlay):
-        for row in range(nrow):
-            chd.append([(lay, row, 0), head_left, float(initial_concentration * 2)])
-        for row in range(nrow):
-            chd.append(
-                [(lay, row, ncol - 1), head_right, float(initial_concentration)]
-            )
-    stress_period_data = {}
-    for index in range(repeat_times + 1):
-        stress_period_data[index] = chd
+    def make_one(sol_numbers=(1, 1)):
+        chd = []
+        for lay in range(nlay):
+            for row in range(nrow):
+                chd.append(
+                    [(lay, row, 0), head_left,
+                    float(initial_concentration * 2),
+                    sol_numbers[0]  # solution number
+                    ],
+                    )
+            for row in range(nrow):
+                chd.append(
+                    [(lay, row, ncol - 1), head_right,
+                    float(initial_concentration),
+                    sol_numbers[1]  # solution number
+                    ],
+                )
+        return chd
+    stress_period_data = {0: make_one(), 1: make_one((0, -1))}
     return stress_period_data
 
 
@@ -44,6 +54,7 @@ def make_model_data(model_path, geometry, time_steps, model_name=None, initial_c
         'model_path': model_path,
         'name': model_name if model_name else model_path.name,
         'transport': True,
+        'reactive': True,
         'times': (
             2000.0,  # perlen (double) is the length of a stress period.
             time_steps,  # nstp (integer) is the number of time steps in a stress period.
@@ -99,8 +110,6 @@ def make_model_data(model_path, geometry, time_steps, model_name=None, initial_c
 
 def make_input_data(model_path, model_name, specific_model_data):
     """Write model input files."""
-    model_path = Path(model_path) / 'base_model'
-    model_path.mkdir(exist_ok=True)
     model_data = make_model_data(
         model_path=model_path,
         model_name=model_name,
@@ -112,5 +121,19 @@ def make_input_data(model_path, model_name, specific_model_data):
     return model_path
 
 
+def main(model_path=None):
+    """Create the base model."""
+    specific_model_data = json.loads(Path(sys.argv[1]).read_text())
+    model_name = specific_model_data['name']
+    print(model_name)
+    print()
+    # geometry = specific_model_data['geometry']
+    # nthread = specific_model_data['nthread']
+    if model_path is None:
+        model_path = Path(sys.argv[2])
+    print(model_path)
+    print()
+    make_input_data(model_path, model_name, specific_model_data)
+
 if __name__ == '__main__':
-    make_input_data()
+    main()
