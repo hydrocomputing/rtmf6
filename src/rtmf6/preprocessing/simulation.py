@@ -69,7 +69,7 @@ class Simulation:
 
     def clone_base_model(self, skip=None):
         """Clone the base model."""
-        for new_sim_path in [self.inputs_path, self.work_path_flopy]:
+        for new_sim_path in [self.inputs_path]:
             new_sim = self.clone_model(new_sim_path=new_sim_path)
             new_sim.write_back()
         self.needed_files = prefix_all(self.inputs_path / 'mfsim.nam', skip_model_names=skip)
@@ -116,7 +116,6 @@ def copy_to_work_mf6(config):
         simulate=False,
         skip_mfsim=['TDIS6', 'gwf6', 'gwt6'],
         skip_model_names={'gwt6': ['IC6']})
-    print(skipped)
     package_names = []
     for values in skipped['needed_package_files'].values():
             for sub_value in values.values():
