@@ -2,6 +2,40 @@
 name = "advect10"
 directory = "."
 
-[options]
+[tracer]
 has_tracer = true
 use_tracer = true
+name = 'Tracer'
+
+[[bc_concentrations]]
+type = "chd"
+file_name = "mf6/gwf_advect10.chd"
+# src and dst can be the same
+src = "rtmf6_sol_number"
+dst = "concentration"
+
+[initial_concentrations]
+src_file_name = "mf6/gwt_advect10.ic"
+# dst_file_name not specified and becomes "gwt_advect10.ic"
+
+# alternative
+# src_file_name = "rtmf6/init_conc.ic"
+# dst_file_name = "gwt_advect10.ic"
+
+[[exchanges]]
+file_name = "init_exchanges.ic"
+stress_period = 0
+
+[[exchanges]]
+file_name = "exchanges_stress_period_2.ic"
+stress_period = 2
+
+[[equilibrium_phases]]
+
+[[gas_phases]]
+
+[[kinetics]]
+
+[[solutions]]
+
+[[surfaces]]

@@ -1,14 +1,20 @@
 """Configuration."""
 
 from pathlib import Path
+import tomllib
 
 
 class Config:
     """Configure a project."""
 
-    def __init__(self, project_path, project_name='rtmf6sim'):
-        self.project_path = Path(project_path)
-        self.project_name = project_name
+    def __init__(self, project_toml):
+        with open(project_toml, 'rb') as fobj:
+            self.project_settings = tomllib.load(fobj)
+        self.project_name = self.project_settings['project']['name']
+        self.project_path = Path(project_toml).parent / self.project_settings['project']['directory']
+        self._set_path()
+
+    def _set_path(self):
         self.mf6_path = self.project_path / 'mf6'
         self.phreeqcrm_path = self.project_path / 'phreeqcrm'
         self.rtmf6_path = self.project_path / 'rtmf6'
