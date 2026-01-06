@@ -26,12 +26,16 @@ def get_model_file_names(file_name):
 def prefix_file_paths(
         in_text,
         blocks,
-        skip=None,
-        prefix='../../base_model/common_inputs/'):
+        skip_model_types=None,
+        skip_file_names=None,
+        prefix='../../../mf6/'):
     """Prefix path to files."""
+    if skip_file_names is None:
+        skip_file_names = []
+    skip_file_names = set(skip_file_names)
     skipped = {}
-    if skip:
-        skip = [entry.lower() for entry in skip]
+    if skip_model_types:
+        skip_model_types = [entry.lower() for entry in skip_model_types]
     out = []
     in_block = False
     for line in in_text.splitlines():
@@ -46,12 +50,15 @@ def prefix_file_paths(
                 in_block = False
         if in_block:
             entry_type, file_name, *_ = line.split()
-            key = entry_type.lower()
-            if skip and key in skip:
+            if file_name in skip_file_names:
                 modified_line = line
-                skipped.setdefault(key, []).append(file_name)
             else:
-                modified_line = line.replace(file_name, prefix + file_name)
+                key = entry_type.lower()
+                if skip_model_types and key in skip_model_types:
+                    modified_line = line
+                    skipped.setdefault(key, []).append(file_name)
+                else:
+                    modified_line = line.replace(file_name, prefix + file_name)
             out.append(modified_line)
         else:
             out.append(line)
@@ -62,13 +69,18 @@ def prefix_mfsim_name(
     file_name,
     simulate=False,
     backup=False,
-    skip=None,
+    skip_model_types=None,
+    skip_file_names=None,
     blocks={'timing', 'models', 'exchanges', 'solutiongroup'}):
     """Prefix paths in mfsim."""
     if backup:
         copyfile(file_name, file_name.parent / (file_name.name + '.bak'))
     in_text = Path(file_name).read_text()
-    skipped, out_text = prefix_file_paths(in_text=in_text, skip=skip, blocks=blocks)
+    skipped, out_text = prefix_file_paths(
+        in_text=in_text,
+        skip_model_types=skip_model_types,
+        skip_file_names=skip_file_names,
+        blocks=blocks)
     if simulate:
         return out_text
     else:
@@ -78,7 +90,8 @@ def prefix_mfsim_name(
 
 def prefix_model_name(
     file_name,
-    skip,
+    skip_model_types=None,
+    skip_file_names=None,
     simulate=False,
     backup=False,
     blocks={'packages'}):
@@ -86,7 +99,11 @@ def prefix_model_name(
     if backup:
         copyfile(file_name, file_name.parent / (file_name.name + '.bak'))
     in_text = Path(file_name).read_text()
-    skipped, out_text = prefix_file_paths(in_text=in_text, skip=skip, blocks=blocks)
+    skipped, out_text = prefix_file_paths(
+        in_text=in_text,
+        skip_model_types=skip_model_types,
+        skip_file_names=skip_file_names,
+        blocks=blocks)
     if simulate:
         return out_text
     else:
