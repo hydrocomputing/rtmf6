@@ -8,26 +8,31 @@ use_tracer = true
 name = 'Tracer'
 
 [[bc_concentrations]]
-type = "chd"
+model_name = "gwf_advect10"
+bc_type = "chd"
 file_name = "mf6/gwf_advect10.chd"
 # src and dst can be the same
 src = "rtmf6_sol_number"
 dst = "concentration"
 
-[initial_concentrations]
-src_file_name = "mf6/gwt_advect10.ic"
-# dst_file_name not specified and becomes "gwt_advect10.ic"
+[[initial_concentrations]]
+model_name = "gwt_advect10"
+file_name = "mf6/gwt_advect10.ic"
 
 # alternative
 # src_file_name = "rtmf6/init_conc.ic"
 # dst_file_name = "gwt_advect10.ic"
 
+# Add more if multipel transport models exist
+# [[initial_concentrations]]
+# src_file_name = "mf6/gwt_advect_sub_10.ic"
+
 [[exchanges]]
-file_name = "init_exchanges.ic"
+file_name = "rtmf6/init_exchanges.ic"
 stress_period = 0
 
 [[exchanges]]
-file_name = "exchanges_stress_period_2.ic"
+file_name = "rtmf6/exchanges_stress_period_2.ic"
 stress_period = 2
 
 [[equilibrium_phases]]
@@ -39,3 +44,8 @@ stress_period = 2
 [[solutions]]
 
 [[surfaces]]
+
+[phreeqcrm]
+chemistry_name = "phreeqcrm/advect.pqi"
+database = "phreeqcrm/phreeqc.dat"
+yaml_file = "phreeqcrm/model.yaml"
