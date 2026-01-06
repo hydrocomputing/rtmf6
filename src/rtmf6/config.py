@@ -44,6 +44,7 @@ class InternalPaths:
         self.work_path_flopy = work_path / 'flopy'
         self.work_path_mf6 = work_path / 'mf6'
         self.work_path_phreeqcrm = work_path / 'phreeqcrm'
+        self.work_path_nam = work_path / 'nam'
         if create:
             self._make_directory_structure()
 
@@ -54,6 +55,7 @@ class InternalPaths:
         self.work_path_flopy.mkdir(exist_ok=True, parents=True)
         self.work_path_mf6.mkdir(exist_ok=True, parents=True)
         self.work_path_phreeqcrm.mkdir(exist_ok=True, parents=True)
+        self.work_path_nam.mkdir(exist_ok=True, parents=True)
 
 
 class Resources():
