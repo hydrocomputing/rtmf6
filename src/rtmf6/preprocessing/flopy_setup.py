@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 from pathlib import Path
-from shutil import rmtree
+from shutil import copyfile,rmtree
 
 import flopy
 from flopy.mf6.mfbase import ExtFileAction, MFDataException
@@ -15,6 +15,7 @@ class FlopyWorker:
     def __init__(self, config):
         self.project_name = config.project_settings['project']['name']
         self.mf6_path = config.mf6_path
+        self.component_models_path = config.internal_paths.component_models_path
         self.work_path = config.internal_paths.work_path_flopy
         self.work_components_path = self.work_path / 'component_models'
         rmtree(self.work_components_path)
@@ -28,6 +29,15 @@ class FlopyWorker:
         self.write_simulation()
         self._make_init_concs(init_concs_config)
         self._make_bc_concs(bc_concs_config)
+        self._make_modified_file_names(config.project_path)
+
+    def _make_modified_file_names(self, project_path):
+        self.modified_input_files = [
+            project_path / package.file_path for package
+            in self.init_concs + self.bc_concs]
+        for src in self.modified_input_files:
+            dst = self.work_path / src.name
+            copyfile(src, dst)
 
     def _make_init_concs(self, init_concs_config):
         self.init_concs = []
@@ -70,14 +80,23 @@ class FlopyWorker:
     def update(self, conc_names):
         """Update concentration values for one specie."""
         for conc_name in conc_names:
+            target_path = self.component_models_path / conc_name
+            target_path.mkdir(exist_ok=True)
             for bc_conc in self.bc_concs:
                 bc_conc.update(self.sim, conc_name)
+                src = self.work_path / bc_conc.file_name
+                dst = target_path / bc_conc.file_name
+                copyfile(src, dst)
             for init_conc in self.init_concs:
                 init_conc.update(self.sim, conc_name)
+                src = self.work_path / init_conc.file_name
+                dst = target_path / init_conc.file_name
+                copyfile(src, dst)
             new_sim_path = self.work_components_path / conc_name
             new_sim_path.mkdir(exist_ok=True)
             self.sim.set_sim_path(new_sim_path)
             self.write_simulation()
+
             self.load_simulation()
 
     def update_all(self, keep_tracer=True, tracer_name='Tracer', skip=None):
@@ -98,7 +117,8 @@ class InititalConc:
         """One initial concentration."""
         self.solution_mapping = solution_mapping
         self.model_name = config_data['model_name']
-        self.file_name = config_data['file_name']
+        self.file_path = Path(config_data['file_name'])
+        self.file_name = self.file_path.name
 
     def update(self, sim, conc_name):
         """Update the initial concentration."""
@@ -126,7 +146,8 @@ class BCConc:
         self.solution_mapping = solution_mapping
         self.model_name = config_data['model_name']
         self.bc_type = config_data['bc_type']
-        self.file_name = config_data['file_name']
+        self.file_path = Path(config_data['file_name'])
+        self.file_name = self.file_path.name
         self.src = config_data['src']
         self.dst = config_data['dst']
 
