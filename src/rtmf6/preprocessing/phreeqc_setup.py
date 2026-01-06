@@ -27,6 +27,7 @@ class PhreeqcRMSetup:
 
     @property
     def solution_mapping(self):
+        """Mapping of solution number to concentratiions."""
         self._make_intermediate_yaml_file()
         phreeqcrm_model = PhreeqcRMModel(str(self.intermediate_yaml_file))
         return {number: phreeqcrm_model.get_initial_concentrations(number)
