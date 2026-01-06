@@ -13,12 +13,19 @@ class Config:
         self.project_name = self.project_settings['project']['name']
         self.project_path = Path(project_toml).parent / self.project_settings['project']['directory']
         self._set_path()
+        self._make_path_absolute()
 
     def _set_path(self):
         self.mf6_path = self.project_path / 'mf6'
         self.phreeqcrm_path = self.project_path / 'phreeqcrm'
         self.rtmf6_path = self.project_path / 'rtmf6'
         self.internal_paths = InternalPaths(self.project_path)
+
+    def _make_path_absolute(self):
+        options = self.project_settings['phreeqcrm']
+        for entry in ['database', 'chemistry_name']:
+            options[entry] = self.project_path / options[entry]
+
 
 
 class InternalPaths:
@@ -36,6 +43,7 @@ class InternalPaths:
         self.component_models_path = self.base / 'component_models'
         self.work_path_flopy = work_path / 'flopy'
         self.work_path_mf6 = work_path / 'mf6'
+        self.work_path_phreeqcrm = work_path / 'phreeqcrm'
         if create:
             self._make_directory_structure()
 
@@ -45,6 +53,7 @@ class InternalPaths:
         self.component_models_path.mkdir(exist_ok=True, parents=True)
         self.work_path_flopy.mkdir(exist_ok=True, parents=True)
         self.work_path_mf6.mkdir(exist_ok=True, parents=True)
+        self.work_path_phreeqcrm.mkdir(exist_ok=True, parents=True)
 
 
 class Resources():
