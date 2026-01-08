@@ -13,7 +13,7 @@ def run_model(
     model_path, queue_from_mf6, queue_from_phrq, kpers=(1,), sim_file_name='mfsim.nam'
 ):
     """Run a model in its own process."""
-    mf6 = MF6(sim_path=Path(model_path))
+    mf6 = MF6(sim_path=Path(model_path), do_solution_loop=False)
     gwt_models = mf6.models['gwt6']
     gwt = gwt_models[list(gwt_models.keys())[0]]
     for model_step in mf6.model_loop():
