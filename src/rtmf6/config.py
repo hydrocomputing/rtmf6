@@ -10,10 +10,34 @@ class Config:
     def __init__(self, project_toml):
         with open(project_toml, 'rb') as fobj:
             self.project_settings = tomllib.load(fobj)
+        self._check()
         self.project_name = self.project_settings['project']['name']
         self.project_path = Path(project_toml).parent / self.project_settings['project']['directory']
+        self.phreeqcrm_cell_value_categories = {
+            'initial_concentrations': 'YAMLInitialSolutions2Module',
+            'exchanges': 'YAMLInitialExchanges2Module',
+            'equilibrium_phases': 'YAMLInitialEquilibriumPhases2Module',
+            'gas_phases': 'YAMLInitialGasPhases2Module',
+            'kinetics': 'YAMLInitialKinetics2Module',
+            'solid_solutions': 'YAMLInitialSolidSolutions2Module',
+            'surfaces': 'YAMLInitialSurfaces2Module'}
         self._set_path()
         self._make_path_absolute()
+
+    def _check(self):
+        flow_models = self.project_settings['models']['flow_models']
+        len_flow = len(flow_models)
+        if  len_flow != 1:
+            raise ValueError(
+                f'Only one flow model can be used, found {len_flow}\n'
+                f'{flow_models}')
+        react_models = self.project_settings['models']['reaction_models']
+        len_react = len(react_models)
+        if  len_react != 1:
+            raise ValueError(
+                f'Only one reaction model can be used, found {len_react}\n'
+                f'{react_models}'
+            )
 
     def _set_path(self):
         self.mf6_path = self.project_path / 'mf6'
@@ -25,8 +49,17 @@ class Config:
         options = self.project_settings['phreeqcrm']
         for entry in ['database', 'chemistry_name']:
             options[entry] = self.project_path / options[entry]
-
-
+        for cat in self.phreeqcrm_cell_value_categories:
+            if cat in self.project_settings:
+                for entry in self.project_settings[cat]:
+                    if entry:
+                        entry['file_name'] = self.project_path / entry['file_name']
+        phr_config = self.project_settings['phreeqcrm']
+        for name in ['pre_yaml_file', 'post_yaml_file',
+                     'intermediate_model_yaml_file',
+                     'model_yaml_file']:
+            if name in phr_config:
+                phr_config[name] = self.project_path / phr_config[name]
 
 class InternalPaths:
     """Internal paths for data manipulation.
@@ -39,7 +72,6 @@ class InternalPaths:
         self.base = project_path / '.internal'
         base_model = self.base /  'base_model'
         work_path = self.base / 'work'
-        self.inputs_path = base_model / 'common_inputs'
         self.component_models_path = self.base / 'component_models'
         self.work_path_flopy = work_path / 'flopy'
         self.work_path_mf6 = work_path / 'mf6'
@@ -50,7 +82,6 @@ class InternalPaths:
 
     def _make_directory_structure(self):
         """Create directory tree for internal data."""
-        self.inputs_path.mkdir(exist_ok=True, parents=True)
         self.component_models_path.mkdir(exist_ok=True, parents=True)
         self.work_path_flopy.mkdir(exist_ok=True, parents=True)
         self.work_path_mf6.mkdir(exist_ok=True, parents=True)

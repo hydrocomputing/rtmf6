@@ -1,5 +1,9 @@
 """Create needed PhreeqcRM data."""
 
+from pathlib import Path
+from shutil import copyfile
+
+import numpy as np
 import phreeqcrm
 
 from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
@@ -47,3 +51,153 @@ class PhreeqcRMSetup:
         initial_solutions = [1] * nxyz
         yrm.YAMLInitialSolutions2Module(initial_solutions)
         yrm.WriteYAMLDoc(self.intermediate_yaml_file)
+
+
+class PhreeqcCellMappings:
+
+    def __init__(self, config, flopy_worker):
+        self.config = config
+        self.reaction_models = config.project_settings['models']['reaction_models']
+        self.flopy_worker = flopy_worker
+        self.phreeqcrm_cell_value_categories = list(config.phreeqcrm_cell_value_categories.keys())
+
+    def make_mappings(self):
+        mappings = {}
+        for cat in self.phreeqcrm_cell_value_categories:
+            entry = self.config.project_settings[cat]
+            if not entry[0]:
+                mappings[cat] = None
+                continue
+            mappings[cat] = PhreeqcCells(entry[0], worker=self.flopy_worker).get_cells()
+        return mappings
+
+
+class PhreeqcCells:
+
+    def __init__(self, config_data, worker):
+        self.worker = worker
+        self.model_name = config_data['model_name']
+        self.file_name = config_data['file_name']
+        self.start_time = config_data.get('start_time', 0)
+
+    def get_cells(self):
+        init = self.worker.sim.get_model(self.model_name).get_package('ic')
+        src = self.file_name
+        dst = Path(init.get_file_path())
+        copyfile(src, dst)
+        self.worker.load_simulation()
+        init = self.worker.sim.get_model(self.model_name).get_package('ic')
+        float_indices = init.strt.data.flatten()
+        indices = float_indices.astype(int)
+        assert np.allclose(indices, float_indices), indices - float_indices
+        return indices
+
+
+class YAMLCreator:
+
+    def __init__(self, config, cell_mappings):
+        self.phr_config = config.project_settings['phreeqcrm']
+        self.cell_mappings = cell_mappings
+        self.nxyz = cell_mappings['initial_concentrations'].size
+        self.set_error_mode()
+        self.phreeqcrm_cell_value_categories = config.phreeqcrm_cell_value_categories
+
+    def set_error_mode(self, error_handler='error_code'):
+        error_options = {
+            'error_code': 0,
+            'cpp_exception': 1,
+            'graceful_exit': 2
+        }
+        if error_handler not in error_options:
+            msg = f'error_handle needs to be one off {", ".join(error_options)}'
+            raise ValueError(msg)
+        self.error_handler = error_options[error_handler]
+
+    def _create_yaml(self):
+        """Create model yaml file."""
+        yrm = phreeqcrm.YAMLPhreeqcRM()
+        yrm.YAMLThreadCount(self.phr_config['number_of_threads'])
+        yrm.YAMLSetGridCellCount(self.nxyz)
+        yrm.YAMLSetErrorHandlerMode(self.error_handler)
+
+        yrm.YAMLSetComponentH2O(False)
+        yrm.YAMLSetRebalanceFraction(0.5)
+        yrm.YAMLSetRebalanceByCell(True)
+        yrm.YAMLUseSolutionDensityVolume(False)
+        yrm.YAMLSetPartitionUZSolids(False)
+
+        # Set concentration units
+        # 1, mg/L; 2, mol/L; 3, kg/kgs
+        yrm.YAMLSetUnitsSolution(2)
+        # 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+        yrm.YAMLSetUnitsPPassemblage(1)
+        yrm.YAMLSetUnitsExchange(1)
+        yrm.YAMLSetUnitsSurface(1)
+        yrm.YAMLSetUnitsGasPhase(1)
+        yrm.YAMLSetUnitsSSassemblage(1)
+        yrm.YAMLSetUnitsKinetics(1)
+        # Done set units
+
+        # Set conversion from seconds to user units (days) Only affects one print statement
+        time_conversion = 1.0 / 86400.0
+        yrm.YAMLSetTimeConversion(time_conversion)
+
+        # Set representative volume
+        yrm.YAMLSetRepresentativeVolume([1] * self.nxyz)
+
+        # Set initial density
+        yrm.YAMLSetDensityUser([1.0] * self.nxyz)
+
+        # Set initial porosity
+        # TODO: get from MF6 via cell_mappings
+        yrm.YAMLSetPorosity([0.2] * self.nxyz)
+
+        # Set initial saturation
+        yrm.YAMLSetSaturationUser([1] * self.nxyz)
+
+        # Load database
+        yrm.YAMLLoadDatabase(str(self.phr_config['database']))
+
+        # Run file to define solutions and reactants for initial conditions, selected output
+        workers = True             # Worker instances do the reaction calculations for transport
+        initial_phreeqc = True     # InitialPhreeqc instance accumulates initial and boundary conditions
+        utility = True             # Utility instance is available for processing
+        yrm.YAMLRunFile(
+            workers,
+            initial_phreeqc,
+            utility,
+            str(self.phr_config['chemistry_name'])
+            )
+
+        # Clear contents of workers and utility
+        initial_phreeqc = False
+        input = "DELETE; -all"
+        yrm.YAMLRunString(workers, initial_phreeqc, utility, input)
+        yrm.YAMLAddOutputVars("AddOutputVars", "true")
+
+        # Determine number of components to transport
+        yrm.YAMLFindComponents()
+        for mapping_name, values in self.cell_mappings.items():
+            if values is not None:
+                func = getattr(yrm, self.phreeqcrm_cell_value_categories[mapping_name])
+                func(values)
+        # Write YAML file
+        yaml_file = self.phr_config['intermediate_model_yaml_file']
+        yrm.WriteYAMLDoc(str(yaml_file))
+        return yaml_file.read_text().rstrip() + '\n'
+
+    def make_phreeqcrm_yaml(self):
+        pre_yaml = self.phr_config.get('pre_yaml_file')
+        yaml = ''
+        if pre_yaml:
+            yaml += '# pre yaml start\n'
+            yaml += pre_yaml.read_text().rstrip()
+            yaml += '\n# pre yaml end\n'
+        post_yaml = self.phr_config.get('post_yaml_file')
+        yaml += self._create_yaml()
+        if post_yaml:
+            yaml += '# post yaml start\n'
+            yaml += pre_yaml.read_text().rstrip()
+            yaml += '\n# post yaml end\n'
+        out = self.phr_config['model_yaml_file']
+        out.write_text(yaml)
