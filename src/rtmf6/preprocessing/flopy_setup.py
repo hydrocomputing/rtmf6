@@ -96,7 +96,6 @@ class FlopyWorker:
             new_sim_path.mkdir(exist_ok=True)
             self.sim.set_sim_path(new_sim_path)
             self.write_simulation()
-
             self.load_simulation()
 
     def update_all(self, keep_tracer=True, tracer_name='Tracer', skip=None):
@@ -109,6 +108,9 @@ class FlopyWorker:
         specie_names = [name for name in self.solution_mapping[0].keys()
                         if name not in skip]
         self.update(specie_names)
+
+    def get_sol_numbers(self, file):
+        """Get distribution of solution numbers."""
 
 
 class InititalConc:
