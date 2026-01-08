@@ -9,6 +9,7 @@ from shutil import copyfile
 
 from rtmf6.preprocessing.adjust_prefixes import get_model_file_names, prefix_mfsim_name, prefix_model_name
 from rtmf6.preprocessing.flopy_setup import FlopyWorker
+from rtmf6.preprocessing.phreeqc_setup import PhreeqcCellMappings, YAMLCreator
 
 
 def make_inputs(config):
@@ -17,6 +18,7 @@ def make_inputs(config):
     worker.update_all()
     file_names = [entry.name for entry in worker.modified_input_files]
     _make_nam_files(config, files_names_to_skip=file_names)
+    make_phreeqcrm_yaml(config, flopy_worker=worker)
 
 
 def _make_nam_files(config, files_names_to_skip):
@@ -42,3 +44,10 @@ def _copy_nam_files(config):
         if dst_path.is_dir():
             for file in src_path.iterdir():
                 copyfile(file, dst_path / file.name)
+
+
+def make_phreeqcrm_yaml(config, flopy_worker):
+    phr_mappings = PhreeqcCellMappings(config, flopy_worker=flopy_worker)
+    cell_mappings = phr_mappings.make_mappings()
+    yaml_creator = YAMLCreator(config, cell_mappings)
+    yaml_creator.make_phreeqcrm_yaml()
