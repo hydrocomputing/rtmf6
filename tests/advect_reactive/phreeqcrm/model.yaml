@@ -1,0 +1,126 @@
+# pre yaml start
+# add phreeqcrm yaml content that will be prepend to generated yaml
+# pre yaml end
+- key: ThreadCount
+  nthreads: 1
+- key: SetGridCellCount
+  count: 10
+- key: SetErrorHandlerMode
+  mode: 0
+- key: SetComponentH2O
+  tf: false
+- key: SetRebalanceFraction
+  f: 0.5
+- key: SetRebalanceByCell
+  tf: true
+- key: UseSolutionDensityVolume
+  tf: false
+- key: SetPartitionUZSolids
+  tf: false
+- key: SetUnitsSolution
+  option: 2
+- key: SetUnitsPPassemblage
+  option: 1
+- key: SetUnitsExchange
+  option: 1
+- key: SetUnitsSurface
+  option: 1
+- key: SetUnitsGasPhase
+  option: 1
+- key: SetUnitsSSassemblage
+  option: 1
+- key: SetUnitsKinetics
+  option: 1
+- key: SetTimeConversion
+  conv_factor: 1.1574074074074073e-05
+- key: SetRepresentativeVolume
+  rv:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+- key: SetDensityUser
+  density:
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+- key: SetPorosity
+  por:
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
+- key: SetSaturationUser
+  sat:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+- key: LoadDatabase
+  database: /Users/mike/Dev/pymf6-project/rtmf6/tests/advect_reactive/phreeqcrm/phreeqc.dat
+- key: RunFile
+  workers: true
+  initial_phreeqc: true
+  utility: true
+  chemistry_name: /Users/mike/Dev/pymf6-project/rtmf6/tests/advect_reactive/phreeqcrm/advect.pqi
+- key: RunString
+  workers: true
+  initial_phreeqc: false
+  utility: true
+  input_string: DELETE; -all
+- key: AddOutputVars
+  option: AddOutputVars
+  definition: 'true'
+- key: FindComponents
+- key: InitialSolutions2Module
+  solutions:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+- key: InitialExchanges2Module
+  exchanges:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+# post yaml start
+# add phreeqcrm yaml content that will be prepend to generated yaml
+# post yaml end
