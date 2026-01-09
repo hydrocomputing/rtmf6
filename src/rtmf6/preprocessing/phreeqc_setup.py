@@ -38,9 +38,11 @@ class PhreeqcRMSetup:
                 for number in self._get_solution_numbers()}
 
     def _make_intermediate_yaml_file(self):
+        """Create YAML file for preprocessing."""
         nxyz = 1
         yrm = phreeqcrm.YAMLPhreeqcRM()
         yrm.YAMLSetGridCellCount(nxyz)
+        _set_yaml_basics(yrm)
         yrm.YAMLLoadDatabase(self.database)
         yrm.YAMLRunFile(
             workers=True,
@@ -62,6 +64,7 @@ class PhreeqcCellMappings:
         self.phreeqcrm_cell_value_categories = list(config.phreeqcrm_cell_value_categories.keys())
 
     def make_mappings(self):
+        """Create mappings of solution numbers and concentrations per conc."""
         mappings = {}
         for cat in self.phreeqcrm_cell_value_categories:
             entry = self.config.project_settings[cat]
@@ -119,25 +122,7 @@ class YAMLCreator:
         yrm.YAMLThreadCount(self.phr_config['number_of_threads'])
         yrm.YAMLSetGridCellCount(self.nxyz)
         yrm.YAMLSetErrorHandlerMode(self.error_handler)
-
-        yrm.YAMLSetComponentH2O(False)
-        yrm.YAMLSetRebalanceFraction(0.5)
-        yrm.YAMLSetRebalanceByCell(True)
-        yrm.YAMLUseSolutionDensityVolume(False)
-        yrm.YAMLSetPartitionUZSolids(False)
-
-        # Set concentration units
-        # 1, mg/L; 2, mol/L; 3, kg/kgs
-        yrm.YAMLSetUnitsSolution(2)
-        # 0, mol/L cell; 1, mol/L water; 2 mol/L rock
-        yrm.YAMLSetUnitsPPassemblage(1)
-        yrm.YAMLSetUnitsExchange(1)
-        yrm.YAMLSetUnitsSurface(1)
-        yrm.YAMLSetUnitsGasPhase(1)
-        yrm.YAMLSetUnitsSSassemblage(1)
-        yrm.YAMLSetUnitsKinetics(1)
-        # Done set units
-
+        _set_yaml_basics(yrm)
         # Set conversion from seconds to user units (days) Only affects one print statement
         time_conversion = 1.0 / 86400.0
         yrm.YAMLSetTimeConversion(time_conversion)
@@ -187,6 +172,7 @@ class YAMLCreator:
         return yaml_file.read_text().rstrip() + '\n'
 
     def make_phreeqcrm_yaml(self):
+        """Create the model YAML file with pree and post parts."""
         pre_yaml = self.phr_config.get('pre_yaml_file')
         yaml = ''
         if pre_yaml:
@@ -201,3 +187,23 @@ class YAMLCreator:
             yaml += '\n# post yaml end\n'
         out = self.phr_config['model_yaml_file']
         out.write_text(yaml)
+
+
+def _set_yaml_basics(yrm):
+    """Set basic YAMl options."""
+    yrm.YAMLSetComponentH2O(False)
+    yrm.YAMLSetRebalanceFraction(0.5)
+    yrm.YAMLSetRebalanceByCell(True)
+    yrm.YAMLUseSolutionDensityVolume(False)
+    yrm.YAMLSetPartitionUZSolids(False)
+
+    # Set concentration units
+    # 1, mg/L; 2, mol/L; 3, kg/kgs
+    yrm.YAMLSetUnitsSolution(2)
+    # 0, mol/L cell; 1, mol/L water; 2 mol/L rock
+    yrm.YAMLSetUnitsPPassemblage(1)
+    yrm.YAMLSetUnitsExchange(1)
+    yrm.YAMLSetUnitsSurface(1)
+    yrm.YAMLSetUnitsGasPhase(1)
+    yrm.YAMLSetUnitsSSassemblage(1)
+    yrm.YAMLSetUnitsKinetics(1)
