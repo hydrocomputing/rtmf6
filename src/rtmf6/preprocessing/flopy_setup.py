@@ -81,23 +81,26 @@ class FlopyWorker:
     def update(self, conc_names):
         """Update concentration values for one specie."""
         for conc_name in conc_names:
-            target_path = self.component_models_path / conc_name
-            target_path.mkdir(exist_ok=True)
-            for bc_conc in self.bc_concs:
-                bc_conc.update(self.sim, conc_name)
-                src = self.work_path / bc_conc.file_name
-                dst = target_path / bc_conc.file_name
-                copyfile(src, dst)
+            self.load_simulation()  # load unmodified
             for init_conc in self.init_concs:
                 init_conc.update(self.sim, conc_name)
-                src = self.work_path / init_conc.file_name
-                dst = target_path / init_conc.file_name
-                copyfile(src, dst)
+            for bc_conc in self.bc_concs:
+                bc_conc.update(self.sim, conc_name)
             new_sim_path = self.work_components_path / conc_name
             new_sim_path.mkdir(exist_ok=True)
             self.sim.set_sim_path(new_sim_path)
             self.write_simulation()
-            self.load_simulation()
+            target_path = self.component_models_path / conc_name
+            target_path.mkdir(exist_ok=True)
+            for bc_conc in self.bc_concs:
+                src = new_sim_path / bc_conc.file_name
+                dst = target_path / bc_conc.file_name
+                copyfile(src, dst)
+            for init_conc in self.init_concs:
+                src = new_sim_path / init_conc.file_name
+                dst = target_path / init_conc.file_name
+                copyfile(src, dst)
+
 
     def update_all(self, keep_tracer=True, tracer_name='Tracer', skip=None):
         if skip is None:
