@@ -18,7 +18,8 @@ class FlopyWorker:
         self.component_models_path = config.internal_paths.component_models_path
         self.work_path = config.internal_paths.work_path_flopy
         self.work_components_path = self.work_path / 'component_models'
-        rmtree(self.work_components_path)
+        if self.work_components_path.exists():
+            rmtree(self.work_components_path)
         self.work_components_path.mkdir()
         self.solution_mapping = PhreeqcRMSetup(config).solution_mapping
         init_concs_config = config.project_settings['initial_concentrations']
