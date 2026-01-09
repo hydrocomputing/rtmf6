@@ -4,9 +4,11 @@ import multiprocessing as mp
 from pathlib import Path
 
 from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
-
 from pymf6.api import States
 from pymf6.mf6 import MF6
+
+from rtmf6.config import Config
+
 
 
 def run_model(
@@ -24,13 +26,15 @@ def run_model(
     queue_from_mf6.put(None)
 
 
-def main(model_path, phreeqcrm_yaml, reactions=True, component_models_path='component_models'):
+def main(project_toml, reactions=True):
     """Run all sub models."""
-    phreeqcrm_model = PhreeqcRMModel(str(phreeqcrm_yaml))
+    config = Config(project_toml)
+    phreeqcrm_model = PhreeqcRMModel(
+        str(config.project_settings['phreeqcrm']['model_yaml_file']))
     processes = {}
     queues_from_mf6 = {}
     queues_from_phrq = {}
-    for path in (model_path / component_models_path).glob('*'):
+    for path in (config.internal_paths.component_models_path).glob('*'):
         model_name = path.name
         queue_from_mf6 = mp.Queue()
         queue_from_phrq = mp.Queue()
@@ -71,6 +75,6 @@ def main(model_path, phreeqcrm_yaml, reactions=True, component_models_path='comp
 
 
 if __name__ == '__main__':
-
+    import sys
     mp.set_start_method('spawn')
-    main()
+    main(sys.argv[1])
