@@ -12,12 +12,16 @@ from rtmf6.config import Config
 
 
 def run_model(
-    model_path, queue_from_mf6, queue_from_phrq, kpers=(1,), sim_file_name='mfsim.nam'
+    model_path,
+    queue_from_mf6,
+    queue_from_phrq,
+    reaction_model_name,
+    kpers=(1,),
 ):
     """Run a model in its own process."""
     mf6 = MF6(sim_path=Path(model_path), do_solution_loop=False)
     gwt_models = mf6.models['gwt6']
-    gwt = gwt_models[list(gwt_models.keys())[0]]
+    gwt = gwt_models[reaction_model_name]
     for model_step in mf6.model_loop():
         if gwt.kper in kpers and model_step.state == States.timestep_end:
             var_name = f'SLN_{gwt.solution_id}/X'
@@ -40,8 +44,13 @@ def main(project_toml, reactions=True):
         queue_from_phrq = mp.Queue()
         process = mp.Process(
             target=run_model,
-            kwargs=dict(model_path=path, queue_from_mf6=queue_from_mf6,
-                        queue_from_phrq=queue_from_phrq))
+            kwargs=dict(
+                model_path=path,
+                queue_from_mf6=queue_from_mf6,
+                queue_from_phrq=queue_from_phrq,
+                reaction_model_name=config.reaction_model_name
+                )
+                )
         processes[model_name] = process
         queues_from_mf6[model_name] = queue_from_mf6
         queues_from_phrq[model_name] = queue_from_phrq
