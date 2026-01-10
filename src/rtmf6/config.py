@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import tomllib
+import sys
 
 
 class Config:
@@ -24,6 +25,23 @@ class Config:
             'surfaces': 'YAMLInitialSurfaces2Module'}
         self._set_path()
         self._make_path_absolute()
+        self.reaction_start_stress_range = self._get_stress_period_range()
+
+    def _get_stress_period_range(self):
+        models = self.project_settings['models']
+        reaction_start_stress_period = int(models.get('reaction_start_stress_period', 0))
+        reaction_end_stress_period = int(models.get('reaction_end_stress_period', sys.maxsize))
+        if reaction_start_stress_period > reaction_end_stress_period:
+            raise ValueError(
+                'reaction_end_stress_period must be equal or larger than reaction_start_stress_period\n'
+                f'found {reaction_start_stress_period=} and {reaction_end_stress_period=}'
+                )
+        msg = 'stress period must have positive value found'
+        if reaction_start_stress_period < 0:
+            raise ValueError(f'{msg} {reaction_start_stress_period=}')
+        if reaction_end_stress_period < 0:
+            raise ValueError(f'{msg} {reaction_end_stress_period=}')
+        return (reaction_start_stress_period, reaction_end_stress_period)
 
     def _check(self):
         flow_models = self.project_settings['models']['flow_models']

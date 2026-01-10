@@ -5,6 +5,9 @@ directory = "."
 [models]
 flow_models = ["gwf_advect10"]
 reaction_models = ["gwt_advect10"]
+# exchange for all stress periods if not specified
+reaction_start_stress_period = 1
+reaction_end_stress_period = 1
 
 [tracer]
 has_tracer = true

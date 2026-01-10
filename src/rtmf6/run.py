@@ -16,17 +16,21 @@ def run_model(
     queue_from_mf6,
     queue_from_phrq,
     reaction_model_name,
-    kpers=(1,),
+    reaction_start_stress_range,
 ):
     """Run a model in its own process."""
     mf6 = MF6(sim_path=Path(model_path), do_solution_loop=False)
     gwt_models = mf6.models['gwt6']
     gwt = gwt_models[reaction_model_name]
+    start, end = reaction_start_stress_range
     for model_step in mf6.model_loop():
-        if gwt.kper in kpers and model_step.state == States.timestep_end:
-            var_name = f'SLN_{gwt.solution_id}/X'
-            queue_from_mf6.put(mf6.vars[var_name])
-            mf6._mf6.set_value(var_name, queue_from_phrq.get())
+        if reaction_model_name not in model_step.simulation_group.model_names:
+            continue
+        if start <= gwt.kper <= end:
+            if model_step.state == States.timestep_end:
+                var_name = f'SLN_{gwt.solution_id}/X'
+                queue_from_mf6.put(mf6.vars[var_name])
+                mf6._mf6.set_value(var_name, queue_from_phrq.get())
     queue_from_mf6.put(None)
 
 
@@ -48,7 +52,8 @@ def main(project_toml, reactions=True):
                 model_path=path,
                 queue_from_mf6=queue_from_mf6,
                 queue_from_phrq=queue_from_phrq,
-                reaction_model_name=config.reaction_model_name
+                reaction_model_name=config.reaction_model_name,
+                reaction_start_stress_range=config.reaction_start_stress_range,
                 )
                 )
         processes[model_name] = process
