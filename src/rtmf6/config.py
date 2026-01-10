@@ -13,6 +13,7 @@ class Config:
         self._check()
         self.project_name = self.project_settings['project']['name']
         self.project_path = Path(project_toml).parent / self.project_settings['project']['directory']
+        self.reaction_model_name = self.project_settings['models']['reaction_models'][0]
         self.phreeqcrm_cell_value_categories = {
             'initial_concentrations': 'YAMLInitialSolutions2Module',
             'exchanges': 'YAMLInitialExchanges2Module',
