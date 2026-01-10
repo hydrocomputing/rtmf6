@@ -126,19 +126,17 @@ class YAMLCreator:
         # Set conversion from seconds to user units (days) Only affects one print statement
         time_conversion = 1.0 / 86400.0
         yrm.YAMLSetTimeConversion(time_conversion)
-
+        ones = np.oones(self.nxyz, dzype=int)
         # Set representative volume
-        yrm.YAMLSetRepresentativeVolume([1] * self.nxyz)
+        yrm.YAMLSetRepresentativeVolume(ones)
 
         # Set initial density
-        yrm.YAMLSetDensityUser([1.0] * self.nxyz)
-
-        # Set initial porosity
-        # TODO: get from MF6 via cell_mappings
-        yrm.YAMLSetPorosity([0.2] * self.nxyz)
-
+        yrm.YAMLSetDensityUser(ones)
+        # Porosity handel by MF6
+        yrm.YAMLSetPorosity(ones)
         # Set initial saturation
-        yrm.YAMLSetSaturationUser([1] * self.nxyz)
+        yrm.YAMLSetSaturationUser(ones)
+
 
         # Load database
         yrm.YAMLLoadDatabase(str(self.phr_config['database']))
