@@ -126,7 +126,7 @@ class YAMLCreator:
         # Set conversion from seconds to user units (days) Only affects one print statement
         time_conversion = 1.0 / 86400.0
         yrm.YAMLSetTimeConversion(time_conversion)
-        ones = np.oones(self.nxyz, dzype=int)
+        ones = np.ones(self.nxyz, dtype=int)
         # Set representative volume
         yrm.YAMLSetRepresentativeVolume(ones)
 
