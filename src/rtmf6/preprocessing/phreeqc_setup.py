@@ -126,21 +126,18 @@ class YAMLCreator:
         # Set conversion from seconds to user units (days) Only affects one print statement
         time_conversion = 1.0 / 86400.0
         yrm.YAMLSetTimeConversion(time_conversion)
-        ones = np.ones(self.nxyz, dtype=int)
+        ones_int = np.ones(self.nxyz, dtype=int)
+        ones_float = np.ones(self.nxyz)
         # Set representative volume
-        yrm.YAMLSetRepresentativeVolume(ones)
-
+        yrm.YAMLSetRepresentativeVolume(ones_float)
         # Set initial density
-        yrm.YAMLSetDensityUser(ones)
+        yrm.YAMLSetDensityUser(ones_float)
         # Porosity handel by MF6
-        yrm.YAMLSetPorosity(ones)
+        yrm.YAMLSetPorosity(ones_float)
         # Set initial saturation
-        yrm.YAMLSetSaturationUser(ones)
-
-
+        yrm.YAMLSetSaturationUser(ones_int)
         # Load database
         yrm.YAMLLoadDatabase(str(self.phr_config['database']))
-
         # Run file to define solutions and reactants for initial conditions, selected output
         workers = True             # Worker instances do the reaction calculations for transport
         initial_phreeqc = True     # InitialPhreeqc instance accumulates initial and boundary conditions
