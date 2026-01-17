@@ -27,3 +27,6 @@ tests/advect_reactive_*
 
 # Sphinx
 docs/_build/
+
+# Jupyter Notebook checkpoints
+**/.ipynb_checkpoints
