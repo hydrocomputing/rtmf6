@@ -35,16 +35,16 @@
   conv_factor: 1.1574074074074073e-05
 - key: SetRepresentativeVolume
   rv:
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
 - key: SetDensityUser
   density:
   - 1.0
@@ -59,16 +59,16 @@
   - 1.0
 - key: SetPorosity
   por:
-  - 0.2
-  - 0.2
-  - 0.2
-  - 0.2
-  - 0.2
-  - 0.2
-  - 0.2
-  - 0.2
-  - 0.2
-  - 0.2
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
 - key: SetSaturationUser
   sat:
   - 1
@@ -99,16 +99,16 @@
 - key: FindComponents
 - key: InitialSolutions2Module
   solutions:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
 - key: InitialExchanges2Module
   exchanges:
   - 1
