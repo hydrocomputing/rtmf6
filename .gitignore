@@ -24,3 +24,6 @@ tests/advect_reactive_*
 *.lst
 *.obs.csv
 *.ucn
+
+# Sphinx
+docs/_build/
