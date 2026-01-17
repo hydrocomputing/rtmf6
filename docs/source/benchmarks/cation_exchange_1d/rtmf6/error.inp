@@ -1,0 +1,57 @@
+SOLUTION_RAW                 2 Solution after simulation 1.
+  -temp                      25
+  -pressure                  1
+  -potential                 0
+  -total_h                   110.00000000001
+  -total_o                   55.000000000003
+  -cb                        -1.360593120016e-15
+  -density                   0.99704301396396
+  -viscosity                 0.89002433344977
+  -viscos_0                  0.89002391829458
+  -totals
+    Ca                       0
+    Cl                       0
+    K                        3.1284735638363e-15
+    N                        9.2166243193477e-15
+    Na                       1.510371924094e-14
+    Tracer                   1.5556623639269e-14
+  -pH                        6.9973757696039
+  -pe                        9.4672129854631
+  -mu                        1.0064355436936e-07
+  -ah2o                      0.99999999657812
+  -mass_water                0.99099099099104
+  -soln_vol                  0.99381870804185
+  -total_alkalinity          2.0237488457149e-14
+  -activities
+    E                        -9.4672129854631
+    H(0)                     -36.079177510134
+    K                        -14.500850314054
+    N(-3)                    -48.045444651827
+    N(0)                     -14.332477146446
+    N(3)                     -25.77016058519
+    N(5)                     -21.410984093379
+    Na                       -13.817098882958
+    O(0)                     -20.221644982704
+    Tracer                   -13.804105706843
+  -gammas
+EXCHANGE_RAW                 2 Exchange assemblage after simulation 1.
+  # EXCHANGE_MODIFY candidate identifiers #
+  -exchange_gammas           1
+  -component                 CaX2
+    # EXCHANGE_MODIFY candidate identifiers #
+    -totals
+      H                      5.5727714538466e-37
+      K                      0.00055056129514119
+      N                      1.3931928634616e-37
+      Na                     0.0005494388737408
+      X                      0.001100000168882
+    -charge_balance          0
+    -la                      13.497774310379
+    -phase_proportion        0
+    -formula_z               0
+  # EXCHANGE_MODIFY candidates with new_def=true #
+  -new_def                   0
+  -solution_equilibria       0
+  -n_solution                -999
+  # Exchange workspace variables #
+  -totals
