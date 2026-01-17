@@ -90,8 +90,13 @@ class PhreeqcCells:
         copyfile(src, dst)
         self.worker.load_simulation()
         init = self.worker.sim.get_model(self.model_name).get_package('ic')
-        float_indices = init.strt.data.flatten()
+        float_indices = init.strt.data.flatten()[self.worker.active_cells]
         indices = float_indices.astype(int)
+        if len(indices) != self.worker.nxyz:
+            raise ValueError(
+                'Number of cells in PhreeqcCRM mapping does not match number of active cells in MF6\n'
+                f'found {len(indices)=} and {self.worker.nxyz=}'
+            )
         assert np.allclose(indices, float_indices), indices - float_indices
         return indices
 
@@ -167,7 +172,7 @@ class YAMLCreator:
         return yaml_file.read_text().rstrip() + '\n'
 
     def make_phreeqcrm_yaml(self):
-        """Create the model YAML file with pree and post parts."""
+        """Create the model YAML file with pre and post parts."""
         pre_yaml = self.phr_config.get('pre_yaml_file')
         yaml = ''
         if pre_yaml:

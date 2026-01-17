@@ -27,7 +27,9 @@ class FlopyWorker:
         bc_types = list({entry['bc_type'] for entry in bc_concs_config})
         self.load_only = bc_types + ['ic']
         self.sim = self._load_initial_sim()
-        self.nxyz = self._get_nxyz(config.project_settings['models']['flow_models'][0])
+        self.active_cells = self._get_active_cells_mask(
+            config.project_settings['models']['flow_models'][0])
+        self.nxyz = int(np.sum(self.active_cells))
         self.write_simulation()
         self._make_init_concs(init_concs_config)
         self._make_bc_concs(bc_concs_config)
@@ -114,10 +116,10 @@ class FlopyWorker:
                         if name not in skip]
         self.update(specie_names)
 
-    def _get_nxyz(self, model_name):
+    def _get_active_cells_mask(self, model_name):
         """Get distribution of solution numbers."""
         dis = self.sim.get_model(model_name).get_package('dis')
-        return int((dis.idomain.array>0).sum())
+        return (dis.idomain.array>0).flatten()
 
 
 class InititalConc:
