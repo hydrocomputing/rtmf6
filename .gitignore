@@ -1,6 +1,8 @@
 # pixi environments
 .pixi
 *.egg-info
+
+## internal files
 .hydro
 __pycache__/
 dist
@@ -13,3 +15,12 @@ tests/_old/**
 .hidden
 .internal
 tests/advect
+tests/advect_reactive_*
+
+## MODFLOW output files
+*.dis.grb
+*.hds
+*.cbb
+*.lst
+*.obs.csv
+*.ucn
