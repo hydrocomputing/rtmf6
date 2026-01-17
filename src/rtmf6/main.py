@@ -10,6 +10,7 @@ import typer.rich_utils
 from rich.console import Console
 from rich.theme import Theme
 
+from rtmf6._version import __version__
 from rtmf6.config import Config
 from rtmf6.preprocessing.create_inputs import make_inputs
 from rtmf6.run import run_rtmf6
@@ -114,9 +115,6 @@ def _run_model(
     console.print()
     console.print("[success]rtmf6 run complete.[/success]")
 
-
-# Version number
-__version__ = "0.0.1"
 
 @app.callback(invoke_without_command=True)
 def callback(
