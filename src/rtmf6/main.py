@@ -118,10 +118,6 @@ def _run_model(
 # Version number
 __version__ = "0.0.1"
 
-# Subcommand names for disambiguation
-_SUBCOMMANDS = {"run", "info"}
-
-
 @app.callback(invoke_without_command=True)
 def callback(
     ctx: typer.Context,
@@ -153,10 +149,11 @@ def callback(
     if config_file is not None and config_file.name in _SUBCOMMANDS and not config_file.exists():
         subcommand_name = config_file.name
         if subcommand_name == "run":
+            # Special case: run command needs parameters from callback
             ctx.invoke(run, config_file=None, no_reactions=no_reactions,
                        preprocess_only=preprocess_only, run_only=run_only)
-        elif subcommand_name == "info":
-            ctx.invoke(info)
+        else:
+            ctx.invoke(_SUBCOMMANDS[subcommand_name])
         return
 
     _run_model(config_file, no_reactions, preprocess_only, run_only)
@@ -191,6 +188,21 @@ def run(
 def info() -> None:
     """Show version and other information."""
     console.print(f"[bold]rtmf6[/bold] version {__version__}")
+
+
+@app.command()
+def config() -> None:
+    """Show configuration information."""
+    console.print("config info comes here")
+
+
+# Subcommand name to function mapping for disambiguation workaround.
+# Note: "run" is handled specially in callback() since it needs parameters.
+_SUBCOMMANDS = {
+    "run": run,
+    "info": info,
+    "config": config,
+}
 
 
 def main() -> None:
