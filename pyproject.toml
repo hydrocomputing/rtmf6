@@ -112,8 +112,25 @@ pytest-mock = ">=3.15.1,<4"
 [tool.pixi.feature.test.tasks]
 test = "pytest --md=report.md"
 
+[tool.pixi.feature.docs.dependencies]
+myst-parser = ">=3.0,<4"
+sphinx = ">=7.0,<8"
+myst-nb = ">=1.1,<2"
+jupyterlab = ">=4.5.2,<5"
+sphinx-autodoc-typehints = ">=2.0,<3"
+furo = "*"
+sphinx-copybutton = "*"
+sphinx-design = "*"
+
+[tool.pixi.feature.docs.tasks]
+docs-build = { cmd = "sphinx-build -b html source _build/html", cwd = "docs" }
+docs-clean = { cmd = "rm -rf _build", cwd = "docs" }
+docs-serve = { cmd = "python -m http.server -d _build/html 8907", cwd = "docs" }
+
+
 [tool.pixi.environments]
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
 build = { features = ["build"], solve-group = "default" }
 develop = { features = ["develop"], solve-group = "default" }
+docs = { features = ["docs"], solve-group = "default" }
