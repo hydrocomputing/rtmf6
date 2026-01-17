@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Annotated, Optional
 
 import typer
+import typer.rich_utils
 from rich.console import Console
 from rich.theme import Theme
 
@@ -30,12 +31,43 @@ THEMES = {
     }),
 }
 
+# Typer help text style overrides for light theme
+TYPER_STYLES_LIGHT = {
+    "STYLE_OPTION": "dark_cyan",
+    "STYLE_ARGUMENT": "dark_cyan",
+    "STYLE_COMMAND": "dark_cyan",
+    "STYLE_SWITCH": "dark_green",
+    "STYLE_METAVAR": "dark_orange3",
+    "STYLE_METAVAR_SEPARATOR": "dim",
+    "STYLE_USAGE": "dark_orange3",
+    "STYLE_USAGE_COMMAND": "bold dark_blue",
+    "STYLE_HELPTEXT_FIRST_LINE": "",
+    "STYLE_HELPTEXT": "dim",
+    "STYLE_OPTION_HELP": "",
+    "STYLE_OPTION_DEFAULT": "dim grey42",
+    "STYLE_REQUIRED_SHORT": "dark_red",
+    "STYLE_REQUIRED_LONG": "dim dark_red",
+    "STYLE_OPTIONS_PANEL_BORDER": "grey42",
+    "STYLE_COMMANDS_PANEL_BORDER": "grey42",
+    "STYLE_ERRORS_PANEL_BORDER": "dark_red",
+}
+
 
 def _get_theme_name() -> str:
     """Get the theme name from environment."""
     theme_name = os.environ.get("RTMF6_THEME", "dark").lower()
     return theme_name if theme_name in THEMES else "dark"
 
+
+def _configure_typer_styles() -> None:
+    """Configure typer help text styles based on theme."""
+    if _get_theme_name() == "light":
+        for style_name, style_value in TYPER_STYLES_LIGHT.items():
+            setattr(typer.rich_utils, style_name, style_value)
+
+
+# Apply theme configuration at module load
+_configure_typer_styles()
 
 # Create console with the configured theme
 console = Console(theme=THEMES[_get_theme_name()])
