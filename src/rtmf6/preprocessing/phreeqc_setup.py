@@ -90,7 +90,10 @@ class PhreeqcCells:
         copyfile(src, dst)
         self.worker.load_simulation()
         init = self.worker.sim.get_model(self.model_name).get_package('ic')
-        float_indices = init.strt.data.flatten()[self.worker.active_cells]
+        if self.worker.all_cells_active:
+            float_indices = init.strt.data.flatten()
+        else:
+            float_indices = init.strt.data.flatten()[self.worker.active_cells]
         indices = float_indices.astype(int)
         if len(indices) != self.worker.nxyz:
             raise ValueError(

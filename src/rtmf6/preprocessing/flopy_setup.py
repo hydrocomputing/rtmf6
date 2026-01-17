@@ -30,6 +30,7 @@ class FlopyWorker:
         self.active_cells = self._get_active_cells_mask(
             config.project_settings['models']['flow_models'][0])
         self.nxyz = int(np.sum(self.active_cells))
+        self.all_cells_active = self
         self.write_simulation()
         self._make_init_concs(init_concs_config)
         self._make_bc_concs(bc_concs_config)
@@ -119,7 +120,12 @@ class FlopyWorker:
     def _get_active_cells_mask(self, model_name):
         """Get distribution of solution numbers."""
         dis = self.sim.get_model(model_name).get_package('dis')
-        return (dis.idomain.array>0).flatten()
+        idomain = dis.idomain.array
+        if idomain is None:
+            init = self.sim.get_model(model_name).get_package('ic')
+            size = init.strt.array.size
+            return np.ones(size, dtype=int)
+        return (idomain>0).flatten()
 
 
 class InititalConc:
