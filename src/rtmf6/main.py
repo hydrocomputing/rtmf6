@@ -116,6 +116,13 @@ def _run_model(
     console.print("[success]rtmf6 run complete.[/success]")
 
 
+def _version_callback(value: bool) -> None:
+    """Print version and exit."""
+    if value:
+        console.print(f"rtmf6 version {__version__}")
+        raise typer.Exit()
+
+
 @app.callback(invoke_without_command=True)
 def callback(
     ctx: typer.Context,
@@ -136,6 +143,11 @@ def callback(
     run_only: Annotated[
         bool,
         typer.Option("-r", "--run-only", help="Skip preprocessing, run the model only."),
+    ] = False,
+    version: Annotated[
+        bool,
+        typer.Option("-V", "--version", callback=_version_callback, is_eager=True,
+                     help="Show version and exit."),
     ] = False,
 ) -> None:
     """A reactive transport model based on MODFLOW 6 and PhreeqcRM."""
