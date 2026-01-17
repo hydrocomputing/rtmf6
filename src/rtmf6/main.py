@@ -76,38 +76,19 @@ console = Console(theme=THEMES[_get_theme_name()])
 app = typer.Typer(
     name="rtmf6",
     help="A reactive transport model based on MODFLOW 6 and PhreeqcRM.",
-    no_args_is_help=True,
     context_settings={"help_option_names": ["-h", "--help"]},
     rich_markup_mode="rich",
 )
 
 
-@app.command()
-def run(
-    config_file: Annotated[
-        Optional[Path],
-        typer.Argument(
-            help="Path to the configuration file. Defaults to 'rtmf6.toml' in the current directory.",
-        ),
-    ] = None,
-    no_reactions: Annotated[
-        bool,
-        typer.Option("-n", "--no-reactions", help="Disable chemical reactions."),
-    ] = False,
-    develop: Annotated[
-        bool,
-        typer.Option("-d", "--develop", help="Enable development mode (show deprecation warnings)."),
-    ] = False,
-    preprocess_only: Annotated[
-        bool,
-        typer.Option("-p", "--preprocess-only", help="Only create input files, do not run the model."),
-    ] = False,
-    run_only: Annotated[
-        bool,
-        typer.Option("-r", "--run-only", help="Skip preprocessing, run the model only."),
-    ] = False,
+def _run_model(
+    config_file: Optional[Path],
+    no_reactions: bool,
+    develop: bool,
+    preprocess_only: bool,
+    run_only: bool,
 ) -> None:
-    """Run the rtmf6 model."""
+    """Core logic for running the rtmf6 model."""
     if preprocess_only and run_only:
         raise typer.BadParameter("--preprocess-only and --run-only cannot both be specified.")
 
@@ -138,6 +119,79 @@ def run(
     run_rtmf6(config, reactions=reactions)
     console.print()
     console.print("[success]rtmf6 run complete.[/success]")
+
+
+# Subcommand names for disambiguation
+_SUBCOMMANDS = {"run"}
+
+
+@app.callback(invoke_without_command=True)
+def callback(
+    ctx: typer.Context,
+    config_file: Annotated[
+        Optional[Path],
+        typer.Argument(
+            help="Path to the configuration file. Defaults to 'rtmf6.toml' in the current directory.",
+        ),
+    ] = None,
+    no_reactions: Annotated[
+        bool,
+        typer.Option("-n", "--no-reactions", help="Disable chemical reactions."),
+    ] = False,
+    develop: Annotated[
+        bool,
+        typer.Option("-d", "--develop", help="Enable development mode (show deprecation warnings)."),
+    ] = False,
+    preprocess_only: Annotated[
+        bool,
+        typer.Option("-p", "--preprocess-only", help="Only create input files, do not run the model."),
+    ] = False,
+    run_only: Annotated[
+        bool,
+        typer.Option("-r", "--run-only", help="Skip preprocessing, run the model only."),
+    ] = False,
+) -> None:
+    """A reactive transport model based on MODFLOW 6 and PhreeqcRM."""
+    if ctx.invoked_subcommand is not None:
+        return
+
+    # Workaround: typer parses "run" as config_file before recognizing it as a subcommand.
+    # If config_file matches a subcommand name and doesn't exist as a file, invoke that subcommand.
+    if config_file is not None and config_file.name in _SUBCOMMANDS and not config_file.exists():
+        ctx.invoke(run, config_file=None, no_reactions=no_reactions, develop=develop,
+                   preprocess_only=preprocess_only, run_only=run_only)
+        return
+
+    _run_model(config_file, no_reactions, develop, preprocess_only, run_only)
+
+
+@app.command()
+def run(
+    config_file: Annotated[
+        Optional[Path],
+        typer.Argument(
+            help="Path to the configuration file. Defaults to 'rtmf6.toml' in the current directory.",
+        ),
+    ] = None,
+    no_reactions: Annotated[
+        bool,
+        typer.Option("-n", "--no-reactions", help="Disable chemical reactions."),
+    ] = False,
+    develop: Annotated[
+        bool,
+        typer.Option("-d", "--develop", help="Enable development mode (show deprecation warnings)."),
+    ] = False,
+    preprocess_only: Annotated[
+        bool,
+        typer.Option("-p", "--preprocess-only", help="Only create input files, do not run the model."),
+    ] = False,
+    run_only: Annotated[
+        bool,
+        typer.Option("-r", "--run-only", help="Skip preprocessing, run the model only."),
+    ] = False,
+) -> None:
+    """Run the rtmf6 model."""
+    _run_model(config_file, no_reactions, develop, preprocess_only, run_only)
 
 
 def main() -> None:
