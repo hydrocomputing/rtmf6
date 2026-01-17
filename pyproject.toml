@@ -107,6 +107,7 @@ python_phreepy = { cmd = "python", cwd = "tests/phreeqpy" }
 [tool.pixi.feature.test.dependencies]
 pytest = "*"
 pytest-md = "*"
+pytest-mock = ">=3.15.1,<4"
 
 [tool.pixi.feature.test.tasks]
 test = "pytest --md=report.md"
