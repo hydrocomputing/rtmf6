@@ -98,10 +98,10 @@ class PhreeqcCells:
 
 class YAMLCreator:
 
-    def __init__(self, config, cell_mappings):
+    def __init__(self, config, cell_mappings, nxyz):
         self.phr_config = config.project_settings['phreeqcrm']
         self.cell_mappings = cell_mappings
-        self.nxyz = cell_mappings['initial_concentrations'].size
+        self.nxyz = nxyz
         self.set_error_mode()
         self.phreeqcrm_cell_value_categories = config.phreeqcrm_cell_value_categories
 

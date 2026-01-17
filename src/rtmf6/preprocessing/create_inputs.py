@@ -49,5 +49,5 @@ def _copy_nam_files(config):
 def make_phreeqcrm_yaml(config, flopy_worker):
     phr_mappings = PhreeqcCellMappings(config, flopy_worker=flopy_worker)
     cell_mappings = phr_mappings.make_mappings()
-    yaml_creator = YAMLCreator(config, cell_mappings)
+    yaml_creator = YAMLCreator(config, cell_mappings, nxyz=flopy_worker.nxyz)
     yaml_creator.make_phreeqcrm_yaml()
