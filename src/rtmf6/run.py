@@ -34,9 +34,8 @@ def run_model(
     queue_from_mf6.put(None)
 
 
-def main(project_toml, reactions=True):
+def run_rtmf6(config, reactions=True):
     """Run all sub models."""
-    config = Config(project_toml)
     phreeqcrm_model = PhreeqcRMModel(
         str(config.project_settings['phreeqcrm']['model_yaml_file']))
     processes = {}
@@ -91,4 +90,4 @@ def main(project_toml, reactions=True):
 if __name__ == '__main__':
     import sys
     mp.set_start_method('spawn')
-    main(sys.argv[1], reactions=True)
+    run_rtmf6(sys.argv[1], reactions=True)
