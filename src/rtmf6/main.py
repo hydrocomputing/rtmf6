@@ -15,6 +15,7 @@ app = typer.Typer(
     name="rtmf6",
     help="A reactive transport model based on MODFLOW 6 and PhreeqcRM.",
     no_args_is_help=True,
+    context_settings={"help_option_names": ["-h", "--help"]},
 )
 
 
@@ -28,19 +29,19 @@ def run(
     ] = None,
     no_reactions: Annotated[
         bool,
-        typer.Option("--no-reactions", help="Disable chemical reactions."),
+        typer.Option("-n", "--no-reactions", help="Disable chemical reactions."),
     ] = False,
     develop: Annotated[
         bool,
-        typer.Option("--develop", help="Enable development mode (show deprecation warnings)."),
+        typer.Option("-d", "--develop", help="Enable development mode (show deprecation warnings)."),
     ] = False,
     preprocess_only: Annotated[
         bool,
-        typer.Option("--preprocess-only", help="Only create input files, do not run the model."),
+        typer.Option("-p", "--preprocess-only", help="Only create input files, do not run the model."),
     ] = False,
     run_only: Annotated[
         bool,
-        typer.Option("--run-only", help="Skip preprocessing, run the model only."),
+        typer.Option("-r", "--run-only", help="Skip preprocessing, run the model only."),
     ] = False,
 ) -> None:
     """Run the rtmf6 model."""
