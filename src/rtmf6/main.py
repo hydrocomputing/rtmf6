@@ -115,8 +115,11 @@ def _run_model(
     console.print("[success]rtmf6 run complete.[/success]")
 
 
+# Version number
+__version__ = "0.0.1"
+
 # Subcommand names for disambiguation
-_SUBCOMMANDS = {"run"}
+_SUBCOMMANDS = {"run", "info"}
 
 
 @app.callback(invoke_without_command=True)
@@ -145,11 +148,15 @@ def callback(
     if ctx.invoked_subcommand is not None:
         return
 
-    # Workaround: typer parses "run" as config_file before recognizing it as a subcommand.
+    # Workaround: typer parses subcommand names as config_file before recognizing them as subcommands.
     # If config_file matches a subcommand name and doesn't exist as a file, invoke that subcommand.
     if config_file is not None and config_file.name in _SUBCOMMANDS and not config_file.exists():
-        ctx.invoke(run, config_file=None, no_reactions=no_reactions,
-                   preprocess_only=preprocess_only, run_only=run_only)
+        subcommand_name = config_file.name
+        if subcommand_name == "run":
+            ctx.invoke(run, config_file=None, no_reactions=no_reactions,
+                       preprocess_only=preprocess_only, run_only=run_only)
+        elif subcommand_name == "info":
+            ctx.invoke(info)
         return
 
     _run_model(config_file, no_reactions, preprocess_only, run_only)
@@ -178,6 +185,12 @@ def run(
 ) -> None:
     """Run the rtmf6 model."""
     _run_model(config_file, no_reactions, preprocess_only, run_only)
+
+
+@app.command()
+def info() -> None:
+    """Show version and other information."""
+    console.print(f"[bold]rtmf6[/bold] version {__version__}")
 
 
 def main() -> None:
