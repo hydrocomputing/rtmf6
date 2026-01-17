@@ -1,12 +1,20 @@
 """Create needed PhreeqcRM data."""
 
+import os
 from pathlib import Path
 from shutil import copyfile
+import warnings
+
+# PhreeqcRM gives deprecation warnings that we usually want to ignore
+# Show DeprecationWarning if RTMF6_DEBUG is set to a true value
+if not os.environ.get("RTMF6_DEBUG", 'False').lower() in ('true', '1', 't'):
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 import numpy as np
 import phreeqcrm
 
 from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
+
 
 class PhreeqcRMSetup:
 
