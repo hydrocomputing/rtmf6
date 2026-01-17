@@ -91,4 +91,4 @@ def main(project_toml, reactions=True):
 if __name__ == '__main__':
     import sys
     mp.set_start_method('spawn')
-    main(sys.argv[1])
+    main(sys.argv[1], reactions=True)
