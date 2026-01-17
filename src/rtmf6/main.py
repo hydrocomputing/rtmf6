@@ -2,7 +2,6 @@
 
 import multiprocessing as mp
 import os
-import warnings
 from pathlib import Path
 from typing import Annotated, Optional
 
@@ -14,6 +13,7 @@ from rich.theme import Theme
 from rtmf6.config import Config
 from rtmf6.preprocessing.create_inputs import make_inputs
 from rtmf6.run import run_rtmf6
+
 
 # Color themes for different terminal backgrounds
 THEMES = {
@@ -84,7 +84,6 @@ app = typer.Typer(
 def _run_model(
     config_file: Optional[Path],
     no_reactions: bool,
-    develop: bool,
     preprocess_only: bool,
     run_only: bool,
 ) -> None:
@@ -99,11 +98,6 @@ def _run_model(
         raise typer.BadParameter(f"Configuration file not found: {config_file}")
 
     reactions = not no_reactions
-
-    if develop:
-        console.print("[info]Development mode active, showing deprecation warnings.[/info]")
-    else:
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
 
     console.print("[bold]rtmf6[/bold] - A reactive transport model based on MODFLOW 6 and PhreeqcRM.")
     config = Config(config_file)
@@ -138,10 +132,6 @@ def callback(
         bool,
         typer.Option("-n", "--no-reactions", help="Disable chemical reactions."),
     ] = False,
-    develop: Annotated[
-        bool,
-        typer.Option("-d", "--develop", help="Enable development mode (show deprecation warnings)."),
-    ] = False,
     preprocess_only: Annotated[
         bool,
         typer.Option("-p", "--preprocess-only", help="Only create input files, do not run the model."),
@@ -158,11 +148,11 @@ def callback(
     # Workaround: typer parses "run" as config_file before recognizing it as a subcommand.
     # If config_file matches a subcommand name and doesn't exist as a file, invoke that subcommand.
     if config_file is not None and config_file.name in _SUBCOMMANDS and not config_file.exists():
-        ctx.invoke(run, config_file=None, no_reactions=no_reactions, develop=develop,
+        ctx.invoke(run, config_file=None, no_reactions=no_reactions,
                    preprocess_only=preprocess_only, run_only=run_only)
         return
 
-    _run_model(config_file, no_reactions, develop, preprocess_only, run_only)
+    _run_model(config_file, no_reactions, preprocess_only, run_only)
 
 
 @app.command()
@@ -177,10 +167,6 @@ def run(
         bool,
         typer.Option("-n", "--no-reactions", help="Disable chemical reactions."),
     ] = False,
-    develop: Annotated[
-        bool,
-        typer.Option("-d", "--develop", help="Enable development mode (show deprecation warnings)."),
-    ] = False,
     preprocess_only: Annotated[
         bool,
         typer.Option("-p", "--preprocess-only", help="Only create input files, do not run the model."),
@@ -191,7 +177,7 @@ def run(
     ] = False,
 ) -> None:
     """Run the rtmf6 model."""
-    _run_model(config_file, no_reactions, develop, preprocess_only, run_only)
+    _run_model(config_file, no_reactions, preprocess_only, run_only)
 
 
 def main() -> None:
