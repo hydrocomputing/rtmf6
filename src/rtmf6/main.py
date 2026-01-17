@@ -200,10 +200,48 @@ def info() -> None:
     console.print(f"[bold]rtmf6[/bold] version {__version__}")
 
 
-@app.command()
-def config() -> None:
+@app.command("config")
+def config_cmd(
+    config_file: Annotated[
+        Optional[Path],
+        typer.Argument(
+            help="Path to the configuration file. Defaults to 'rtmf6.toml' in the current directory.",
+        ),
+    ] = None,
+) -> None:
     """Show configuration information."""
-    console.print("config info comes here")
+    if config_file is None:
+        config_file = Path("rtmf6.toml")
+
+    if not config_file.exists():
+        raise typer.BadParameter(f"Configuration file not found: {config_file}")
+
+    cfg = Config(config_file)
+
+    console.print(f"[bold]Configuration:[/bold] {config_file.absolute()}\n")
+    console.print(f"[info]Project[/info]")
+    console.print(f"  Name:      {cfg.project_name}")
+    console.print(f"  Directory: {cfg.project_path}\n")
+
+    console.print(f"[info]Models[/info]")
+    console.print(f"  Flow model:     {cfg.project_settings['models']['flow_models'][0]}")
+    console.print(f"  Reaction model: {cfg.reaction_model_name}\n")
+
+    start, end = cfg.reaction_start_stress_range
+    end_str = "∞" if end > 1_000_000 else str(end)
+    console.print(f"[info]Reaction stress periods[/info]")
+    console.print(f"  Start: {start}")
+    console.print(f"  End:   {end_str}\n")
+
+    console.print(f"[info]Paths[/info]")
+    console.print(f"  MF6:      {cfg.mf6_path}")
+    console.print(f"  PhreeqcRM: {cfg.phreeqcrm_path}")
+    console.print(f"  rtmf6:    {cfg.rtmf6_path}\n")
+
+    phr = cfg.project_settings['phreeqcrm']
+    console.print(f"[info]PhreeqcRM[/info]")
+    console.print(f"  Database: {phr['database']}")
+    console.print(f"  Chemistry: {phr['chemistry_name']}")
 
 
 # Subcommand name to function mapping for disambiguation workaround.
@@ -211,7 +249,7 @@ def config() -> None:
 _SUBCOMMANDS = {
     "run": run,
     "info": info,
-    "config": config,
+    "config": config_cmd,
 }
 
 
