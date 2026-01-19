@@ -171,7 +171,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/pathspec-0.12.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pexpect-4.9.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.16-py314h775732e_1.conda
-      - conda: https://conda.anaconda.org/hydrocomputing/noarch/phreeqpy-0.6.1-py_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.0.0-py314h57fbdfe_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pkginfo-1.12.1.2-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/platformdirs-4.5.1-pyhcf101f3_0.conda
@@ -246,12 +245,10 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xorg-libxau-1.0.12-hc919400_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xorg-libxdmcp-1.1.5-hc919400_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-0.2.5-h925e9cb_3.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-cpp-0.8.0-ha1acc90_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zeromq-4.3.5-h888dc83_9.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhcf101f3_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.2-hed4e4f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
-      - conda: .
       - pypi: ../../phreeqpy_project/phreeqpy
       - pypi: ../pymf6
       - pypi: ../pymf6-tools
@@ -415,7 +412,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/pathspec-0.12.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pexpect-4.9.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.16-py314h775732e_1.conda
-      - conda: https://conda.anaconda.org/hydrocomputing/noarch/phreeqpy-0.6.1-py_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.0.0-py314h57fbdfe_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/platformdirs-4.5.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/prometheus_client-0.23.1-pyhd8ed1ab_0.conda
@@ -485,12 +481,10 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xorg-libxau-1.0.12-hc919400_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xorg-libxdmcp-1.1.5-hc919400_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-0.2.5-h925e9cb_3.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-cpp-0.8.0-ha1acc90_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zeromq-4.3.5-h888dc83_9.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhcf101f3_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.2-hed4e4f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
-      - conda: .
       - pypi: ../../phreeqpy_project/phreeqpy
       - pypi: ../pymf6
       - pypi: ../pymf6-tools
@@ -654,7 +648,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/pathspec-0.12.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pexpect-4.9.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.16-py314h775732e_1.conda
-      - conda: https://conda.anaconda.org/hydrocomputing/noarch/phreeqpy-0.6.1-py_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.0.0-py314h57fbdfe_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/platformdirs-4.5.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/prometheus_client-0.23.1-pyhd8ed1ab_0.conda
@@ -729,7 +722,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhcf101f3_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.2-hed4e4f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
-      - conda: .
       - pypi: ../../phreeqpy_project/phreeqpy
       - pypi: ../pymf6
       - pypi: ../pymf6-tools
@@ -905,7 +897,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/pathspec-0.12.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pexpect-4.9.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.16-py314h775732e_1.conda
-      - conda: https://conda.anaconda.org/hydrocomputing/noarch/phreeqpy-0.6.1-py_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.0.0-py314h57fbdfe_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/platformdirs-4.5.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/prometheus_client-0.23.1-pyhd8ed1ab_0.conda
@@ -992,12 +983,10 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xorg-libxau-1.0.12-hc919400_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xorg-libxdmcp-1.1.5-hc919400_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-0.2.5-h925e9cb_3.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-cpp-0.8.0-ha1acc90_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zeromq-4.3.5-h888dc83_9.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhcf101f3_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.2-hed4e4f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
-      - conda: .
       - pypi: ../../phreeqpy_project/phreeqpy
       - pypi: ../pymf6
       - pypi: ../pymf6-tools
@@ -1163,7 +1152,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/pathspec-0.12.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pexpect-4.9.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.16-py314h775732e_1.conda
-      - conda: https://conda.anaconda.org/hydrocomputing/noarch/phreeqpy-0.6.1-py_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.0.0-py314h57fbdfe_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/platformdirs-4.5.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pluggy-1.6.0-pyhf9edf01_1.conda
@@ -1237,12 +1225,10 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xorg-libxau-1.0.12-hc919400_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xorg-libxdmcp-1.1.5-hc919400_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-0.2.5-h925e9cb_3.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/yaml-cpp-0.8.0-ha1acc90_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zeromq-4.3.5-h888dc83_9.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhcf101f3_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.2-hed4e4f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
-      - conda: .
       - pypi: ../../phreeqpy_project/phreeqpy
       - pypi: ../pymf6
       - pypi: ../pymf6-tools
@@ -3608,18 +3594,6 @@ packages:
   requires_dist:
   - pywin32 ; os_name == 'nt'
   requires_python: '>=3.9'
-- conda: https://conda.anaconda.org/hydrocomputing/noarch/phreeqpy-0.6.1-py_0.conda
-  sha256: 4ab71316b53d6f099b1cd5e488c5594f0a557bcdf9a4ddb39a56a0b1a5826d05
-  md5: c3f223e0a508429f4b793c67939bbf45
-  depends:
-  - matplotlib
-  - pandas
-  - phreeqcrm
-  - python
-  - yaml-cpp
-  license: BSD
-  size: 43584178
-  timestamp: 1768848104392
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.0.0-py314h57fbdfe_2.conda
   sha256: 2cf1346e3aa8ab9f73d533fb55d753dd3a8d64b50f86d1f0e4f3ff8669c3b0d9
   md5: 8c10435c6b30aaa4c376106d68298f6f
@@ -4236,26 +4210,9 @@ packages:
   timestamp: 1764543169524
 - pypi: ./
   name: rtmf6
-  version: 0.0.4.dev0+g1054f3916.d20260119
-  sha256: 21ae5c79623ceb83bbbb22a9a372c1049b76ff5b1157405cbddb29af04a25ba1
+  version: 0.0.4.dev0+g090456e55.d20260119
+  sha256: 5a9122574b0282afa6477e0e6d654b08e67a992a28e96e1efe508332983ce191
   requires_python: '>=3.11'
-- conda: .
-  name: rtmf6
-  version: 0.0.3
-  build: pyh4616a5c_0
-  subdir: noarch
-  variants:
-    target_platform: noarch
-  depends:
-  - matplotlib
-  - pandas
-  - gfortran
-  - phreeqpy >=0.6.1,<1
-  - pymf6 >=1.5.5,<2
-  - flopy >=3.9.5,<4
-  - typer >=0.21.1,<0.22
-  - python >=3.11
-  - python *
 - conda: https://conda.anaconda.org/conda-forge/noarch/send2trash-1.8.3-pyh31c8845_1.conda
   sha256: 5282eb5b462502c38df8cb37cd1542c5bbe26af2453a18a0a0602d084ca39f53
   md5: e67b1b1fa7a79ff9e8e326d0caf55854

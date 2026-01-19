@@ -60,7 +60,6 @@ platforms = ["osx-arm64"]
 preview = ["pixi-build"]
 
 [tool.pixi.dependencies]
-rtmf6 = { path = "." }
 python = "3.14.*"
 matplotlib = "*"
 pandas = "*"
@@ -153,6 +152,7 @@ backend = { name = "pixi-build-python", version = "0.4.*" }
 setuptools = "*"
 
 [tool.pixi.package.run-dependencies]
+rtmf6 = { path = "." }
 matplotlib = "*"
 pandas = "*"
 gfortran = "*"
