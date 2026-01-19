@@ -13,7 +13,8 @@ class Config:
             self.project_settings = tomllib.load(fobj)
         self._check()
         self.project_name = self.project_settings['project']['name']
-        self.project_path = Path(project_toml).parent.absolute() / self.project_settings['project']['directory']
+        directory = self.project_settings['project'].get('directory', '.')
+        self.project_path = Path(project_toml).parent.absolute() / directory
         self.reaction_model_name = self.project_settings['models']['reaction_models'][0]
         self.phreeqcrm_cell_value_categories = {
             'initial_concentrations': 'YAMLInitialSolutions2Module',
@@ -79,6 +80,9 @@ class Config:
                      'model_yaml_file']:
             if name in phr_config:
                 phr_config[name] = self.project_path / phr_config[name]
+        if 'intermediate_model_yaml_file' not in phr_config:
+            phr_config['intermediate_model_yaml_file'] = (
+                self.phreeqcrm_path / '_intermediate.yaml')
 
 class InternalPaths:
     """Internal paths for data manipulation.
