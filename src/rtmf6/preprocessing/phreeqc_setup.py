@@ -75,8 +75,8 @@ class PhreeqcCellMappings:
         """Create mappings of solution numbers and concentrations per conc."""
         mappings = {}
         for cat in self.phreeqcrm_cell_value_categories:
-            entry = self.config.project_settings[cat]
-            if not entry[0]:
+            entry = self.config.project_settings.get(cat)
+            if  entry is None or not entry[0]:
                 mappings[cat] = None
                 continue
             mappings[cat] = PhreeqcCells(entry[0], worker=self.flopy_worker).get_cells()
