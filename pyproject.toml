@@ -57,8 +57,10 @@ write_to = "src/rtmf6/_version.py"
 [tool.pixi.workspace]
 channels = ["hydrocomputing", "conda-forge"]
 platforms = ["osx-arm64"]
+preview = ["pixi-build"]
 
 [tool.pixi.dependencies]
+rtmf6 = { path = "." }
 python = "3.14.*"
 matplotlib = "*"
 pandas = "*"
@@ -136,3 +138,25 @@ test = { features = ["test"], solve-group = "default" }
 build = { features = ["build"], solve-group = "default" }
 develop = { features = ["develop"], solve-group = "default" }
 docs = { features = ["docs"], solve-group = "default" }
+
+[tool.pixi.tasks]
+start = "rtmf6"
+
+[tool.pixi.package]
+name = "rtmf6"
+version = "0.0.3"
+
+[tool.pixi.package.build]
+backend = { name = "pixi-build-python", version = "0.4.*" }
+
+[tool.pixi.package.host-dependencies]
+setuptools = "*"
+
+[tool.pixi.package.run-dependencies]
+matplotlib = "*"
+pandas = "*"
+gfortran = "*"
+phreeqpy = ">=0.6.1,<1"
+pymf6 = ">=1.5.5,<2"
+flopy = ">=3.9.5,<4"
+typer = ">=0.21.1,<0.22"
