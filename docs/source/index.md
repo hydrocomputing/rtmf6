@@ -1,6 +1,7 @@
-# rtmf6 Reactive Transport Modeling with MODFLOW 6 and PHREEQC
+# rtmf6 - Reactive Transport Modeling with MODFLOW 6 and PHREEQC 3
 
-rtmf6 provides a Python interface for coupling MODFLOW 6 groundwater flow simulations with PHREEQC reactive transport modeling.
+rtmf6 provides a Python interface for coupling MODFLOW 6 groundwater
+flow simulations with PHREEQC reactive transport modeling.
 
 ## Features
 
@@ -44,7 +45,7 @@ rtmf6 strives to use MODFLOW 6 and PHREEQC input files as much as possible,
 adding only the minium of rtmf6-specific configuration.
 This allows to use established tools for large parts of the preprocessing.
 
-## Quick Start
+## General Workflow
 
 1. Create you MODFLOW 6 transport model
 2. Create a TOML config file
@@ -52,29 +53,41 @@ This allows to use established tools for large parts of the preprocessing.
 4. Assign solutions to MODFLOW 6 cells with native input file syntax
 5. Run `rtmf6`
 
-## Contents
 
 ```{toctree}
 :maxdepth: 2
 :caption: User Guide
+:hidden:
 
-getting_started
+users_guide/index
+users_guide/installation
+users_guide/model_setup
+users_guide/cli.md
 ```
 
 ```{toctree}
 :maxdepth: 2
 :caption: Benchmarks
+:hidden:
 
-benchmarks/cation_exchange_1d/cat_ion_exchange_1d.md
+benchmarks/index
+benchmarks/cation_exchange_1d/cat_ion_exchange_1d
 ```
 
 
 ```{toctree}
 :maxdepth: 2
 :caption: Reference
+:hidden:
 
+literature
 api/index
 ```
+
+## Next Steps
+
+- Explore the {doc}`users_guide/index` for a complete workflow
+- Check the {doc}`api/index` for detailed API documentation
 
 ## Indices and tables
 
