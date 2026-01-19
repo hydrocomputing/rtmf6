@@ -1,0 +1,27 @@
+[project]
+name = "cat_ex_1d"
+
+[models]
+flow_models = ["gwf_cat_ex_1d"]
+reaction_models = ["gwt_cat_ex_1d"]
+
+[[bc_concentrations]]
+model_name = "gwf_cat_ex_1d"
+bc_type = "wel"
+file_name = "mf6/gwf_cat_ex_1d.wel"
+src = "rtmf6_sol_number"
+dst = "concentration"
+
+[[initial_concentrations]]
+model_name = "gwt_cat_ex_1d"
+file_name = "mf6/gwt_cat_ex_1d.ic"
+
+[[exchanges]]
+model_name = "gwt_cat_ex_1d"
+file_name = "rtmf6/init_exchanges.ic"
+
+[phreeqcrm]
+number_of_threads = 1
+chemistry_name = "phreeqcrm/advect.pqi"
+database = "phreeqcrm/phreeqc.dat"
+model_yaml_file = "phreeqcrm/model.yaml"
