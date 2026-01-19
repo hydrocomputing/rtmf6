@@ -1,10 +1,5 @@
 # Installation
 
-## Using pip
-
-```bash
-pip install rtmf6
-```
 
 ## Using conda/mamba
 
@@ -15,6 +10,11 @@ conda add -c hydrocomputing rtmf6
 ## Using Pixi
 
 Add the channel `hydrocomputing` to your channels:
+
+## Using pip
+
+Not available yet.
+
 
 ```toml
 [workspace]
@@ -27,10 +27,7 @@ pixi add rtmf6
 
 ## Prerequisites
 
-rtmf6 requires the following dependencies:
-
-- Python >= 3.11
-- MODFLOW 6
-- PhreeqcRM
-- pymf6
-- PhreeqPy
+You need to
+[install MODFLOW 6](https://github.com/MODFLOW-ORG/modflow6/releases)
+and
+[configure pymf6](https://pymf6.readthedocs.io/en/latest/#configuration).
