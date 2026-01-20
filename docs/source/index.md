@@ -11,7 +11,6 @@ flow simulations with PHREEQC reactive transport modeling.
 - Parallel execution of transport and geochemical calculations
 - Support for complex geochemical reactions
 - Powerful commandline interface (CLI)
-- Easy-to-use Python API
 
 ## Principles
 
@@ -81,13 +80,11 @@ benchmarks/cation_exchange_1d/cat_ion_exchange_1d
 :hidden:
 
 literature
-api/index
 ```
 
-## Next Steps
+## Next Step
 
-- Explore the {doc}`users_guide/index` for a complete workflow
-- Check the {doc}`api/index` for detailed API documentation
+Explore the {doc}`users_guide/index` for a complete workflow
 
 ## Indices and tables
 
