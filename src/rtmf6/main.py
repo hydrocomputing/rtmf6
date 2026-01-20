@@ -54,6 +54,9 @@ TYPER_STYLES_LIGHT = {
 }
 
 
+HELP_CONFIG_FILE = "Path to the configuration file. Defaults to `rtmf6.toml` in the current directory."
+
+
 def _get_theme_name() -> str:
     """Get the theme name from environment."""
     theme_name = os.environ.get("RTMF6_THEME", "dark").lower()
@@ -129,7 +132,7 @@ def callback(
     config_file: Annotated[
         Optional[Path],
         typer.Argument(
-            help="Path to the configuration file. Defaults to 'rtmf6.toml' in the current directory.",
+            help=HELP_CONFIG_FILE
         ),
     ] = None,
     no_reactions: Annotated[
@@ -174,7 +177,7 @@ def run(
     config_file: Annotated[
         Optional[Path],
         typer.Argument(
-            help="Path to the configuration file. Defaults to 'rtmf6.toml' in the current directory.",
+            help=HELP_CONFIG_FILE,
         ),
     ] = None,
     no_reactions: Annotated[
@@ -205,7 +208,7 @@ def config_cmd(
     config_file: Annotated[
         Optional[Path],
         typer.Argument(
-            help="Path to the configuration file. Defaults to 'rtmf6.toml' in the current directory.",
+            help=HELP_CONFIG_FILE,
         ),
     ] = None,
 ) -> None:
