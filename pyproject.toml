@@ -130,6 +130,8 @@ docs-build = { cmd = "sphinx-build -b html source _build/html", cwd = "docs" }
 docs-clean = { cmd = "rm -rf _build", cwd = "docs" }
 docs-serve = { cmd = "python -m http.server -d _build/html 8907", cwd = "docs" }
 docs-deploy = { cmd = "zsh deploy_docs.sh", cwd = "docs/.deploy" }
+docs-make-cli-doc = { cmd = "typer rtmf6.main utils docs --output README.md", cwd = "docs/source/users_guide" }
+
 
 [tool.pixi.environments]
 default = { solve-group = "default" }

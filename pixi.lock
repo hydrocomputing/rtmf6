@@ -4210,8 +4210,8 @@ packages:
   timestamp: 1764543169524
 - pypi: ./
   name: rtmf6
-  version: 0.0.4.dev0+g090456e55.d20260119
-  sha256: 5a9122574b0282afa6477e0e6d654b08e67a992a28e96e1efe508332983ce191
+  version: 0.0.4.dev0+g2ce11e844.d20260120
+  sha256: da793894163f58ca5e854d5a4e53d0d7833dfb22acf15b5eaf84cf1c8c84e580
   requires_python: '>=3.11'
 - conda: https://conda.anaconda.org/conda-forge/noarch/send2trash-1.8.3-pyh31c8845_1.conda
   sha256: 5282eb5b462502c38df8cb37cd1542c5bbe26af2453a18a0a0602d084ca39f53
