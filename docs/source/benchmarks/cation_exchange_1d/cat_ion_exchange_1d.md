@@ -18,7 +18,20 @@ using the TRANSPORT data block, which simulates advection and dispersive mixing.
 Schematic for example 11 in {cite:t}`parkhurst2013phreeqc`
 ```
 
+(cation_exchange_1d-fast-path)=
+## Fast path
+
+You can try if rtfmf6 works on your machine.
+Download all [input files](cation_exchange_1d.zip).
+Unzip them and change into the directory `cation_exchange_1d`.
+Type `rtmf6`. This is equivalent to the steps 1. through 5 in
+[](#cation_exchange_1d-work-flow).
+
+(cation_exchange_1d-work-flow)=
 ## Work flow
+
+These are steps to create the input files, run the model, and look at
+the results.
 
 1. {doc}`MakeMF6Model` (uses FloPy but could be done with any GUI tool that
    supports the creation of MODFLOW 6 flow and transport models)
@@ -27,7 +40,6 @@ Schematic for example 11 in {cite:t}`parkhurst2013phreeqc`
 4. {doc}`assign_solutions`
 5. {doc}`run_rtmf6`
 6. Look at the {doc}`results`
-
 
 ```{toctree}
 :maxdepth: 2
