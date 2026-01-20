@@ -10,7 +10,7 @@ $ rtmf6 [OPTIONS] [CONFIG_FILE] COMMAND [ARGS]...
 
 **Arguments**:
 
-* `[CONFIG_FILE]`: Path to the configuration file. Defaults to &#x27;rtmf6.toml&#x27; in the current directory.
+* `[CONFIG_FILE]`: Path to the configuration file. Defaults to `rtmf6.toml` in the current directory.
 
 **Options**:
 
@@ -40,7 +40,7 @@ $ rtmf6 run [OPTIONS] [CONFIG_FILE]
 
 **Arguments**:
 
-* `[CONFIG_FILE]`: Path to the configuration file. Defaults to &#x27;rtmf6.toml&#x27; in the current directory.
+* `[CONFIG_FILE]`: Path to the configuration file. Defaults to `rtmf6.toml` in the current directory.
 
 **Options**:
 
@@ -75,7 +75,7 @@ $ rtmf6 config [OPTIONS] [CONFIG_FILE]
 
 **Arguments**:
 
-* `[CONFIG_FILE]`: Path to the configuration file. Defaults to &#x27;rtmf6.toml&#x27; in the current directory.
+* `[CONFIG_FILE]`: Path to the configuration file. Defaults to `rtmf6.toml` in the current directory.
 
 **Options**:
 
