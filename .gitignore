@@ -16,6 +16,7 @@ tests/_old/**
 .internal
 tests/advect
 tests/advect_reactive_*
+_tmp/
 
 ## MODFLOW output files
 *.dis.grb
