@@ -107,31 +107,3 @@ class Simulation:
         target_path = Path(self._sim.sim_path)
         target_path.mkdir(exist_ok=True)
         self._sim.write_simulation()
-
-
-def copy_to_work_mf6(config):
-    src = config.mf6_path
-    dst = config.internal_paths.work_path_mf6
-    mfsim_src = src / 'mfsim.nam'
-    mfsim_dst = dst / 'mfsim.nam'
-    copyfile(mfsim_src, mfsim_dst)
-    model_file_names = get_model_file_names(mfsim_dst)
-    for names in model_file_names.values():
-        for name in names:
-            copyfile(src / name, dst / name)
-    skipped = prefix_all(
-        mfsim_dst,
-        simulate=False,
-        skip_mfsim=['TDIS6', 'gwf6', 'gwt6'],
-        skip_model_names={'gwt6': ['IC6']},
-    )
-    package_names = []
-    for values in skipped['needed_package_files'].values():
-        for sub_value in values.values():
-            package_names.extend(sub_value)
-    for name in package_names:
-        copyfile(src / name, dst / name)
-    resources = Resources()
-    tdis_file_name = skipped['tdis_file_name']
-    tdis = dst / tdis_file_name
-    tdis.write_text(resources.tdis_fast.read_text())

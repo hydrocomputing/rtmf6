@@ -109,11 +109,9 @@ class InternalPaths:
 
     def __init__(self, project_path, create=True):
         self.base = project_path / '.internal'
-        base_model = self.base / 'base_model'
         work_path = self.base / 'work'
         self.component_models_path = self.base / 'component_models'
         self.work_path_flopy = work_path / 'flopy'
-        self.work_path_mf6 = work_path / 'mf6'
         self.work_path_phreeqcrm = work_path / 'phreeqcrm'
         self.work_path_nam = work_path / 'nam'
         if create:
@@ -123,12 +121,5 @@ class InternalPaths:
         """Create directory tree for internal data."""
         self.component_models_path.mkdir(exist_ok=True, parents=True)
         self.work_path_flopy.mkdir(exist_ok=True, parents=True)
-        self.work_path_mf6.mkdir(exist_ok=True, parents=True)
         self.work_path_phreeqcrm.mkdir(exist_ok=True, parents=True)
         self.work_path_nam.mkdir(exist_ok=True, parents=True)
-
-
-class Resources:
-    def __init__(self):
-        self.path = Path(__file__).parent / 'resources'
-        self.tdis_fast = self.path / 'fast.tdis'
