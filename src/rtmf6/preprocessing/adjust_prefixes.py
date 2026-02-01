@@ -5,7 +5,7 @@ from shutil import copyfile
 
 
 def get_model_file_names(file_name):
-    """Get file names for models from mfsin.nam"""
+    """Get file names for models from `mfsin.nam`."""
     model_file_names = {}
     with open(file_name) as fobj:
         in_block = False

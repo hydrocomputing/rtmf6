@@ -16,6 +16,8 @@ from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
 
 
 class PhreeqcRMSetup:
+    """Setup of PhreeqcRM files."""
+
     def __init__(self, config):
         phreeqcrm_settings = config.project_settings['phreeqcrm']
         self.intermediate_yaml_file = (
@@ -67,6 +69,8 @@ class PhreeqcRMSetup:
 
 
 class PhreeqcCellMappings:
+    """Mapping of solution numbers and concentrations."""
+
     def __init__(self, config, flopy_worker):
         self.config = config
         self.reaction_models = config.project_settings['models'][
@@ -92,6 +96,8 @@ class PhreeqcCellMappings:
 
 
 class PhreeqcCells:
+    """PhreeqcRM cells."""
+
     def __init__(self, config_data, worker):
         self.worker = worker
         self.model_name = config_data['model_name']
@@ -99,6 +105,7 @@ class PhreeqcCells:
         self.start_time = config_data.get('start_time', 0)
 
     def get_cells(self):
+        """Get cell indices."""
         init = self.worker.sim.get_model(self.model_name).get_package('ic')
         src = self.file_name
         dst = Path(init.get_file_path())
@@ -120,6 +127,8 @@ class PhreeqcCells:
 
 
 class YAMLCreator:
+    """Creator for PhreeqcRM YAML files."""
+
     def __init__(self, config, cell_mappings, nxyz):
         self.phr_config = config.project_settings['phreeqcrm']
         self.cell_mappings = cell_mappings
@@ -130,6 +139,10 @@ class YAMLCreator:
         )
 
     def set_error_mode(self, error_handler='error_code'):
+        """Set error mode.
+
+        Error mode name is mapped to an integer.
+        """
         error_options = {
             'error_code': 0,
             'cpp_exception': 1,

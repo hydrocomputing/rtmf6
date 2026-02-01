@@ -7,16 +7,11 @@ input values.
 
 from copy import deepcopy
 from pathlib import Path
-from shutil import copyfile
 
 import flopy
 import pymf6
 
-from rtmf6.config import Resources
-from rtmf6.preprocessing.adjust_prefixes import (
-    get_model_file_names,
-    prefix_all,
-)
+from rtmf6.preprocessing.adjust_prefixes import prefix_all
 
 
 class Simulation:

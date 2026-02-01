@@ -173,7 +173,7 @@ def callback(
         ),
     ] = False,
 ) -> None:
-    """A reactive transport model based on MODFLOW 6 and PhreeqcRM."""
+    """A reactive transport model based on MODFLOW 6 and PhreeqcRM.""" # noqa: D401
     if ctx.invoked_subcommand is not None:
         return
 

@@ -11,6 +11,8 @@ from rtmf6.preprocessing.phreeqc_setup import PhreeqcRMSetup
 
 
 class FlopyWorker:
+    """Flopy preprocessor."""
+
     def __init__(self, config):
         self.project_name = config.project_settings['project']['name']
         self.mf6_path = config.mf6_path
@@ -114,6 +116,7 @@ class FlopyWorker:
                 copyfile(src, dst)
 
     def update_all(self, keep_tracer=True, tracer_name='Tracer', skip=None):
+        """Update concentration values for all species."""
         if skip is None:
             skip = {'H2O'}
         else:
@@ -139,8 +142,9 @@ class FlopyWorker:
 
 
 class InititalConc:
+    """One initial concentration."""
+
     def __init__(self, config_data, solution_mapping):
-        """One initial concentration."""
         self.solution_mapping = solution_mapping
         self.model_name = config_data['model_name']
         self.file_path = Path(config_data['file_name'])
@@ -176,8 +180,9 @@ class InititalConc:
 
 
 class BCConc:
+    """One bc concentration."""
+
     def __init__(self, config_data, solution_mapping):
-        """One bc concentration."""
         self.solution_mapping = solution_mapping
         self.model_name = config_data['model_name']
         self.bc_type = config_data['bc_type']

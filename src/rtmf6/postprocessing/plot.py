@@ -1,4 +1,4 @@
-"""Plot simulation results"""
+"""Plot simulation results."""
 
 
 import pandas as pd
@@ -36,6 +36,7 @@ def read_conc_rtmf6(
 
 
 def read_conc_pht3d(file_name):
+    """Read concentration from PHT3D result file."""
     df = pd.read_csv(file_name, sep=r'\s+', index_col='time_d')
     df.index.name = 'time'
     clean_df = df[df.cell == 40].drop(columns=['cell']) * 1_000
@@ -43,6 +44,7 @@ def read_conc_pht3d(file_name):
 
 
 def join_conc_rtmf6_pht3d(rtmf6_df, pht3d_df):
+    """Join concentartion from rtmf6 and PHTD3 in one DataFrame."""
     rtmf6_sel = rtmf6_df.loc[pht3d_df.index]
     rtmf6 = rtmf6_sel.copy()
     pht3d = pht3d_df.copy()
@@ -52,6 +54,7 @@ def join_conc_rtmf6_pht3d(rtmf6_df, pht3d_df):
 
 
 def plot_joined(joined):
+    """Plot joined DatFrame."""
     species_colors = {
         species: f'C{n}'
         for n, species in enumerate(
