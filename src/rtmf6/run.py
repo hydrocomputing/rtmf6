@@ -10,7 +10,6 @@ from pymf6.mf6 import MF6
 from rtmf6.config import Config
 
 
-
 def run_model(
     model_path,
     queue_from_mf6,
@@ -37,7 +36,8 @@ def run_model(
 def run_rtmf6(config, reactions=True):
     """Run all sub models."""
     phreeqcrm_model = PhreeqcRMModel(
-        str(config.project_settings['phreeqcrm']['model_yaml_file']))
+        str(config.project_settings['phreeqcrm']['model_yaml_file'])
+    )
     processes = {}
     queues_from_mf6 = {}
     queues_from_phrq = {}
@@ -53,8 +53,8 @@ def run_rtmf6(config, reactions=True):
                 queue_from_phrq=queue_from_phrq,
                 reaction_model_name=config.reaction_model_name,
                 reaction_start_stress_range=config.reaction_start_stress_range,
-                )
-                )
+            ),
+        )
         processes[model_name] = process
         queues_from_mf6[model_name] = queue_from_mf6
         queues_from_phrq[model_name] = queue_from_phrq
@@ -64,8 +64,10 @@ def run_rtmf6(config, reactions=True):
     while True:
         step += 1
         print(f'step: {step:5d}', end='\r')
-        conc_mf6 = {component: queue.get() for component, queue in
-                    queues_from_mf6.items()}
+        conc_mf6 = {
+            component: queue.get()
+            for component, queue in queues_from_mf6.items()
+        }
         for component, mf6_conc in conc_mf6.items():
             if mf6_conc is None:
                 done = True
@@ -89,5 +91,6 @@ def run_rtmf6(config, reactions=True):
 
 if __name__ == '__main__':
     import sys
+
     mp.set_start_method('spawn')
     run_rtmf6(sys.argv[1], reactions=True)

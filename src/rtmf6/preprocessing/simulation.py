@@ -14,7 +14,10 @@ import flopy
 import pymf6
 
 from rtmf6.config import Config, Resources
-from rtmf6.preprocessing.adjust_prefixes import prefix_all, get_model_file_names
+from rtmf6.preprocessing.adjust_prefixes import (
+    prefix_all,
+    get_model_file_names,
+)
 
 
 class Simulation:
@@ -50,7 +53,9 @@ class Simulation:
 
     def _set_paths(self):
         self.inputs_path = self.config.internal_paths.inputs_path
-        self.component_models_path = self.config.internal_paths.component_models_path
+        self.component_models_path = (
+            self.config.internal_paths.component_models_path
+        )
         self.work_path_flopy = self.config.internal_paths.work_path_flopy
         self.work_path_mf6 = self.config.internal_paths.work_path_mf6
 
@@ -72,11 +77,15 @@ class Simulation:
         for new_sim_path in [self.inputs_path]:
             new_sim = self.clone_model(new_sim_path=new_sim_path)
             new_sim.write_back()
-        self.needed_files = prefix_all(self.inputs_path / 'mfsim.nam', skip_model_names=skip)
+        self.needed_files = prefix_all(
+            self.inputs_path / 'mfsim.nam', skip_model_names=skip
+        )
 
     def clone_component_model(self, component):
         """Clone a component model."""
-        return self.clone_model(new_sim_path=self.component_models_path / component)
+        return self.clone_model(
+            new_sim_path=self.component_models_path / component
+        )
 
     def set_const_init_conc(self, value):
         """Set a constant concentration value."""
@@ -115,11 +124,12 @@ def copy_to_work_mf6(config):
         mfsim_dst,
         simulate=False,
         skip_mfsim=['TDIS6', 'gwf6', 'gwt6'],
-        skip_model_names={'gwt6': ['IC6']})
+        skip_model_names={'gwt6': ['IC6']},
+    )
     package_names = []
     for values in skipped['needed_package_files'].values():
-            for sub_value in values.values():
-                package_names.extend(sub_value)
+        for sub_value in values.values():
+            package_names.extend(sub_value)
     for name in package_names:
         copyfile(src / name, dst / name)
     resources = Resources()

@@ -7,7 +7,11 @@ and write files back.
 
 from shutil import copyfile
 
-from rtmf6.preprocessing.adjust_prefixes import get_model_file_names, prefix_mfsim_name, prefix_model_name
+from rtmf6.preprocessing.adjust_prefixes import (
+    get_model_file_names,
+    prefix_mfsim_name,
+    prefix_model_name,
+)
 from rtmf6.preprocessing.flopy_setup import FlopyWorker
 from rtmf6.preprocessing.phreeqc_setup import PhreeqcCellMappings, YAMLCreator
 
@@ -32,7 +36,9 @@ def _make_nam_files(config, files_names_to_skip):
             nam_file = target_path / file_name
             copyfile(config.mf6_path / file_name, nam_file)
             prefix_model_name(nam_file, skip_file_names=files_names_to_skip)
-    prefix_mfsim_name(mfsim_out, blocks={'timing',  'exchanges', 'solutiongroup'})
+    prefix_mfsim_name(
+        mfsim_out, blocks={'timing', 'exchanges', 'solutiongroup'}
+    )
     _copy_nam_files(config)
 
 

@@ -11,7 +11,10 @@ def get_model_file_names(file_name):
         in_block = False
         for line in fobj:
             processed_line = line.strip().lower()
-            if processed_line.startswith('begin') and processed_line.split()[1] == 'models':
+            if (
+                processed_line.startswith('begin')
+                and processed_line.split()[1] == 'models'
+            ):
                 in_block = True
                 continue
             if in_block:
@@ -19,16 +22,19 @@ def get_model_file_names(file_name):
                     break
                 else:
                     model_type, file_name, *_ = line.split()
-                    model_file_names.setdefault(model_type, []).append(file_name)
+                    model_file_names.setdefault(model_type, []).append(
+                        file_name
+                    )
     return model_file_names
 
 
 def prefix_file_paths(
-        in_text,
-        blocks,
-        skip_model_types=None,
-        skip_file_names=None,
-        prefix='../../../mf6/'):
+    in_text,
+    blocks,
+    skip_model_types=None,
+    skip_file_names=None,
+    prefix='../../../mf6/',
+):
     """Prefix path to files."""
     if skip_file_names is None:
         skip_file_names = []
@@ -71,7 +77,8 @@ def prefix_mfsim_name(
     backup=False,
     skip_model_types=None,
     skip_file_names=None,
-    blocks={'timing', 'models', 'exchanges', 'solutiongroup'}):
+    blocks={'timing', 'models', 'exchanges', 'solutiongroup'},
+):
     """Prefix paths in mfsim."""
     if backup:
         copyfile(file_name, file_name.parent / (file_name.name + '.bak'))
@@ -80,7 +87,8 @@ def prefix_mfsim_name(
         in_text=in_text,
         skip_model_types=skip_model_types,
         skip_file_names=skip_file_names,
-        blocks=blocks)
+        blocks=blocks,
+    )
     if simulate:
         return out_text
     else:
@@ -94,7 +102,8 @@ def prefix_model_name(
     skip_file_names=None,
     simulate=False,
     backup=False,
-    blocks={'packages'}):
+    blocks={'packages'},
+):
     """Prefix path to package files."""
     if backup:
         copyfile(file_name, file_name.parent / (file_name.name + '.bak'))
@@ -103,7 +112,8 @@ def prefix_model_name(
         in_text=in_text,
         skip_model_types=skip_model_types,
         skip_file_names=skip_file_names,
-        blocks=blocks)
+        blocks=blocks,
+    )
     if simulate:
         return out_text
     else:
@@ -112,12 +122,8 @@ def prefix_model_name(
 
 
 def prefix_all(
-        mfsim,
-        simulate=False,
-        skip_mfsim=None,
-        skip_model_names=None,
-        backup=False
-        ):
+    mfsim, simulate=False, skip_mfsim=None, skip_model_names=None, backup=False
+):
     """Prefix all paths in files."""
     if skip_model_names is None:
         skip_model_names = {}
@@ -133,14 +139,17 @@ def prefix_all(
                 mfsim.parent / name,
                 backup=backup,
                 skip=skip_model_names.get(model_type),
-                simulate=simulate)
+                simulate=simulate,
+            )
             for key, name_list in skipped.items():
                 skipped_type.setdefault(key, []).extend(name_list)
             if simulate:
                 print(skipped)
         needed_package_files[model_type] = skipped_type
-    needed_names_files = prefix_mfsim_name(mfsim, backup=backup, skip=skip_mfsim, simulate=simulate)
-    return  {
+    needed_names_files = prefix_mfsim_name(
+        mfsim, backup=backup, skip=skip_mfsim, simulate=simulate
+    )
+    return {
         'needed_names_files': needed_names_files,
         'tdis_file_name': needed_names_files.pop('tdis6')[0],
         'needed_package_files': needed_package_files,

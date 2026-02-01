@@ -1,16 +1,15 @@
 """Plot simulation results"""
 
-
 from pathlib import Path
 
 import pandas as pd
 
 
 species_colors = {
-    'Na': 'C0',   # blue
-    'Cl': 'C1',   # orange
-    'K': 'C2',    # green
-    'Ca': 'C3'    # red
+    'Na': 'C0',  # blue
+    'Cl': 'C1',  # orange
+    'K': 'C2',  # green
+    'Ca': 'C3',  # red
 }
 
 
@@ -18,7 +17,7 @@ def read_conc_rtmf6(
     model_name,
     component_models_dir,
     components=('Na', 'Cl', 'K', 'Ca'),
-    steps=None
+    steps=None,
 ):
     """Plot concentrations."""
     conc = {}
@@ -28,7 +27,7 @@ def read_conc_rtmf6(
             value = pd.read_csv(
                 path / f'gwt_{model_name}.obs.csv',
                 nrows=steps,
-                )[['time', 'CONCENTRATION']]
+            )[['time', 'CONCENTRATION']]
             value.columns = ['time', name]
             value[name] *= 1_000
             conc[name] = value
@@ -41,13 +40,13 @@ def read_conc_rtmf6(
 def read_conc_pht3d(file_name):
     df = pd.read_csv(file_name, sep=r'\s+', index_col='time_d')
     df.index.name = 'time'
-    clean_df = df[df.cell==40].drop(columns=['cell']) * 1_000
+    clean_df = df[df.cell == 40].drop(columns=['cell']) * 1_000
     return clean_df
 
 
 def join_conc_rtmf6_pht3d(rtmf6_df, pht3d_df):
     rtmf6_sel = rtmf6_df.loc[pht3d_df.index]
-    rtmf6 =rtmf6_sel.copy()
+    rtmf6 = rtmf6_sel.copy()
     pht3d = pht3d_df.copy()
     rtmf6.columns = [col + ' rtmf6' for col in rtmf6.columns]
     pht3d.columns = [col + ' pht3d' for col in pht3d.columns]
@@ -56,8 +55,11 @@ def join_conc_rtmf6_pht3d(rtmf6_df, pht3d_df):
 
 def plot_joined(joined):
     species_colors = {
-        species: f'C{n}' for n, species in
-        enumerate(dict.fromkeys(col.split()[0] for col in joined.columns))}
+        species: f'C{n}'
+        for n, species in enumerate(
+            dict.fromkeys(col.split()[0] for col in joined.columns)
+        )
+    }
     line_styles = {'rtmf6': '-', 'pht3d': '--'}
     styles = []
     for col in joined.columns:
@@ -66,21 +68,23 @@ def plot_joined(joined):
     return joined.plot(
         xlabel='time (days)',
         ylabel=' concentrations (mmols/kgw)',
-        style=styles)
+        style=styles,
+    )
 
 
 def plot_advect(
     model_name,
     component_models_dir,
     components=('Na', 'Cl', 'K', 'Ca'),
-    steps=None
+    steps=None,
 ):
     """Plot concentrations."""
     df = read_conc_rtmf6(
-    model_name=model_name,
-    component_models_dir=component_models_dir,
-    components=components,
-    steps=steps,)
+        model_name=model_name,
+        component_models_dir=component_models_dir,
+        components=components,
+        steps=steps,
+    )
     return df.plot(x='time', ylabel='mmols/kgw')
 
 

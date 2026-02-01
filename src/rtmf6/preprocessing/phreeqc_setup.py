@@ -7,8 +7,8 @@ import warnings
 
 # PhreeqcRM gives deprecation warnings that we usually want to ignore
 # Show DeprecationWarning if RTMF6_DEBUG is set to a true value
-if not os.environ.get("RTMF6_DEBUG", 'False').lower() in ('true', '1', 't'):
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
+if not os.environ.get('RTMF6_DEBUG', 'False').lower() in ('true', '1', 't'):
+    warnings.filterwarnings('ignore', category=DeprecationWarning)
 
 import numpy as np
 import phreeqcrm
@@ -17,18 +17,19 @@ from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
 
 
 class PhreeqcRMSetup:
-
     def __init__(self, config):
         phreeqcrm_settings = config.project_settings['phreeqcrm']
-        self.intermediate_yaml_file = config.internal_paths.work_path_phreeqcrm / 'intermediate.yaml'
-        self.model_yaml_file = config.internal_paths.work_path_phreeqcrm / 'model.yaml'
+        self.intermediate_yaml_file = (
+            config.internal_paths.work_path_phreeqcrm / 'intermediate.yaml'
+        )
+        self.model_yaml_file = (
+            config.internal_paths.work_path_phreeqcrm / 'model.yaml'
+        )
         self.database = str(phreeqcrm_settings['database'])
         self.chemistry_name = str(phreeqcrm_settings['chemistry_name'])
 
-
     def _get_solution_numbers(self):
-        """Get solution numbers.
-        """
+        """Get solution numbers."""
         with open(self.chemistry_name, encoding='utf-8') as fobj:
             sol_numbers = []
             for line in fobj:
@@ -42,8 +43,10 @@ class PhreeqcRMSetup:
         """Mapping of solution number to concentratiions."""
         self._make_intermediate_yaml_file()
         phreeqcrm_model = PhreeqcRMModel(str(self.intermediate_yaml_file))
-        return {number: phreeqcrm_model.get_initial_concentrations(number)
-                for number in self._get_solution_numbers()}
+        return {
+            number: phreeqcrm_model.get_initial_concentrations(number)
+            for number in self._get_solution_numbers()
+        }
 
     def _make_intermediate_yaml_file(self):
         """Create YAML file for preprocessing."""
@@ -56,7 +59,8 @@ class PhreeqcRMSetup:
             workers=True,
             initial_phreeqc=True,
             utility=True,
-            chemistry_name=self.chemistry_name)
+            chemistry_name=self.chemistry_name,
+        )
         yrm.YAMLFindComponents()
         initial_solutions = [1] * nxyz
         yrm.YAMLInitialSolutions2Module(initial_solutions)
@@ -64,27 +68,31 @@ class PhreeqcRMSetup:
 
 
 class PhreeqcCellMappings:
-
     def __init__(self, config, flopy_worker):
         self.config = config
-        self.reaction_models = config.project_settings['models']['reaction_models']
+        self.reaction_models = config.project_settings['models'][
+            'reaction_models'
+        ]
         self.flopy_worker = flopy_worker
-        self.phreeqcrm_cell_value_categories = list(config.phreeqcrm_cell_value_categories.keys())
+        self.phreeqcrm_cell_value_categories = list(
+            config.phreeqcrm_cell_value_categories.keys()
+        )
 
     def make_mappings(self):
         """Create mappings of solution numbers and concentrations per conc."""
         mappings = {}
         for cat in self.phreeqcrm_cell_value_categories:
             entry = self.config.project_settings.get(cat)
-            if  entry is None or not entry[0]:
+            if entry is None or not entry[0]:
                 mappings[cat] = None
                 continue
-            mappings[cat] = PhreeqcCells(entry[0], worker=self.flopy_worker).get_cells()
+            mappings[cat] = PhreeqcCells(
+                entry[0], worker=self.flopy_worker
+            ).get_cells()
         return mappings
 
 
 class PhreeqcCells:
-
     def __init__(self, config_data, worker):
         self.worker = worker
         self.model_name = config_data['model_name']
@@ -113,22 +121,25 @@ class PhreeqcCells:
 
 
 class YAMLCreator:
-
     def __init__(self, config, cell_mappings, nxyz):
         self.phr_config = config.project_settings['phreeqcrm']
         self.cell_mappings = cell_mappings
         self.nxyz = nxyz
         self.set_error_mode()
-        self.phreeqcrm_cell_value_categories = config.phreeqcrm_cell_value_categories
+        self.phreeqcrm_cell_value_categories = (
+            config.phreeqcrm_cell_value_categories
+        )
 
     def set_error_mode(self, error_handler='error_code'):
         error_options = {
             'error_code': 0,
             'cpp_exception': 1,
-            'graceful_exit': 2
+            'graceful_exit': 2,
         }
         if error_handler not in error_options:
-            msg = f'error_handle needs to be one off {", ".join(error_options)}'
+            msg = (
+                f'error_handle needs to be one off {", ".join(error_options)}'
+            )
             raise ValueError(msg)
         self.error_handler = error_options[error_handler]
 
@@ -155,27 +166,31 @@ class YAMLCreator:
         # Load database
         yrm.YAMLLoadDatabase(str(self.phr_config['database']))
         # Run file to define solutions and reactants for initial conditions, selected output
-        workers = True             # Worker instances do the reaction calculations for transport
-        initial_phreeqc = True     # InitialPhreeqc instance accumulates initial and boundary conditions
-        utility = True             # Utility instance is available for processing
+        workers = (
+            True  # Worker instances do the reaction calculations for transport
+        )
+        initial_phreeqc = True  # InitialPhreeqc instance accumulates initial and boundary conditions
+        utility = True  # Utility instance is available for processing
         yrm.YAMLRunFile(
             workers,
             initial_phreeqc,
             utility,
-            str(self.phr_config['chemistry_name'])
-            )
+            str(self.phr_config['chemistry_name']),
+        )
 
         # Clear contents of workers and utility
         initial_phreeqc = False
-        input = "DELETE; -all"
+        input = 'DELETE; -all'
         yrm.YAMLRunString(workers, initial_phreeqc, utility, input)
-        yrm.YAMLAddOutputVars("AddOutputVars", "true")
+        yrm.YAMLAddOutputVars('AddOutputVars', 'true')
 
         # Determine number of components to transport
         yrm.YAMLFindComponents()
         for mapping_name, values in self.cell_mappings.items():
             if values is not None:
-                func = getattr(yrm, self.phreeqcrm_cell_value_categories[mapping_name])
+                func = getattr(
+                    yrm, self.phreeqcrm_cell_value_categories[mapping_name]
+                )
                 func(values)
         # Write YAML file
         yaml_file = self.phr_config['intermediate_model_yaml_file']

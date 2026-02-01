@@ -15,7 +15,9 @@ class Config:
         self.project_name = self.project_settings['project']['name']
         directory = self.project_settings['project'].get('directory', '.')
         self.project_path = Path(project_toml).parent.absolute() / directory
-        self.reaction_model_name = self.project_settings['models']['reaction_models'][0]
+        self.reaction_model_name = self.project_settings['models'][
+            'reaction_models'
+        ][0]
         self.phreeqcrm_cell_value_categories = {
             'initial_concentrations': 'YAMLInitialSolutions2Module',
             'exchanges': 'YAMLInitialExchanges2Module',
@@ -23,20 +25,25 @@ class Config:
             'gas_phases': 'YAMLInitialGasPhases2Module',
             'kinetics': 'YAMLInitialKinetics2Module',
             'solid_solutions': 'YAMLInitialSolidSolutions2Module',
-            'surfaces': 'YAMLInitialSurfaces2Module'}
+            'surfaces': 'YAMLInitialSurfaces2Module',
+        }
         self._set_path()
         self._make_path_absolute()
         self.reaction_start_stress_range = self._get_stress_period_range()
 
     def _get_stress_period_range(self):
         models = self.project_settings['models']
-        reaction_start_stress_period = int(models.get('reaction_start_stress_period', 0))
-        reaction_end_stress_period = int(models.get('reaction_end_stress_period', sys.maxsize))
+        reaction_start_stress_period = int(
+            models.get('reaction_start_stress_period', 0)
+        )
+        reaction_end_stress_period = int(
+            models.get('reaction_end_stress_period', sys.maxsize)
+        )
         if reaction_start_stress_period > reaction_end_stress_period:
             raise ValueError(
                 'reaction_end_stress_period must be equal or larger than reaction_start_stress_period\n'
                 f'found {reaction_start_stress_period=} and {reaction_end_stress_period=}'
-                )
+            )
         msg = 'stress period must have positive value found'
         if reaction_start_stress_period < 0:
             raise ValueError(f'{msg} {reaction_start_stress_period=}')
@@ -47,13 +54,14 @@ class Config:
     def _check(self):
         flow_models = self.project_settings['models']['flow_models']
         len_flow = len(flow_models)
-        if  len_flow != 1:
+        if len_flow != 1:
             raise ValueError(
                 f'Only one flow model can be used, found {len_flow}\n'
-                f'{flow_models}')
+                f'{flow_models}'
+            )
         react_models = self.project_settings['models']['reaction_models']
         len_react = len(react_models)
-        if  len_react != 1:
+        if len_react != 1:
             raise ValueError(
                 f'Only one reaction model can be used, found {len_react}\n'
                 f'{react_models}'
@@ -73,16 +81,23 @@ class Config:
             if cat in self.project_settings:
                 for entry in self.project_settings[cat]:
                     if entry:
-                        entry['file_name'] = self.project_path / entry['file_name']
+                        entry['file_name'] = (
+                            self.project_path / entry['file_name']
+                        )
         phr_config = self.project_settings['phreeqcrm']
-        for name in ['pre_yaml_file', 'post_yaml_file',
-                     'intermediate_model_yaml_file',
-                     'model_yaml_file']:
+        for name in [
+            'pre_yaml_file',
+            'post_yaml_file',
+            'intermediate_model_yaml_file',
+            'model_yaml_file',
+        ]:
             if name in phr_config:
                 phr_config[name] = self.project_path / phr_config[name]
         if 'intermediate_model_yaml_file' not in phr_config:
             phr_config['intermediate_model_yaml_file'] = (
-                self.phreeqcrm_path / '_intermediate.yaml')
+                self.phreeqcrm_path / '_intermediate.yaml'
+            )
+
 
 class InternalPaths:
     """Internal paths for data manipulation.
@@ -93,7 +108,7 @@ class InternalPaths:
 
     def __init__(self, project_path, create=True):
         self.base = project_path / '.internal'
-        base_model = self.base /  'base_model'
+        base_model = self.base / 'base_model'
         work_path = self.base / 'work'
         self.component_models_path = self.base / 'component_models'
         self.work_path_flopy = work_path / 'flopy'
@@ -112,8 +127,7 @@ class InternalPaths:
         self.work_path_nam.mkdir(exist_ok=True, parents=True)
 
 
-class Resources():
-
+class Resources:
     def __init__(self):
         self.path = Path(__file__).parent / 'resources'
         self.tdis_fast = self.path / 'fast.tdis'

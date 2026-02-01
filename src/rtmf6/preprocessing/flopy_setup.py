@@ -10,12 +10,14 @@ import numpy as np
 
 from rtmf6.preprocessing.phreeqc_setup import PhreeqcRMSetup
 
-class FlopyWorker:
 
+class FlopyWorker:
     def __init__(self, config):
         self.project_name = config.project_settings['project']['name']
         self.mf6_path = config.mf6_path
-        self.component_models_path = config.internal_paths.component_models_path
+        self.component_models_path = (
+            config.internal_paths.component_models_path
+        )
         self.work_path = config.internal_paths.work_path_flopy
         self.work_components_path = self.work_path / 'component_models'
         if self.work_components_path.exists():
@@ -28,7 +30,8 @@ class FlopyWorker:
         self.load_only = bc_types + ['ic']
         self.sim = self._load_initial_sim()
         self.active_cells = self._get_active_cells_mask(
-            config.project_settings['models']['flow_models'][0])
+            config.project_settings['models']['flow_models'][0]
+        )
         self.nxyz = int(np.sum(self.active_cells))
         self.all_cells_active = self
         self.write_simulation()
@@ -38,8 +41,9 @@ class FlopyWorker:
 
     def _make_modified_file_names(self, project_path):
         self.modified_input_files = [
-            project_path / package.file_path for package
-            in self.init_concs + self.bc_concs]
+            project_path / package.file_path
+            for package in self.init_concs + self.bc_concs
+        ]
         for src in self.modified_input_files:
             dst = self.work_path / src.name
             copyfile(src, dst)
@@ -47,16 +51,21 @@ class FlopyWorker:
     def _make_init_concs(self, init_concs_config):
         self.init_concs = []
         for init_conc in init_concs_config:
-            self.init_concs.append(InititalConc(
-                config_data=init_conc,
-                solution_mapping=self.solution_mapping))
+            self.init_concs.append(
+                InititalConc(
+                    config_data=init_conc,
+                    solution_mapping=self.solution_mapping,
+                )
+            )
 
     def _make_bc_concs(self, bc_concs_config):
         self.bc_concs = []
         for bc_conc in bc_concs_config:
-            self.bc_concs.append(BCConc(
-                config_data=bc_conc,
-                solution_mapping=self.solution_mapping))
+            self.bc_concs.append(
+                BCConc(
+                    config_data=bc_conc, solution_mapping=self.solution_mapping
+                )
+            )
 
     def _load_sim(self, sim_path):
         return flopy.mf6.MFSimulation.load(
@@ -64,7 +73,8 @@ class FlopyWorker:
             sim_name=self.project_name,
             load_only=self.load_only,
             verbosity_level=0,
-            lazy_io=True)
+            lazy_io=True,
+        )
 
     def _load_initial_sim(self):
         sim = self._load_sim(sim_path=self.mf6_path)
@@ -78,9 +88,8 @@ class FlopyWorker:
     def write_simulation(self):
         """Write simulation data back."""
         self.sim.write_simulation(
-            ext_file_action=ExtFileAction.copy_none,
-            silent=True
-            )
+            ext_file_action=ExtFileAction.copy_none, silent=True
+        )
 
     def update(self, conc_names):
         """Update concentration values for one specie."""
@@ -105,7 +114,6 @@ class FlopyWorker:
                 dst = target_path / init_conc.file_name
                 copyfile(src, dst)
 
-
     def update_all(self, keep_tracer=True, tracer_name='Tracer', skip=None):
         if skip is None:
             skip = {'H2O'}
@@ -113,8 +121,11 @@ class FlopyWorker:
             skip = set(skip)
         if not keep_tracer:
             skip.add(tracer_name)
-        specie_names = [name for name in self.solution_mapping[0].keys()
-                        if name not in skip]
+        specie_names = [
+            name
+            for name in self.solution_mapping[0].keys()
+            if name not in skip
+        ]
         self.update(specie_names)
 
     def _get_active_cells_mask(self, model_name):
@@ -125,11 +136,10 @@ class FlopyWorker:
             init = self.sim.get_model(model_name).get_package('ic')
             size = init.strt.array.size
             return np.ones(size, dtype=int)
-        return (idomain>0).flatten()
+        return (idomain > 0).flatten()
 
 
 class InititalConc:
-
     def __init__(self, config_data, solution_mapping):
         """One initial concentration."""
         self.solution_mapping = solution_mapping
@@ -143,21 +153,30 @@ class InititalConc:
         strt = init.strt
         try:
             # keep constant value if possible
-            sol_number_float = round(strt._get_storage_obj().get_const_val(), 8)
+            sol_number_float = round(
+                strt._get_storage_obj().get_const_val(), 8
+            )
             sol_number = int(sol_number_float)
-            assert sol_number == sol_number_float, (conc_name, sol_number, sol_number_float)
+            assert sol_number == sol_number_float, (
+                conc_name,
+                sol_number,
+                sol_number_float,
+            )
             init.strt.set_data(self.solution_mapping[sol_number][conc_name])
         except MFDataException:
             sol_numbers_float = strt.data.flatten()
             sol_numbers = sol_numbers_float.astype(int)
-            assert np.allclose(sol_numbers, sol_numbers_float), sol_numbers - sol_numbers_float
-            conc = [self.solution_mapping[sol_number][conc_name]
-                    for sol_number in sol_numbers]
+            assert np.allclose(sol_numbers, sol_numbers_float), (
+                sol_numbers - sol_numbers_float
+            )
+            conc = [
+                self.solution_mapping[sol_number][conc_name]
+                for sol_number in sol_numbers
+            ]
             init.strt.set_data(conc)
 
 
 class BCConc:
-
     def __init__(self, config_data, solution_mapping):
         """One bc concentration."""
         self.solution_mapping = solution_mapping
@@ -188,7 +207,9 @@ class BCConc:
             conc = []
             sol_numbers_float = period_data[self.src].flatten()
             sol_numbers = sol_numbers_float.astype(int)
-            assert np.allclose(sol_numbers, sol_numbers_float), sol_numbers - sol_numbers_float
+            assert np.allclose(sol_numbers, sol_numbers_float), (
+                sol_numbers - sol_numbers_float
+            )
             for sol_number in sol_numbers:
                 if sol_number == -1:
                     conc.append(0)
