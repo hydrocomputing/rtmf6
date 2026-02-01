@@ -65,7 +65,7 @@ def plot_joined(joined):
         styles.append(f'{species_colors[species]}{line_styles[model_type]}')
     return joined.plot(
         xlabel='time (days)',
-        ylabel=' conmcmetrations (mmols/kgw)',
+        ylabel=' concentrations (mmols/kgw)',
         style=styles)
 
 
