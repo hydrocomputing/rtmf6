@@ -5,18 +5,23 @@ import warnings
 from pathlib import Path
 from shutil import copyfile
 
+import numpy as np
+
 # PhreeqcRM gives deprecation warnings that we usually want to ignore
 # Show DeprecationWarning if RTMF6_DEBUG is set to a true value
 if os.environ.get('RTMF6_DEBUG', 'False').lower() not in ('true', '1', 't'):
     warnings.filterwarnings('ignore', category=DeprecationWarning)
 
-import numpy as np
+# pylint: disable=wrong-import-position
+# need to set warning filter before import
 import phreeqcrm
 from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
+# pylint: enable=wrong-import-position
 
 
 class PhreeqcRMSetup:
     """Setup of PhreeqcRM files."""
+    # pylint: disable=too-few-public-methods
 
     def __init__(self, config):
         phreeqcrm_settings = config.project_settings['phreeqcrm']
@@ -70,6 +75,7 @@ class PhreeqcRMSetup:
 
 class PhreeqcCellMappings:
     """Mapping of solution numbers and concentrations."""
+    # pylint: disable=too-few-public-methods
 
     def __init__(self, config, flopy_worker):
         self.config = config
@@ -97,6 +103,7 @@ class PhreeqcCellMappings:
 
 class PhreeqcCells:
     """PhreeqcRM cells."""
+    # pylint: disable=too-few-public-methods
 
     def __init__(self, config_data, worker):
         self.worker = worker
@@ -119,7 +126,8 @@ class PhreeqcCells:
         indices = float_indices.astype(int)
         if len(indices) != self.worker.nxyz:
             raise ValueError(
-                'Number of cells in PhreeqcCRM mapping does not match number of active cells in MF6\n'
+                'Number of cells in PhreeqcCRM mapping does not match number '
+                'of active cells in MF6\n'
                 f'found {len(indices)=} and {self.worker.nxyz=}'
             )
         assert np.allclose(indices, float_indices), indices - float_indices
@@ -177,11 +185,13 @@ class YAMLCreator:
         yrm.YAMLSetSaturationUser(ones_int)
         # Load database
         yrm.YAMLLoadDatabase(str(self.phr_config['database']))
-        # Run file to define solutions and reactants for initial conditions, selected output
+        # Run file to define solutions and reactants for initial conditions,
+        # selected output
         workers = (
             True  # Worker instances do the reaction calculations for transport
         )
-        initial_phreeqc = True  # InitialPhreeqc instance accumulates initial and boundary conditions
+        # InitialPhreeqc instance accumulates initial and boundary conditions
+        initial_phreeqc = True
         utility = True  # Utility instance is available for processing
         yrm.YAMLRunFile(
             workers,
@@ -192,8 +202,8 @@ class YAMLCreator:
 
         # Clear contents of workers and utility
         initial_phreeqc = False
-        input = 'DELETE; -all'
-        yrm.YAMLRunString(workers, initial_phreeqc, utility, input)
+        input_ = 'DELETE; -all'
+        yrm.YAMLRunString(workers, initial_phreeqc, utility, input_)
         yrm.YAMLAddOutputVars('AddOutputVars', 'true')
 
         # Determine number of components to transport

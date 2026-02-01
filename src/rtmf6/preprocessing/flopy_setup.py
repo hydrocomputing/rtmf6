@@ -12,6 +12,7 @@ from rtmf6.preprocessing.phreeqc_setup import PhreeqcRMSetup
 
 class FlopyWorker:
     """Flopy preprocessor."""
+    # pylint: disable=too-many-instance-attributes
 
     def __init__(self, config):
         self.project_name = config.project_settings['project']['name']
@@ -143,6 +144,7 @@ class FlopyWorker:
 
 class InititalConc:
     """One initial concentration."""
+    # pylint: disable=too-few-public-methods
 
     def __init__(self, config_data, solution_mapping):
         self.solution_mapping = solution_mapping
@@ -157,7 +159,7 @@ class InititalConc:
         try:
             # keep constant value if possible
             sol_number_float = round(
-                strt._get_storage_obj().get_const_val(), 8
+                strt._get_storage_obj().get_const_val(), 8 # pylint: disable=protected-access
             )
             sol_number = int(sol_number_float)
             assert sol_number == sol_number_float, (
@@ -181,6 +183,7 @@ class InititalConc:
 
 class BCConc:
     """One bc concentration."""
+    # pylint: disable=too-few-public-methods
 
     def __init__(self, config_data, solution_mapping):
         self.solution_mapping = solution_mapping

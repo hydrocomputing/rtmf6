@@ -8,7 +8,7 @@ import tomllib
 
 class Config:
     """Configure a project."""
-
+     # pylint: disable=too-many-instance-attributes, too-few-public-methods
     def __init__(self, project_toml):
         with open(project_toml, 'rb') as fobj:
             self.project_settings = tomllib.load(fobj)
@@ -42,7 +42,8 @@ class Config:
         )
         if reaction_start_stress_period > reaction_end_stress_period:
             raise ValueError(
-                'reaction_end_stress_period must be equal or larger than reaction_start_stress_period\n'
+                'reaction_end_stress_period must be equal or larger than '
+                'reaction_start_stress_period\n'
                 f'found {reaction_start_stress_period=} and {reaction_end_stress_period=}'
             )
         msg = 'stress period must have positive value found'
@@ -106,6 +107,7 @@ class InternalPaths:
     These paths are not intended to be modified by the model user.
     They contain data that rtmf6 generates
     """
+    # pylint: disable=too-few-public-methods
 
     def __init__(self, project_path, create=True):
         self.base = project_path / '.internal'

@@ -16,6 +16,7 @@ from rtmf6.preprocessing.adjust_prefixes import prefix_all
 
 class Simulation:
     """Existing MF6 simulation."""
+    # pylint: disable=too-many-instance-attributes
 
     def __init__(
         self,
@@ -25,6 +26,7 @@ class Simulation:
         sim=None,
         verbosity_level=0,
     ):
+        # pylint: disable= too-many-arguments, too-many-positional-arguments
         self.config = config
         self._set_paths()
         if model_path is None:
@@ -41,7 +43,7 @@ class Simulation:
                 verbosity_level=verbosity_level,
             )
         self.models = {}
-        for name, model in self._sim.model_dict.items():
+        for model in self._sim.model_dict.values():
             self.models.setdefault(model.model_type, []).append(model)
         self.needed_files = None
 

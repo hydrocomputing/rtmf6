@@ -27,12 +27,14 @@ def run_model(
             if model_step.state == States.timestep_end:
                 var_name = f'SLN_{gwt.solution_id}/X'
                 queue_from_mf6.put(mf6.vars[var_name])
+                # pylint: disable=protected-access
                 mf6._mf6.set_value(var_name, queue_from_phrq.get())
     queue_from_mf6.put(None)
 
 
 def run_rtmf6(config, reactions=True):
     """Run all sub models."""
+    # pylint: disable=too-many-locals
     phreeqcrm_model = PhreeqcRMModel(
         str(config.project_settings['phreeqcrm']['model_yaml_file'])
     )
@@ -45,13 +47,13 @@ def run_rtmf6(config, reactions=True):
         queue_from_phrq = mp.Queue()
         process = mp.Process(
             target=run_model,
-            kwargs=dict(
-                model_path=path,
-                queue_from_mf6=queue_from_mf6,
-                queue_from_phrq=queue_from_phrq,
-                reaction_model_name=config.reaction_model_name,
-                reaction_start_stress_range=config.reaction_start_stress_range,
-            ),
+            kwargs={
+                'model_path': path,
+                'queue_from_mf6': queue_from_mf6,
+                'queue_from_phrq':queue_from_phrq,
+                'reaction_model_name': config.reaction_model_name,
+                'reaction_start_stress_range': config.reaction_start_stress_range,
+            },
         )
         processes[model_name] = process
         queues_from_mf6[model_name] = queue_from_mf6

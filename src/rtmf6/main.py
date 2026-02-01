@@ -57,7 +57,8 @@ TYPER_STYLES_LIGHT = {
 }
 
 
-HELP_CONFIG_FILE = 'Path to the configuration file. Defaults to `rtmf6.toml` in the current directory.'
+HELP_CONFIG_FILE = ('Path to the configuration file. '
+                    'Defaults to `rtmf6.toml` in the current directory.')
 
 
 def _get_theme_name() -> str:
@@ -162,7 +163,7 @@ def callback(
             '-r', '--run-only', help='Skip preprocessing, run the model only.'
         ),
     ] = False,
-    version: Annotated[
+    version: Annotated[ # pylint: disable=unused-argument
         bool,
         typer.Option(
             '-V',
@@ -174,11 +175,14 @@ def callback(
     ] = False,
 ) -> None:
     """A reactive transport model based on MODFLOW 6 and PhreeqcRM.""" # noqa: D401
+    # pylint: disable=too-many-arguments, too-many-positional-arguments
     if ctx.invoked_subcommand is not None:
         return
 
-    # Workaround: typer parses subcommand names as config_file before recognizing them as subcommands.
-    # If config_file matches a subcommand name and doesn't exist as a file, invoke that subcommand.
+    # Workaround: typer parses subcommand names as config_file before
+    # recognizing them as subcommands.
+    # If config_file matches a subcommand name and doesn't exist as a file,
+    # invoke that subcommand.
     if (
         config_file is not None
         and config_file.name in _SUBCOMMANDS
