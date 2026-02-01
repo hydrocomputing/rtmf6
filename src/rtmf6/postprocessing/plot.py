@@ -3,13 +3,6 @@
 
 import pandas as pd
 
-species_colors = {
-    'Na': 'C0',  # blue
-    'Cl': 'C1',  # orange
-    'K': 'C2',  # green
-    'Ca': 'C3',  # red
-}
-
 
 def read_conc_rtmf6(
     model_name,
