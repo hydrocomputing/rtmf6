@@ -15,7 +15,6 @@ from rtmf6.config import Config
 from rtmf6.preprocessing.create_inputs import make_inputs
 from rtmf6.run import run_rtmf6
 
-
 # Color themes for different terminal backgrounds
 THEMES = {
     'dark': Theme(
@@ -262,11 +261,11 @@ def config_cmd(
     cfg = Config(config_file)
 
     console.print(f'[bold]Configuration:[/bold] {config_file.absolute()}\n')
-    console.print(f'[info]Project[/info]')
+    console.print('[info]Project[/info]')
     console.print(f'  Name:      {cfg.project_name}')
     console.print(f'  Directory: {cfg.project_path}\n')
 
-    console.print(f'[info]Models[/info]')
+    console.print('[info]Models[/info]')
     console.print(
         f'  Flow model:     {cfg.project_settings["models"]["flow_models"][0]}'
     )
@@ -274,17 +273,17 @@ def config_cmd(
 
     start, end = cfg.reaction_start_stress_range
     end_str = '∞' if end > 1_000_000 else str(end)
-    console.print(f'[info]Reaction stress periods[/info]')
+    console.print('[info]Reaction stress periods[/info]')
     console.print(f'  Start: {start}')
     console.print(f'  End:   {end_str}\n')
 
-    console.print(f'[info]Paths[/info]')
+    console.print('[info]Paths[/info]')
     console.print(f'  MF6:      {cfg.mf6_path}')
     console.print(f'  PhreeqcRM: {cfg.phreeqcrm_path}')
     console.print(f'  rtmf6:    {cfg.rtmf6_path}\n')
 
     phr = cfg.project_settings['phreeqcrm']
-    console.print(f'[info]PhreeqcRM[/info]')
+    console.print('[info]PhreeqcRM[/info]')
     console.print(f'  Database: {phr["database"]}')
     console.print(f'  Chemistry: {phr["chemistry_name"]}')
 

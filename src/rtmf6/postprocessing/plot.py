@@ -1,9 +1,7 @@
 """Plot simulation results"""
 
-from pathlib import Path
 
 import pandas as pd
-
 
 species_colors = {
     'Na': 'C0',  # blue

@@ -1,8 +1,9 @@
 """Configuration."""
 
-from pathlib import Path
-import tomllib
 import sys
+from pathlib import Path
+
+import tomllib
 
 
 class Config:

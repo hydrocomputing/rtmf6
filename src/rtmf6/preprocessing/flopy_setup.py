@@ -1,12 +1,11 @@
 """Create needed Flopy data."""
 
-from copy import deepcopy
 from pathlib import Path
 from shutil import copyfile, rmtree
 
 import flopy
-from flopy.mf6.mfbase import ExtFileAction, MFDataException
 import numpy as np
+from flopy.mf6.mfbase import ExtFileAction, MFDataException
 
 from rtmf6.preprocessing.phreeqc_setup import PhreeqcRMSetup
 

@@ -7,8 +7,6 @@ from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
 from pymf6.api import States
 from pymf6.mf6 import MF6
 
-from rtmf6.config import Config
-
 
 def run_model(
     model_path,
