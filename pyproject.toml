@@ -73,6 +73,7 @@ pymf6-tools = ">=0.1.3,<0.2"
 jupyterlab = ">=4.5.1,<5"
 typer = ">=0.21.1,<0.22"
 pylint = "*"
+setuptools_scm = "*"
 
 [tool.pixi.pypi-dependencies]
 rtmf6 = { path = ".", editable = true }
@@ -83,6 +84,7 @@ pymf6-tools = { path = "../pymf6-tools", editable = true }
 [tool.pixi.feature.build.dependencies]
 twine = ">=5.0.0,<5.1"
 # build = ">=0.7.0,<1.0"
+
 
 [tool.pixi.feature.build.tasks]
 build-wheel = "python -m build --wheel"
@@ -125,15 +127,33 @@ sphinx-copybutton = "*"
 sphinx-design = "*"
 sphinxcontrib-bibtex = "*"
 ansi2html = ">=1.9.2,<2"
-setuptools_scm = "*"
 
-[tool.pixi.feature.docs.tasks]
-docs-build = { cmd = "sphinx-build -b html source _build/html", cwd = "docs" }
-docs-clean = { cmd = "rm -rf _build", cwd = "docs" }
-docs-serve = { cmd = "python -m http.server -d _build/html 8907", cwd = "docs" }
-docs-deploy = { cmd = "zsh deploy_docs.sh", cwd = "docs/.deploy" }
-docs-make-cli-doc = { cmd = "typer rtmf6.main utils docs --output README.md", cwd = "docs/source/users_guide" }
+# Tasks for documentation are defined in the [tool.pixi.feature.docs.tasks] section below.
 
+[tool.pixi.feature.docs.tasks.docs-build]
+cmd = "sphinx-build -b html source _build/html"
+cwd = "docs"
+description = "Build documentation"
+
+[tool.pixi.feature.docs.tasks.docs-clean]
+cmd = "rm -rf _build"
+cwd = "docs"
+description = "Clean documentation build"
+
+[tool.pixi.feature.docs.tasks.docs-serve]
+cmd = "python -m http.server -d _build/html 8907"
+cwd = "docs"
+description = "Serve documentation locally"
+
+[tool.pixi.feature.docs.tasks.docs-deploy]
+cmd = "zsh deploy_docs.sh"
+cwd = "docs/.deploy"
+description = "Deploy documentation to https://docs.rtmf6.com/."
+
+[tool.pixi.feature.docs.tasks.docs-make-cli-doc]
+cmd = "typer rtmf6.main utils docs --output README.md"
+cwd = "docs/source/users_guide"
+description = "Generate CLI documentation"
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
@@ -142,12 +162,21 @@ build = { features = ["build"], solve-group = "default" }
 develop = { features = ["develop"], solve-group = "default" }
 docs = { features = ["docs"], solve-group = "default" }
 
-[tool.pixi.tasks]
-start = "rtmf6"
+[tool.pixi.tasks.start]
+cmd = "rtmf6"
+description = "Start rtmf6"
+
+[tool.pixi.tasks.show-version]
+cmd = "python -m setuptools_scm"
+description = "Show version"
+
+[tool.pixi.tasks.update-version]
+cmd = "python -m setuptools_scm --force-write-version-files"
+description = "Update version files"
 
 [tool.pixi.package]
 name = "rtmf6"
-version = "0.0.3"
+version = "0.0.4"
 
 [tool.pixi.package.build]
 backend = { name = "pixi-build-python", version = "0.4.*" }
