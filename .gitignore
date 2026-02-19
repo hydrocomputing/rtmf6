@@ -32,3 +32,6 @@ docs/.deploy/
 
 # Jupyter Notebook checkpoints
 **/.ipynb_checkpoints
+
+# Resources
+literature/**
