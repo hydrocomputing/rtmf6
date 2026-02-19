@@ -125,6 +125,7 @@ sphinx-copybutton = "*"
 sphinx-design = "*"
 sphinxcontrib-bibtex = "*"
 ansi2html = ">=1.9.2,<2"
+setuptools_scm = "*"
 
 [tool.pixi.feature.docs.tasks]
 docs-build = { cmd = "sphinx-build -b html source _build/html", cwd = "docs" }
