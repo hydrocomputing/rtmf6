@@ -26,7 +26,7 @@ This can be done either by typing in a terminal window:
 
 ```shell
 pixi init rtmf6_project
-cd rtmmf6_project
+cd rtmf6_project
 ```
 
 Now the directory `rtmf6_project` contains a file named `pixi.toml` that
@@ -109,6 +109,7 @@ Next, type:
 
 ```shell
 conda activate rtmf6_314
+conda install rtmf6
 ```
 
 ## Alternative 3: Using Pip or uv
