@@ -2,6 +2,8 @@
 
 import multiprocessing as mp
 from pathlib import Path
+import shelve
+import shutil
 
 from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
 from pymf6.api import States
@@ -43,6 +45,11 @@ def run_rtmf6(config, reactions=True):
     phreeqcrm_model = PhreeqcRMModel(
         str(config.project_settings['phreeqcrm']['model_yaml_file'])
     )
+    output_config = config.project_settings.get('output')
+    output = None
+    if output_config:
+        output = Output(config.project_path, output_config=output_config,
+                        phreeqcrm_model=phreeqcrm_model)
     processes = {}
     queues_from_mf6 = {}
     queues_from_phrq = {}
@@ -65,7 +72,7 @@ def run_rtmf6(config, reactions=True):
         queues_from_phrq[model_name] = queue_from_phrq
         process.start()
     done = False
-    step = 1
+    step = 0
     last_totim = 0
     while True:
         step += 1
@@ -92,6 +99,8 @@ def run_rtmf6(config, reactions=True):
             else:
                 queues_from_phrq[component].put(mf6_conc)
         if reactions:
+            if output:
+                output.save(step)
             phreeqcrm_model.write_conc_back()
             phreeqcrm_model._rm.SetTimeStep(delta_t)
             phreeqcrm_model.update()
@@ -100,6 +109,37 @@ def run_rtmf6(config, reactions=True):
                 queues_from_phrq[component].put(phreeqcrm_conc)
     for process in processes.values():
         process.join()
+
+
+class Output:
+
+    def __init__(self, project_path, phreeqcrm_model, output_config):
+        self.project_path = project_path
+        self.phreeqcrm_model = phreeqcrm_model
+        self.output_config = output_config
+        self.equilibrium_phases_files = self._init_phase_output()
+        concentrations_dir_name = self.output_config.get('concentrations')
+
+    def _init_phase_output(self):
+        equilibrium_phases_files = {}
+        equilibrium_phases_dir_name = self.output_config.get('equilibrium_phases')
+        if equilibrium_phases_dir_name:
+            equilibrium_phases_dir = self.project_path / equilibrium_phases_dir_name
+            if equilibrium_phases_dir.exists():
+                shutil.rmtree(equilibrium_phases_dir)
+            equilibrium_phases_dir.mkdir(parents=True)
+            for name in self.phreeqcrm_model.rm_variables.names:
+                if name.startswith('equilibrium_phases_moles_'):
+                    db_file_name = f'{name.rsplit('_', 1)[-1]}.shelve'
+                    equilibrium_phases_files[name] = equilibrium_phases_dir / db_file_name
+        return equilibrium_phases_files
+
+    def save(self, step):
+        """Save PhreeqcRM output."""
+        for name, db_file in self.equilibrium_phases_files.items():
+            value = getattr(self.phreeqcrm_model.rm_variables, name).value
+            with shelve.open(db_file) as db:
+                db[str(step)] = value
 
 
 if __name__ == '__main__':
