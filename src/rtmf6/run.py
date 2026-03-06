@@ -6,6 +6,7 @@ from pathlib import Path
 from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
 from pymf6.api import States
 from pymf6.mf6 import MF6
+from pymf6.datastructures import TIME_UNIT_VALUES
 
 
 def run_model(
@@ -17,6 +18,7 @@ def run_model(
 ):
     """Run a model in its own process."""
     mf6 = MF6(sim_path=Path(model_path), do_solution_loop=False)
+    time_conversion_factor = TIME_UNIT_VALUES[mf6.simulation.TDIS.ITMUNI.value]
     gwt_models = mf6.models['gwt6']
     gwt = gwt_models[reaction_model_name]
     start, end = reaction_start_stress_range
@@ -26,7 +28,10 @@ def run_model(
         if start <= gwt.kper <= end:
             if model_step.state == States.timestep_end:
                 var_name = f'SLN_{gwt.solution_id}/X'
-                queue_from_mf6.put(mf6.vars[var_name])
+                queue_from_mf6.put({
+                    'totim': gwt.totim * time_conversion_factor,
+                    'conc': mf6.vars[var_name]}
+                    )
                 # pylint: disable=protected-access
                 mf6._mf6.set_value(var_name, queue_from_phrq.get())
     queue_from_mf6.put(None)
@@ -61,26 +66,34 @@ def run_rtmf6(config, reactions=True):
         process.start()
     done = False
     step = 1
+    last_totim = 0
     while True:
         step += 1
         print(f'step: {step:5d}', end='\r')
-        conc_mf6 = {
-            component: queue.get()
-            for component, queue in queues_from_mf6.items()
-        }
-        for component, mf6_conc in conc_mf6.items():
-            if mf6_conc is None:
+        conc_mf6 = {}
+        totims = set()
+        for component, queue in queues_from_mf6.items():
+            res = queue.get()
+            if res is None:
                 done = True
                 break
+            conc_mf6[component] = res['conc']
+            totims.add(res['totim'])
+        if done:
+            break
+        assert len(totims) == 1
+        totim = tuple(totims)[0]
+        delta_t = totim - last_totim
+        last_totim = totim
+        for component, mf6_conc in conc_mf6.items():
             if reactions:
                 phreeqcrm_conc = phreeqcrm_model.concentrations[component]
                 phreeqcrm_conc[:] = mf6_conc
             else:
                 queues_from_phrq[component].put(mf6_conc)
-        if done:
-            break
         if reactions:
             phreeqcrm_model.write_conc_back()
+            phreeqcrm_model._rm.SetTimeStep(delta_t)
             phreeqcrm_model.update()
             for component, mf6_conc in conc_mf6.items():
                 phreeqcrm_conc = phreeqcrm_model.concentrations[component]
