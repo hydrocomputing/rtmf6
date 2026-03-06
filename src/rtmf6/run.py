@@ -112,6 +112,7 @@ def run_rtmf6(config, reactions=True):
 
 
 class Output:
+    """Save PhreeqRM results in `shelve` files."""
 
     def __init__(self, project_path, phreeqcrm_model, output_config):
         self.project_path = project_path
@@ -121,6 +122,7 @@ class Output:
         self.concentrations_files = self._init_conc_output()
 
     def _create_outdir(self, dir_name):
+        """Create an output dir. Remove old files if the exist."""
         dir_path = self.project_path / dir_name
         if dir_path.exists():
             shutil.rmtree(dir_path)
@@ -128,6 +130,7 @@ class Output:
         return dir_path
 
     def _init_conc_output(self):
+        """Create output shelve files for concentrations."""
         concentrations_files = {}
         concentrations_dir_name = self.output_config.get('concentrations')
         if concentrations_dir_name:
@@ -138,6 +141,7 @@ class Output:
         return concentrations_files
 
     def _init_phase_output(self):
+        """Create output shelve files for equilibrium phases."""
         equilibrium_phases_files = {}
         equilibrium_phases_dir_name = self.output_config.get('equilibrium_phases')
         if equilibrium_phases_dir_name:
