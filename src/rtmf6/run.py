@@ -120,14 +120,18 @@ class Output:
         self.equilibrium_phases_files = self._init_phase_output()
         self.concentrations_files = self._init_conc_output()
 
+    def _create_outdir(self, dir_name):
+        dir_path = self.project_path / dir_name
+        if dir_path.exists():
+            shutil.rmtree(dir_path)
+        dir_path.mkdir(parents=True)
+        return dir_path
+
     def _init_conc_output(self):
         concentrations_files = {}
         concentrations_dir_name = self.output_config.get('concentrations')
         if concentrations_dir_name:
-            concentrations_dir = self.project_path / concentrations_dir_name
-            if concentrations_dir.exists():
-                shutil.rmtree(concentrations_dir)
-            concentrations_dir.mkdir(parents=True)
+            concentrations_dir = self._create_outdir(concentrations_dir_name)
             for name in self.phreeqcrm_model.concentrations.names:
                 db_file_name = f'{name}.shelve'
                 concentrations_files[name] = concentrations_dir / db_file_name
@@ -137,10 +141,7 @@ class Output:
         equilibrium_phases_files = {}
         equilibrium_phases_dir_name = self.output_config.get('equilibrium_phases')
         if equilibrium_phases_dir_name:
-            equilibrium_phases_dir = self.project_path / equilibrium_phases_dir_name
-            if equilibrium_phases_dir.exists():
-                shutil.rmtree(equilibrium_phases_dir)
-            equilibrium_phases_dir.mkdir(parents=True)
+            equilibrium_phases_dir = self._create_outdir(equilibrium_phases_dir_name)
             for name in self.phreeqcrm_model.rm_variables.names:
                 if name.startswith('equilibrium_phases_moles_'):
                     db_file_name = f'{name.rsplit('_', 1)[-1]}.shelve'
