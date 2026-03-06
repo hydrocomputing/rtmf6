@@ -146,7 +146,7 @@ class YAMLCreator:
             config.phreeqcrm_cell_value_categories
         )
 
-    def set_error_mode(self, error_handler='error_code'):
+    def set_error_mode(self, error_handler='cpp_exception'):
         """Set error mode.
 
         Error mode name is mapped to an integer.
@@ -231,7 +231,7 @@ class YAMLCreator:
         yaml += self._create_yaml()
         if post_yaml:
             yaml += '# post yaml start\n'
-            yaml += pre_yaml.read_text().rstrip()
+            yaml += post_yaml.read_text().rstrip()
             yaml += '\n# post yaml end\n'
         out = self.phr_config['model_yaml_file']
         out.write_text(yaml)
