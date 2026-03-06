@@ -118,7 +118,20 @@ class Output:
         self.phreeqcrm_model = phreeqcrm_model
         self.output_config = output_config
         self.equilibrium_phases_files = self._init_phase_output()
+        self.concentrations_files = self._init_conc_output()
+
+    def _init_conc_output(self):
+        concentrations_files = {}
         concentrations_dir_name = self.output_config.get('concentrations')
+        if concentrations_dir_name:
+            concentrations_dir = self.project_path / concentrations_dir_name
+            if concentrations_dir.exists():
+                shutil.rmtree(concentrations_dir)
+            concentrations_dir.mkdir(parents=True)
+            for name in self.phreeqcrm_model.concentrations.names:
+                db_file_name = f'{name}.shelve'
+                concentrations_files[name] = concentrations_dir / db_file_name
+        return concentrations_files
 
     def _init_phase_output(self):
         equilibrium_phases_files = {}
@@ -138,6 +151,10 @@ class Output:
         """Save PhreeqcRM output."""
         for name, db_file in self.equilibrium_phases_files.items():
             value = getattr(self.phreeqcrm_model.rm_variables, name).value
+            with shelve.open(db_file) as db:
+                db[str(step)] = value
+        for name, db_file in self.concentrations_files.items():
+            value = self.phreeqcrm_model.concentrations[name]
             with shelve.open(db_file) as db:
                 db[str(step)] = value
 
