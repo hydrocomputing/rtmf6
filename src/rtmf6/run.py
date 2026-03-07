@@ -166,7 +166,7 @@ class Output:
             selected_output_dir = self._create_outdir(dir_name)
             for n in range(count):
                 sel = self.phreeqcrm_model._rm.GetNthSelectedOutputUserNumber(n)
-                db_file_name = f'{sel}.shelve'
+                db_file_name = f'selected_output_{sel}.shelve'
                 files[sel] = selected_output_dir / db_file_name
         return files
 
@@ -189,7 +189,7 @@ class Output:
             rm.SetCurrentSelectedOutputUserNumber(sel)
             col_count = rm.GetSelectedOutputColumnCount()
             row_count = rm.GetSelectedOutputRowCount()
-            headings = rm.GetSelectedOutputHeadings()
+            headings = [str(name) for name in rm.GetSelectedOutputHeadings()]
             selected_out = rm.GetSelectedOutput().reshape((col_count, row_count))
             value = {name: selected_out[i] for i, name in enumerate(headings)}
             with shelve.open(db_file) as db:
