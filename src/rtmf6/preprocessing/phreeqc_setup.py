@@ -268,3 +268,5 @@ def _set_yaml_basics(yrm):
     yrm.YAMLSetUnitsGasPhase(1)
     yrm.YAMLSetUnitsSSassemblage(1)
     yrm.YAMLSetUnitsKinetics(1)
+
+    yrm. YAMLSetSelectedOutputOn(True)
