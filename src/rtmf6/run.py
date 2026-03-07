@@ -5,7 +5,10 @@ from pathlib import Path
 import shelve
 import shutil
 
+import numpy as np
+
 from phreeqpy.phreeqcrm.rm_model import PhreeqcRMModel
+
 from pymf6.api import States
 from pymf6.mf6 import MF6
 from pymf6.datastructures import TIME_UNIT_VALUES
@@ -120,6 +123,7 @@ class Output:
         self.output_config = output_config
         self.equilibrium_phases_files = self._init_phase_output()
         self.concentrations_files = self._init_conc_output()
+        self.selected_output_files = self._init_selected_output()
 
     def _create_outdir(self, dir_name):
         """Create an output dir. Remove old files if the exist."""
@@ -152,6 +156,20 @@ class Output:
                     equilibrium_phases_files[name] = equilibrium_phases_dir / db_file_name
         return equilibrium_phases_files
 
+    def _init_selected_output(self):
+        """Create selected output shelve files for concentrations."""
+        files = {}
+        rm = self.phreeqcrm_model._rm
+        count = self.phreeqcrm_model._rm.GetSelectedOutputCount()
+        dir_name = self.output_config.get('selected_output')
+        if dir_name:
+            selected_output_dir = self._create_outdir(dir_name)
+            for n in range(count):
+                sel = self.phreeqcrm_model._rm.GetNthSelectedOutputUserNumber(n)
+                db_file_name = f'{sel}.shelve'
+                files[sel] = selected_output_dir / db_file_name
+        return files
+
     def save(self, step):
         """Save PhreeqcRM output."""
         for name, db_file in self.equilibrium_phases_files.items():
@@ -162,7 +180,20 @@ class Output:
             value = self.phreeqcrm_model.concentrations[name]
             with shelve.open(db_file) as db:
                 db[str(step)] = value
+        self.save_selected_output(step)
 
+    def save_selected_output(self, step):
+        rm = self.phreeqcrm_model._rm
+        selected_outs = {}
+        for sel, db_file in self.selected_output_files.items():
+            rm.SetCurrentSelectedOutputUserNumber(sel)
+            col_count = rm.GetSelectedOutputColumnCount()
+            row_count = rm.GetSelectedOutputRowCount()
+            headings = rm.GetSelectedOutputHeadings()
+            selected_out = rm.GetSelectedOutput().reshape((col_count, row_count))
+            value = {name: selected_out[i] for i, name in enumerate(headings)}
+            with shelve.open(db_file) as db:
+                db[str(step)] = value
 
 if __name__ == '__main__':
     import sys
