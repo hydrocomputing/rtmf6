@@ -33,6 +33,11 @@ class PhreeqcRMSetup:
         )
         self.database = str(phreeqcrm_settings['database'])
         self.chemistry_name = str(phreeqcrm_settings['chemistry_name'])
+        self.save_init_conc = phreeqcrm_settings.get('save_initial_concentrations', False)
+        if self.save_init_conc:
+            self.init_conc_save_path = (
+                config.internal_paths.work_path_phreeqcrm / 'initial_concentrations.txt'
+            )
 
     def _get_solution_numbers(self):
         """Get solution numbers."""
@@ -46,13 +51,21 @@ class PhreeqcRMSetup:
 
     @property
     def solution_mapping(self):
-        """Mapping of solution number to concentratiions."""
+        """Mapping of solution number to concentrations."""
         self._make_intermediate_yaml_file()
         phreeqcrm_model = PhreeqcRMModel(str(self.intermediate_yaml_file))
-        return {
+        init_concs = {
             number: phreeqcrm_model.get_initial_concentrations(number)
             for number in self._get_solution_numbers()
         }
+        if self.save_init_conc:
+            with open(self.init_conc_save_path, 'w', encoding='utf-8') as fobj:
+                for sol_number, concs in init_concs.items():
+                    fobj.write(f'SOLUTION {sol_number}\n')
+                    for name, conc in concs.items():
+                        fobj.write(f'{name:10s} {conc: 10.10e}\n')
+                    fobj.write('\n')
+        return init_concs
 
     def _make_intermediate_yaml_file(self):
         """Create YAML file for preprocessing."""
