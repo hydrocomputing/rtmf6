@@ -22,7 +22,7 @@ def run_model(
     reaction_start_stress_range,
 ):
     """Run a model in its own process."""
-    mf6 = MF6(sim_path=Path(model_path), do_solution_loop=False)
+    mf6 = MF6(sim_path=Path(model_path), do_solution_loop=False, advance_first_step=False)
     time_conversion_factor = TIME_UNIT_VALUES[mf6.simulation.TDIS.ITMUNI.value]
     gwt_models = mf6.models['gwt6']
     gwt = gwt_models[reaction_model_name]
@@ -77,9 +77,9 @@ def run_rtmf6(config, reactions=True):
     done = False
     step = 0
     last_totim = 0
+    print(f'start', end='\r')
     while True:
         step += 1
-        print(f'step: {step:5d}', end='\r')
         conc_mf6 = {}
         totims = set()
         for component, queue in queues_from_mf6.items():
@@ -91,6 +91,7 @@ def run_rtmf6(config, reactions=True):
             totims.add(res['totim'])
         if done:
             break
+        print(f'step: {step:5d}', end='\r')
         assert len(totims) == 1
         totim = tuple(totims)[0]
         delta_t = totim - last_totim
