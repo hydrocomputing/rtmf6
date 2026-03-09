@@ -122,9 +122,12 @@ class Output:
         self.project_path = project_path
         self.phreeqcrm_model = phreeqcrm_model
         self.output_config = output_config
+        self.save_all = output_config.get('save_all', False)
+        self.save_all_number = 333 # internal PhreeqPy number TODO:investigate
         self.equilibrium_phases_files = self._init_phase_output()
         self.concentrations_files = self._init_conc_output()
         self.selected_output_files = self._init_selected_output()
+
 
     def _create_outdir(self, dir_name):
         """Create an output dir. Remove old files if the exist."""
@@ -167,6 +170,9 @@ class Output:
             selected_output_dir = self._create_outdir(dir_name)
             for n in range(count):
                 sel = self.phreeqcrm_model._rm.GetNthSelectedOutputUserNumber(n)
+                if sel == self.save_all_number and not self.save_all:
+                    # skip default selected output that can get huge
+                    continue
                 db_file_name = f'selected_output_{sel}.shelve'
                 files[sel] = selected_output_dir / db_file_name
         return files
