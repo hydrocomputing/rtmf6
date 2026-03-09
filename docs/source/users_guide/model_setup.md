@@ -101,6 +101,20 @@ pre_yaml_file = "phreeqcrm/pre.yaml"
 post_yaml_file = "phreeqcrm/post.yaml"
 # PhreeqcRM yaml with all inputs pre + generated + post
 model_yaml_file = "phreeqcrm/model.yaml"
+
+# specify what output will be saved
+# optional section, no output if not present
+[output]
+# save all minerals in this directory, no saving if not line not present
+equilibrium_phases = "out/equilibrium_phases"
+# save all concentrations in this directory, no saving if not line not present
+concentrations = "out/concentrations"
+# save constituents specified in `SELECTED_OUTPUT`
+# currently format is `shelve`
+# https://docs.python.org/3/library/shelve.html#module-shelve
+selected_output = "out/selected_output"
+# set to true to all constituents, attention: may create large output files
+save_all = false
 ```
 
 Example initial condition input file in MODFLOW 6 IC format.
