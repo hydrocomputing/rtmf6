@@ -102,11 +102,11 @@ def run_rtmf6(config, reactions=True):
             else:
                 queues_from_phrq[component].put(mf6_conc)
         if reactions:
-            if output:
-                output.save(step)
             phreeqcrm_model.write_conc_back()
             phreeqcrm_model._rm.SetTimeStep(delta_t)
             phreeqcrm_model.update()
+            if output:
+                output.save(step)
             for component, mf6_conc in conc_mf6.items():
                 phreeqcrm_conc = phreeqcrm_model.concentrations[component]
                 queues_from_phrq[component].put(phreeqcrm_conc)
