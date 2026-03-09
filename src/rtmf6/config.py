@@ -73,6 +73,7 @@ class Config:
         self.mf6_path = self.project_path / 'mf6'
         self.phreeqcrm_path = self.project_path / 'phreeqcrm'
         self.rtmf6_path = self.project_path / 'rtmf6'
+        self.out_path = self.project_path / 'out'
         self.internal_paths = InternalPaths(self.project_path)
 
     def _make_path_absolute(self):
