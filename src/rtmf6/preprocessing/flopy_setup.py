@@ -124,9 +124,10 @@ class FlopyWorker:
             skip = set(skip)
         if not keep_tracer:
             skip.add(tracer_name)
+        first_sol_number = next(iter(self.solution_mapping))
         specie_names = [
             name
-            for name in self.solution_mapping[0].keys()
+            for name in self.solution_mapping[first_sol_number].keys()
             if name not in skip
         ]
         self.update(specie_names)
