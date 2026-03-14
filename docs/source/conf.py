@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).parents[2] / "src"))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "rtmf6"
-copyright = "2024- 2026, Mike Müller"
+copyright = "2024-2026, Mike Müller"
 author = "Mike Müller"
 
 # The version info for the project
