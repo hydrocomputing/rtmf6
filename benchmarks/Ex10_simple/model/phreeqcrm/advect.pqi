@@ -1,0 +1,76 @@
+SOLUTION 0 # [K,I,J] = 1,1,1
+	units mol/L
+	water 1.0
+	temp 25.000000e+00
+	pH 6.768000e+000  # comp 18
+	pe 1.385200e+001  # comp 19
+	Tolu 0.000000e+000 # comp 1
+	Al 1.270000e-007  # comp 2
+	C(4) 9.592000e-003  # comp 3
+	C(-4) 0.000000e+000  # comp 4
+	Ca 4.209000e-003  # comp 5
+	Cl 5.412000e-003  # comp 6
+	Fe(2) 1.990000e-022  # comp 7
+	Fe(3) 6.970000e-014  # comp 8
+	K 4.630000e-004  # comp 9
+	Mg 2.648000e-003  # comp 10
+	N(3) 0.000000e+000  # comp 11
+	N(5) 4.308000e-006  # comp 12
+	N(0) 0.000000e+000  # comp 13
+	Na 4.610000e-003  # comp 14
+	O(0) 5.000000e-004  # comp 15
+	S(-2) 0.000000e+000  # comp 16
+	S(6) 3.033600e-003  # comp 17
+END
+EQUILIBRIUM_PHASES 0
+	Calcite 0.000000e+000 3.333333e+000 # comp 20
+	Goethite 0.000000e+000 3.333333e-003 # comp 21
+	Pyrite 0.000000e+000 0.000000e+000 # comp 22
+END
+KINETICS 0
+	Tolu # 4
+	-parms 1.000000e-007
+	-m0 1.000000e+001
+	-formula Tolu -1.0 C7H8 1.0
+END
+SOLUTION 1 # [K,I,J] = 1,14,1
+	units mol/L
+	water 1.0
+	temp 18.6
+	pH 6.768000e+000  # comp 18
+	pe 1.385200e+001  # comp 19
+	Tolu 1.000000e-003 # comp 1
+	Al 1.270000e-007  # comp 2
+	C(4) 9.592000e-003  # comp 3
+	C(-4) 0.000000e+000  # comp 4
+	Ca 4.209000e-003  # comp 5
+	Cl 5.412000e-003  # comp 6
+	Fe(2) 1.990000e-022  # comp 7
+	Fe(3) 6.970000e-014  # comp 8
+	K 4.630000e-004  # comp 9
+	Mg 2.648000e-003  # comp 10
+	N(3) 0.000000e+000  # comp 11
+	N(5) 4.308000e-006  # comp 12
+	N(0) 0.000000e+000  # comp 13
+	Na 4.610000e-003  # comp 14
+	O(0) 5.000000e-004  # comp 15
+	S(-2) 0.000000e+000  # comp 16
+	S(6) 3.033600e-003  # comp 17
+END
+
+SOLUTION 2 # [K,I,J] = 1,14,1
+	units mol/kgw
+	water 0.1
+	temp 0.000000e+001
+	pH 7 # comp 18
+	pe 1.385200e+001  # comp 19
+	Al 1.270000e+00  # comp 2
+END
+
+SELECTED_OUTPUT
+        -file            advect.sel
+        -reset           false
+        -pH              true
+        -pe              true
+        -totals          Na Cl K Ca
+END
