@@ -1,0 +1,43 @@
+[project]
+name = "appelo_uran"
+
+[models]
+flow_models = ["gwf_appelo_uran"]
+reaction_models = ["gwt_appelo_uran"]
+
+
+[[bc_concentrations]]
+model_name = "gwf_appelo_uran"
+bc_type = "wel"
+file_name = "mf6/gwf_appelo_uran.wel"
+src = "rtmf6_sol_number"
+dst = "concentration"
+
+[[initial_concentrations]]
+model_name = "gwt_appelo_uran"
+file_name = "mf6/gwt_appelo_uran.ic"
+
+[[equilibrium_phases]]
+model_name = "gwt_appelo_uran"
+file_name = "rtmf6/init_equilibrium_phases.ic"
+
+[[exchanges]]
+model_name = "gwt_appelo_uran"
+file_name = "rtmf6/init_exchanges.ic"
+
+[[surfaces]]
+model_name = "gwt_appelo_uran"
+file_name = "rtmf6/init_surfaces.ic"
+
+[phreeqcrm]
+number_of_threads = 8
+chemistry_name = "phreeqcrm/advect.pqi"
+database = "phreeqcrm/phreeqc.dat"
+#pre_yaml_file = "phreeqcrm/pre.yaml"
+#post_yaml_file = "phreeqcrm/post.yaml"
+model_yaml_file = "phreeqcrm/model.yaml"
+
+[output]
+#equilibrium_phases = "out/equilibrium_phases"
+#concentrations = "out/concentrations"
+selected_output = "out/selected_output"
