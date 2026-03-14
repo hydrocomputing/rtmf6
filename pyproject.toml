@@ -176,7 +176,7 @@ description = "Update version files"
 
 [tool.pixi.package]
 name = "rtmf6"
-version = "0.0.4"
+version = "0.0.5"
 
 [tool.pixi.package.build]
 backend = { name = "pixi-build-python", version = "0.4.*" }
