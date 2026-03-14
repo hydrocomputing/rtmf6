@@ -17,14 +17,19 @@ tests/_old/**
 tests/advect
 tests/advect_reactive_*
 _tmp/
+releases/**
 
-## MODFLOW output files
+## rmf6 output files
+*.shelve
+
+# MODFLOW output files
 *.dis.grb
 *.hds
 *.cbb
 *.lst
 *.obs.csv
 *.ucn
+mfsim.stdout
 
 # Sphinx
 docs/_build/
