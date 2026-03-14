@@ -1,0 +1,4 @@
+myst_nb
+setuptools_scm
+jupytext
+recommonmark
