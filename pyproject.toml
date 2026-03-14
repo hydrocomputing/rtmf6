@@ -1,6 +1,6 @@
 [project]
 name = "rtmf6"
-description = "Reactive transport modeling with MODFLOW 6"
+description = "Reactive transport modeling with MODFLOW 6 and PHREEQC 3"
 authors = [{name = "Mike Müller", email = "mmueller@hydrocomputing.com"}]
 readme = "README.md"
 requires-python = ">= 3.11"
