@@ -3,7 +3,7 @@
 - key: SetGridCellCount
   count: 40
 - key: SetErrorHandlerMode
-  mode: 0
+  mode: 1
 - key: SetComponentH2O
   tf: false
 - key: SetRebalanceFraction
@@ -28,6 +28,8 @@
   option: 1
 - key: SetUnitsKinetics
   option: 1
+- key: SetSelectedOutputOn
+  tf: true
 - key: SetTimeConversion
   conv_factor: 1.1574074074074073e-05
 - key: SetRepresentativeVolume
