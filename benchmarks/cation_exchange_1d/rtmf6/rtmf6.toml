@@ -25,3 +25,9 @@ number_of_threads = 1
 chemistry_name = "phreeqcrm/advect.pqi"
 database = "phreeqcrm/phreeqc.dat"
 model_yaml_file = "phreeqcrm/model.yaml"
+
+[output]
+equilibrium_phases = "out/equilibrium_phases"
+concentrations = "out/concentrations"
+selected_output = "out/selected_output"
+save_all = false  # default
