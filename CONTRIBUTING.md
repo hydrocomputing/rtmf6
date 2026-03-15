@@ -40,3 +40,44 @@ Branch prefixes help to identify the purpose of a branch. We use these prefixes:
 * **Release branch:** Prepare a new production release. Example: `release/0.5.1`.
 * **Documentation branch:** Write, update, or fix documentation. Example: `docs/tutorial-unstructured-grid`
 * **Benchmark branch:** Add or modify a benchmark. Example: `benchmark/appelo-2015-slow-kinetics`
+
+## Adding a benchmark
+
+Benchmarks use `rtmf6` for example models. The workflow typically doesn't involve modifying the Python source code. This means running `rtmf6` can be done with released version instead of the code in the branch `develop`. The documentation needs mor setup. The easiest way is to use [Pixi](https://pixi.prefix.dev/dev/). The command `pixi shell -e docs` will install all needed libraries. Now `rtmf6 -V` should show the version.
+
+The benchmark should be located in `benchmarks/my-benchmark` (replace `my-benchmark` with your benchmark name). The layout should follow this form:
+
+```
+benchmarks/my-benchmark
+├── description
+│   └── my_benchmark_explained.md
+├── model
+│   ├── mf6
+│   │   ├── ex10_simple.gwfgwt
+│   │   ├── ex10_simple.tdis
+...
+│   │   └── mfsim.nam
+│   ├── phreeqcrm
+│   │   ├── phreeqc_code.pqi
+│   │   ├── phreeqc.dat
+│   │   └── post.yaml
+│   ├── postprocessing
+│   │   ├── postprocess_my_benchmark.py
+│   │   └── plot.py
+│   ├── preprocessing
+│   │   └── create_my_bnenchmark.py
+│   ├── rtmf6
+│   │   ├── init_conc.ic
+│   │   ├── init_equilibrium_phases.ic
+│   │   └── init_kinetics.ic
+│   └── rtmf6.toml
+└── results
+    └── my_benchmark.png
+```
+
+Additional sub-directories maybe useful.
+
+### Writing benchmark documentation
+
+The documentation is build with Sphinx. Add new directory `docs/source/benchmarks/my-benchmark` (replace `my-benchmark` with your benchmark name). The documentation excepts Markdown files and Jupyter Notebooks.
+The command `pixi run docs-build` will build the documentation in `docs/_build/html`.
