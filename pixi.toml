@@ -3,13 +3,19 @@ channels = ["hydrocomputing", "conda-forge"]
 platforms = ["osx-arm64"]
 preview = ["pixi-build"]
 
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }
+build = { features = ["build"], solve-group = "default" }
+docs = { features = ["docs"], solve-group = "default" }
+
 [dependencies]
 python = "3.14.*"
 matplotlib = "*"
 pandas = "*"
 pymf6 = "*"
 phreeqcrm = "*"
-# phreeqpy = "*"
+phreeqpy = "*"
 gfortran = ">=15.2.0,<15.3"
 ipython = ">=9.8.0,<10"
 modflowapi = ">=0.3.0,<0.4"
@@ -18,47 +24,18 @@ jupyterlab = ">=4.5.1,<5"
 typer = ">=0.21.1,<0.22"
 pylint = "*"
 setuptools_scm = "*"
+pip = "*"
 
-[pypi-dependencies]
-rtmf6 = { path = ".", editable = true }
-phreeqpy = { path = "../../phreeqpy_project/phreeqpy", editable = true }
-pymf6 = { path = "../pymf6", editable = true }
-pymf6-tools = { path = "../pymf6-tools", editable = true }
+# [pypi-dependencies]
+# rtmf6 = { path = ".", editable = true }
 
 [feature.build.dependencies]
 twine = ">=5.0.0,<5.1"
-# build = ">=0.7.0,<1.0"
-
-
-[feature.build.tasks]
-build-wheel = "python -m build --wheel"
-pypi-upload = "python -m  twine upload --config-file=/Users/mike/.pypirc_hydro"
-
-[feature.develop.dependencies]
-jupyterlab = '*'
-yaml-cpp = '*'
-flopy = ">=3.9.5,<4"
-modflowapi = ">=0.3.0,<0.4"
-
-[feature.develop.pypi-dependencies]
-# pymf6 = { path = "../pymf6", editable = true }
-# pymf6-tools = { path = "../pymf6-tools", editable = true }
-phreeqpy = { path = "../../phreeqpy_project/phreeqpy", editable = true }
-
-
-[feature.develop.tasks]
-helper_exe = { cmd = "python", cwd = "tests" }
-jupyter = { cmd = "jupyter-lab", cwd = "scratch" }
-python_dev = "python"
-python_phreepy = { cmd = "python", cwd = "tests/phreeqpy" }
 
 [feature.test.dependencies]
 pytest = "*"
 pytest-md = "*"
 pytest-mock = ">=3.15.1,<4"
-
-[feature.test.tasks]
-test = "pytest --md=report.md"
 
 [feature.docs.dependencies]
 myst-parser = ">=3.0,<4"
@@ -71,9 +48,29 @@ sphinx-copybutton = "*"
 sphinx-design = "*"
 sphinxcontrib-bibtex = "*"
 ansi2html = ">=1.9.2,<2"
+rtmf6 = "*"
 
+# General tasks
+[tasks.install-editable]
+cmd = "pixi remove rtmf6 && pip install --no-build-isolation --no-deps --disable-pip-version-check -e ."
+
+[tasks.uninstall-editable]
+cmd = "pip uninstall -y rtmf6 && pixi install"
+
+[tasks.start]
+cmd = "rtmf6"
+description = "Start rtmf6"
+
+[tasks.show-version]
+cmd = "python -m setuptools_scm"
+description = "Show version"
+
+[tasks.update-version]
+cmd = "python -m setuptools_scm --force-write-version-files"
+description = "Update version files"
+
+# Documentation tasks
 # Tasks for documentation are defined in the [feature.docs.tasks] section below.
-
 [feature.docs.tasks.docs-build]
 cmd = "sphinx-build -b html source _build/html"
 cwd = "docs"
@@ -99,28 +96,24 @@ cmd = "typer rtmf6.main utils docs --output README.md"
 cwd = "docs/source/users_guide"
 description = "Generate CLI documentation"
 
-[environments]
-default = { solve-group = "default" }
-test = { features = ["test"], solve-group = "default" }
-build = { features = ["build"], solve-group = "default" }
-develop = { features = ["develop"], solve-group = "default" }
-docs = { features = ["docs"], solve-group = "default" }
+# Tests tasks
+[feature.test.tasks.test-report]
+cmd = "pytest --md=report.md"
+description = "Run all tests with pytest and generate a report in report.md"
 
-[tasks.start]
-cmd = "rtmf6"
-description = "Start rtmf6"
+# Build tasks
+[feature.build.tasks.build-wheel]
+cmd = "python -m build --wheel"
+description = "Build a Python wheel for PyPi upload"
 
-[tasks.show-version]
-cmd = "python -m setuptools_scm"
-description = "Show version"
+[feature.build.tasks.pypi-upload]
+cmd = "python -m twine upload --config-file=$PYPI_HYDRO"
+description = "Upload to PyPi"
 
-[tasks.update-version]
-cmd = "python -m setuptools_scm --force-write-version-files"
-description = "Update version files"
-
+# Build conda package with Pixi
 [package]
 name = "rtmf6"
-version = "0.0.5"
+version = "0.0.5"  # TODO: make dynamic
 
 [package.build]
 backend = { name = "pixi-build-python", version = "0.4.*" }
