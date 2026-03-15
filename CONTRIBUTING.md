@@ -3,6 +3,10 @@
 Contributions to tmf6 are welcome.
 This document describes how to contribute to rtmf6.
 
+## Using Pixi
+
+The project uses [Pixi](https://pixi.prefix.dev/) for environments and many tasks. It simplifies workflows considerably. Pixi is very powerful but you don't need know much about it. You only need to [install Pixi](https://pixi.prefix.dev/dev/installation/) and type in a few commands provided below. Knowing more about Pixi is useful but no prerequisite.
+
 ## Forking
 
 The best way to contribute is to fork a repository. This [description](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) explains how to fork a repository.
@@ -81,3 +85,25 @@ Additional sub-directories maybe useful.
 
 The documentation is build with Sphinx. Add new directory `docs/source/benchmarks/my-benchmark` (replace `my-benchmark` with your benchmark name). The documentation excepts Markdown files and Jupyter Notebooks.
 The command `pixi run docs-build` will build the documentation in `docs/_build/html`.
+
+### Typical workflow
+
+A typical workflow could look like this:
+
+1. Install git on your computer
+2. Create an account on GitHub
+3. Create a fork on GitHub (see [above](#forking))
+4. Clone to your local machine from your fork: `git clone https://github.com/<your.accounct>/rtmf6.git` (copy the URL from the green button with "<>Code" on the right top)
+5. Make sure your are in branch `develop`: `git branch`
+6. Create your branch: `git switch -c benchmark/my-benchmark` (replace `my-benchmark` with your benchmark name).
+7. [Install Pixi](https://pixi.prefix.dev/dev/installation/)
+8. Activate the `docs` environment: `pixi shell -e docs`
+9. Add your benchmark code and try it out with `rmf6` from the directory with your `rtmf6.toml`
+10. Write your benchmark documentation
+11. Build the documentation: `pixi run docs-build`
+12. Look at the documentation: Click on  `docs/_build/html/index.html`.
+13. Commit in everything: `git add file1 file2` and `git ci` (of course having multiple commits, one after each sub-step is even better)
+14. Push to your fork: `git push` gives an error message and tells you what to do to create a new branch on your fork
+15. Got to Github and click on the green button that offers to create a pull request (PR) and follow the steps.
+
+Let us know if this works for you of if the items above are missing something or not clear enough.
