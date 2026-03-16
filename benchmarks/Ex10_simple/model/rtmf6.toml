@@ -28,10 +28,12 @@ file_name = "rtmf6/init_equilibrium_phases.ic"
 number_of_threads = 8
 chemistry_name = "phreeqcrm/advect.pqi"
 database = "phreeqcrm/phreeqc.dat"
+#pre_yaml_file = "phreeqcrm/pre.yaml"
+#post_yaml_file = "phreeqcrm/post.yaml"
 model_yaml_file = "phreeqcrm/model.yaml"
-save_initial_concentrations = true
 
 [output]
-equilibrium_phases = "out/equilibrium_phases"
-concentrations = "out/concentrations"
+#equilibrium_phases = "out/equilibrium_phases"
+#concentrations = "out/concentrations"
 selected_output = "out/selected_output"
+save_all = false
