@@ -1,0 +1,82 @@
+SOLUTION 0 # [K,I,J] = 1,1,1
+	units mol/L
+	density		1.00  calculate
+	water 1.0
+	temp 2.500000e+001
+	pH 6.770000e+000  # comp 21
+	pe 1.385000e+001  # comp 22
+	Benz 0.000000e+000 # comp 1
+	Tolu 0.000000e+000 # comp 2
+	O(0) 5.000000e-004  # comp 5
+	Ca 4.209000e-003  # comp 6
+	Mg 2.648000e-003  # comp 7
+	Na 4.610000e-003  # comp 8
+	K 4.630000e-004  # comp 9
+	Fe(2) 1.990000e-022  # comp 10
+	Fe(3) 6.970000e-014  # comp 11
+	Al 1.270000e-007  # comp 12
+	Cl 5.412000e-003  # comp 13
+	C(4) 9.592000e-003  # comp 14
+	C(-4) 0.000000e+000  # comp 15
+	S(6) 3.034000e-003  # comp 16
+	S(-2) 0.000000e+000  # comp 17
+	N(5) 4.308000e-006  # comp 18
+	N(3) 0.000000e+000  # comp 19
+	N(0) 0.000000e+000  # comp 20
+END
+EQUILIBRIUM_PHASES 0
+	Calcite 0.000000e+000 3.333333e+000 # comp 20
+	Goethite 0.000000e+000 3.333333e-003 # comp 21
+	Pyrite 0.000000e+000 0.000000e+000 # comp 22
+END
+
+KINETICS 0
+	Benz # 4
+	-parms 1.000000e-008 0.000000e+000 0.000000e+000 0.000000e+000
+	-m0 1.000000e+001
+	-formula Benz -1.0 C6H6 1.0
+
+	Tolu # 5
+	-parms 2.000000e-007 0.000000e+000 0.000000e+000 0.000000e+000
+	-m0 1.000000e+001
+	-formula Tolu -1.0 C7H8 1.0
+END
+
+
+KINETICS 1
+	Benz # 4
+	-parms 1.000000e-008 0.000000e+000 0.000000e+000 0.000000e+000
+	-m0 1.000000e+001
+	-formula Benz -1.0 C6H6 1.0
+
+	Tolu # 5
+	-parms 2.000000e-007 0.000000e+000 0.000000e+000 0.000000e+000
+	-m0 1.000000e+001
+	-formula Tolu -1.0 C7H8 1.0
+
+	Benznapl # 26
+	-parms 1.000000e-007 0.000000e+000 0.000000e+000 0.000000e+000
+	-m0 0.2
+	-formula Benz   1.0
+
+	Tolunapl # 27
+	-parms 1.000000e-007 0.000000e+000 0.000000e+000 0.000000e+000
+	-m0 0.2
+	-formula Tolu   1.0
+END
+
+
+SELECTED_OUTPUT 1
+        -file            advect.sel
+        -reset           false
+USER_PUNCH 1
+-heading  CELL_NO TIME Tolu pH S(6) S(-2) Calcite Goethite Pyrite
+-start
+  10 PUNCH CELL_NO TOTAL_TIME tot("Tolu") 
+  20 PUNCH -LA("H+") # ph
+  40 PUNCH tot("S(6)")  
+  50 PUNCH tot("S(-2)")
+  60 PUNCH EQUI("Calcite")
+  70 PUNCH EQUI("Goethite")
+  80 PUNCH EQUI("Pyrite")   
+-end
