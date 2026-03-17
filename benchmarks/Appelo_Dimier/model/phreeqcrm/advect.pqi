@@ -13,7 +13,7 @@
 		S(-2) 0.000000e+00  # comp 6
 		S(6) 0.000000e+00  # comp 7
 		Si 2.588000e-04  # comp 8
-		U(6) 0.000000e+00  # comp 9
+		U(6) 1e-19  # comp 9
 		Zn 0.000000e+00  # comp 10
 	END
 
@@ -51,7 +51,7 @@
 		S(-2) 0.000000e+00  # comp 6
 		S(6) 1.000000e-03  # comp 7
 		Si 2.579000e-04  # comp 8
-		U(6) 0.000000e+00  # comp 9
+		U(6) 1e-19  # comp 9
 		Zn 0.000000e+00  # comp 10
 	END
 
@@ -90,3 +90,15 @@ Zn 1.500e-03
 pH 2.3
 pe 18.34
 end 
+
+SELECTED_OUTPUT 1
+        -file            advect.sel
+        -reset           false
+USER_PUNCH 1
+-heading  CELL_NO TIME U(6) pH pe Coffinite
+-start
+  10 PUNCH CELL_NO TOTAL_TIME tot("U(6)") 
+  20 PUNCH -LA("H+") # ph
+  40 PUNCH -LA("e-") # pe  
+  50 PUNCH EQUI("Coffinite")   
+-end
