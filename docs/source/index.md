@@ -69,8 +69,10 @@ users_guide/cli.md
 :caption: Benchmarks
 :hidden:
 
-benchmarks/index
 benchmarks/cation_exchange_1d/cat_ion_exchange_1d
+benchmarks/pht3d_example10_simplified/index
+benchmarks/pht3d_example10/index
+benchmarks/uranium_release/index
 ```
 
 
