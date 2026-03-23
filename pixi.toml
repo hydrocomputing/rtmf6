@@ -107,7 +107,7 @@ cmd = "uv build"
 description = "Build a Python wheel for PyPi upload"
 
 [feature.build.tasks.pypi-upload]
-cmd = "python -m twine upload --config-file=$PYPI_HYDRO"
+cmd = "python -m twine upload --verbose --config-file=$PYPI_HYDRO"
 description = "Upload to PyPi"
 
 # Build conda package with Pixi
