@@ -103,17 +103,17 @@ description = "Run all tests with pytest and generate a report in report.md"
 
 # Build tasks
 [feature.build.tasks.build-wheel]
-cmd = "python -m build --wheel"
+cmd = "uv build"
 description = "Build a Python wheel for PyPi upload"
 
 [feature.build.tasks.pypi-upload]
-cmd = "python -m twine upload --config-file=$PYPI_HYDRO"
+cmd = "python -m twine upload --verbose --config-file=$PYPI_HYDRO"
 description = "Upload to PyPi"
 
 # Build conda package with Pixi
 [package]
 name = "rtmf6"
-version = "0.0.5"  # TODO: make dynamic
+version = "0.1.0"  # TODO: make dynamic
 
 [package.build]
 backend = { name = "pixi-build-python", version = "0.4.*" }
