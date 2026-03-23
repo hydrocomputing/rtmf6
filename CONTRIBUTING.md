@@ -86,6 +86,16 @@ Additional sub-directories maybe useful.
 The documentation is build with Sphinx. Add new directory `docs/source/benchmarks/my-benchmark` (replace `my-benchmark` with your benchmark name). The documentation excepts Markdown files and Jupyter Notebooks.
 The command `pixi run docs-build` will build the documentation in `docs/_build/html`.
 
+Sphinx doesn't allow to include files outside its root directory. Since it can be useful to include files from the benchmark directory, you specify files that will be automatically copied into the Sphinx root. Create a file `autocopy.config` that specifies the files you like to use:
+
+```
+../../../../benchmarks/Ex10_simple/model/preprocessing.ipynb
+../../../../benchmarks/Ex10_simple/model/postprocessing.ipynb
+../../../../benchmarks/Ex10_simple/results/PHT3D_RTMF6_compare.png
+```
+
+**Important:** Use relative paths to the directory that contains `autocopy.config`. The build process will create a new directory `.autocopy` next to `autocopy.config` and copies all specified files into it. Now, you can reference these files: `.autocopy/postprocessing.ipynb`.
+
 ### Typical workflow
 
 A typical workflow could look like this:
