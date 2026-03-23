@@ -16041,12 +16041,12 @@
   - 1
   - 1
 - key: LoadDatabase
-  database: /Users/mike/Dev/pymf6-project/rtmf6/benchmarks/Appelo_Dimier/model/phreeqcrm/phreeqc.dat
+  database: /home/janek/windows/work/Projekte/RTMF6/rtmf6/benchmarks/Appelo_Dimier/model/phreeqcrm/phreeqc.dat
 - key: RunFile
   workers: true
   initial_phreeqc: true
   utility: true
-  chemistry_name: /Users/mike/Dev/pymf6-project/rtmf6/benchmarks/Appelo_Dimier/model/phreeqcrm/advect.pqi
+  chemistry_name: /home/janek/windows/work/Projekte/RTMF6/rtmf6/benchmarks/Appelo_Dimier/model/phreeqcrm/advect.pqi
 - key: RunString
   workers: true
   initial_phreeqc: false

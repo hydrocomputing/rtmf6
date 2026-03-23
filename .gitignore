@@ -34,6 +34,7 @@ mfsim.stdout
 # Sphinx
 docs/_build/
 docs/.deploy/
+.autocopy
 
 # Jupyter Notebook checkpoints
 **/.ipynb_checkpoints

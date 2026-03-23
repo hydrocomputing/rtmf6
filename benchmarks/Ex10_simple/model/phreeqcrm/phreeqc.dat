@@ -177,7 +177,7 @@ Tolu  = Tolu
 Ethy  = Ethy
         log_k           0.0
 
-Xyl   = Xyl
+Xyl   = Xyl 
         log_k           0.0
 
 Benznapl  = Benznapl
@@ -1142,7 +1142,7 @@ EXCHANGE_SPECIES
 	log_k	0.7
 	-gamma	3.5	0.015
 	delta_h  -4.3	# Jardine & Sparks, 1984
-
+	
 	Li+ + X- = LiX
 	log_k	-0.08
 	-gamma	6.0	0.0
@@ -1157,17 +1157,17 @@ EXCHANGE_SPECIES
 	log_k	0.6
 	-gamma	2.5	0.0
 	delta_h  -2.4	# Laudelout et al., 1968
-
+	
 	Ca+2 + 2X- = CaX2
 	log_k	0.8
 	-gamma	5.0	0.165
 	delta_h  7.2    # Van Bladel & Gheyl, 1980
-
+	
 	Mg+2 + 2X- = MgX2
 	log_k	0.6
 	-gamma	5.5	0.2
 	delta_h  7.4	# Laudelout et al., 1968
-
+	
 	Sr+2 + 2X- = SrX2
 	log_k	0.91
 	-gamma	5.26	0.121
@@ -1177,7 +1177,7 @@ EXCHANGE_SPECIES
 	log_k	0.91
 	-gamma	5.0	0.0
 	delta_h  4.5	# Laudelout et al., 1968
-
+	
 	Mn+2 + 2X- = MnX2
 	log_k	0.52
 	-gamma	6.0	0.0
@@ -1185,7 +1185,7 @@ EXCHANGE_SPECIES
 	Fe+2 + 2X- = FeX2
 	log_k	0.44
 	-gamma	6.0	0.0
-
+	
 	Cu+2 + 2X- = CuX2
 	log_k	0.6
 	-gamma	6.0	0.0
@@ -1203,11 +1203,11 @@ EXCHANGE_SPECIES
 	Al+3 + 3X- = AlX3
 	log_k	0.41
 	-gamma	9.0	0.0
-
+	
 	AlOH+2 + 2X- = AlOHX2
 	log_k	0.89
 	-gamma	0.0	0.0
-
+	
 SURFACE_MASTER_SPECIES
 	Hfo_s	Hfo_sOH
 	Hfo_w	Hfo_wOH
@@ -1356,7 +1356,7 @@ RATES
 #KINETICS
 #Quartz
 #-m0  158.8            # 90 % Qu
-#-parms 23.13  1.5
+#-parms 23.13  1.5       
 #-step 3.1536e8 in 10
 #-tol 1e-12
 
@@ -1368,7 +1368,7 @@ RATES
  #2 rem  sp. rate * parm(2) due to salts (Dove and Rimstidt, MSA Rev. 29, 259)
  #4 rem  parm(1) = A (m2) recalc's to mol/s
  #5 rem  parm(2) salt correction: (1 + 1.5 * c_Na (mM)), < 35
-
+ 
  10 dif_temp = 1/TK - 1/298
   20 pk_w = 13.7 + 4700.4 * dif_temp
   40 moles = parm(1) * parm(2) * (m/m0)^0.67 * 10^-pk_w * (1 -  SR("Quartz"))
@@ -1400,7 +1400,7 @@ K-feldspar
 50    pk_CO2 = 14.6 + 1677 * dif_temp
 #60   pk_org = 13.9 + 1254 * dif_temp  # rate increase with DOC
 70    rate = 10^-pk_H * ACT("H+")^0.5 + 10^-pk_w + 10^-pk_OH * ACT("OH-")^0.3
-71    rate = rate + 10^-pk_CO2 * (10^SI("CO2(g)"))^0.6
+71    rate = rate + 10^-pk_CO2 * (10^SI("CO2(g)"))^0.6 
 #72   rate = rate + 10^-pk_org * TOT("DOC")^0.4
 80    moles = parm(1) * parm(2) * rate * (1 - SR("K-feldspar")) * time
 81 rem decrease rate on precipitation
@@ -1432,7 +1432,7 @@ Albite
 50    pk_CO2 = 14.0 + 1677 * dif_temp
 #60   pk_org = 12.5 + 1254 * dif_temp # ...rate increase for DOC
 70    rate = 10^-pk_H * ACT("H+")^0.5 + 10^-pk_w + 10^-pk_OH * ACT("OH-")^0.3
-71    rate = rate + 10^-pk_CO2 * (10^SI("CO2(g)"))^0.6
+71    rate = rate + 10^-pk_CO2 * (10^SI("CO2(g)"))^0.6 
 #72   rate = rate + 10^-pk_org * TOT("DOC")^0.4
 80    moles = parm(1) * parm(2) * rate * (1 - SR("Albite")) * time
 81 rem decrease rate on precipitation
@@ -1445,7 +1445,7 @@ Albite
 ########
 # Example of KINETICS data block for calcite rate:
 #	KINETICS 1
-#	Calcite
+#	Calcite 
 #		-tol    1e-8
 #		-m0 	3.e-3
 #		-m	3.e-3
@@ -1481,16 +1481,16 @@ Calcite
 #######
 # Example of KINETICS data block for pyrite rate:
 #	KINETICS 1
-#	Pyrite
+#	Pyrite  
 #		-tol    1e-8
 #		-m0 	5.e-4
 #		-m	5.e-4
-#		-parms -5.0 	0.1 	.5 	-0.11
+#		-parms -5.0 	0.1 	.5 	-0.11 
 Pyrite
   -start
    1 rem	parm(1) = log10(A/V, 1/dm)	parm(2) = exp for (m/m0)
    2 rem	parm(3) = exp for O2		parm(4) = exp for H+
-
+      
    10 if (m <= 0) then goto 200
    20 if (si("Pyrite") >= 0) then goto 200
    20  rate = -10.19 + parm(1) + parm(3)*lm("O2") + parm(4)*lm("H+") + parm(2)*log10(m/m0)
@@ -1551,7 +1551,7 @@ Pyrolusite
    120	if moles <= -Mn_t then moles = -Mn_t
    200	save moles
   -end
-
+  
 #################################################
 Fe(OH)3(a)
 #################################################
@@ -1560,7 +1560,7 @@ Fe(OH)3(a)
 40 moles = rate*TIME
 50 SAVE moles
       -end
-
+      
 #################################################
 Goethite
 #################################################
@@ -1577,8 +1577,8 @@ Siderite
 30 rate = parm(1)*(1-SR("Siderite"))
 40 moles = rate*TIME
 50 SAVE moles
-      -end
-
+      -end  
+      
 #################################################
 FeS(ppt)
 #################################################
@@ -1593,13 +1593,11 @@ Benz
 #################################################
   -start
    30  mBenz = tot("Benz")
-   60  rate = parm(1)* mBenz
+   60  rate = parm(1)* mBenz 
    70  moles = rate * time
    80  if (moles > m) then moles = m
    200 save moles
   -end
-
-
 
 #################################################
 Tolu
@@ -1641,7 +1639,7 @@ Xyl
 Benznapl
 #################################################
   -start
-   10  mBenznapl = tot("Benznapl")
+   10  mBenznapl = tot("Benznapl")   
    15  if (mBenznapl <= 1e-10) then goto 200
    20  solub_Benz = 0.022820
    25  mBenz = tot("Benz")
@@ -1668,7 +1666,7 @@ Tolunapl
    25  mTolu = tot("Tolu")
    30  mBenznapl = tot("Benznapl")
    34  mEthynapl = tot("Ethynapl")
-   36  mXylnapl  = tot("Xylnapl")
+   36  mXylnapl  = tot("Xylnapl")  
    38  mLowsolubnapl  = tot("Lowsolubnapl")
    40  m_napl_tot = mBenznapl + mTolunapl + mEthynapl + mXylnapl + mLowsolubnapl
    42  if (m_napl_tot <= 1e-10) then goto 200
@@ -1707,7 +1705,7 @@ Xylnapl
    10  mXylnapl  = tot("Xylnapl")
    15  if (mXylnapl <= 1e-10) then goto 200
    20  solub_Xyl = 0.001800
-   25  mXyl  = tot("Xyl")
+   25  mXyl  = tot("Xyl") 
    30  mBenznapl = tot("Benznapl")
    32  mTolunapl = tot("Tolunapl")
    34  mEthynapl = tot("Ethynapl")
@@ -1728,4 +1726,4 @@ Lowsolubnapl
    200 save moles
   -end
 
-END
+END
