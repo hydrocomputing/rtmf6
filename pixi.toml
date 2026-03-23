@@ -113,7 +113,7 @@ description = "Upload to PyPi"
 # Build conda package with Pixi
 [package]
 name = "rtmf6"
-version = "0.0.5"  # TODO: make dynamic
+version = "0.1.0"  # TODO: make dynamic
 
 [package.build]
 backend = { name = "pixi-build-python", version = "0.4.*" }
