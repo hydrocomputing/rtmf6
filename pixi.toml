@@ -103,7 +103,7 @@ description = "Run all tests with pytest and generate a report in report.md"
 
 # Build tasks
 [feature.build.tasks.build-wheel]
-cmd = "python -m build --wheel"
+cmd = "uv build"
 description = "Build a Python wheel for PyPi upload"
 
 [feature.build.tasks.pypi-upload]
