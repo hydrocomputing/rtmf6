@@ -72,6 +72,7 @@ users_guide/cli.md
 benchmarks/cation_exchange_1d/cat_ion_exchange_1d
 benchmarks/pht3d_example10_simplified/index
 benchmarks/pht3d_example10/index
+benchmarks/pht3d_example10_simplified_density/index
 benchmarks/uranium_release/index
 ```
 
