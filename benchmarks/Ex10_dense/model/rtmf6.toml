@@ -1,0 +1,35 @@
+[project]
+name = "ex10_dens"
+
+[models]
+flow_models = ["gwf_ex10_dens"]
+reaction_models = ["gwt_ex10_dens"]
+
+[[bc_concentrations]]
+model_name = "gwf_ex10_dens"
+bc_type = "wel"
+file_name = "mf6/gwf_ex10_dens.wel"
+src = "rtmf6_sol_number"
+dst = "concentration"
+
+[[initial_concentrations]]
+model_name = "gwt_ex10_dens"
+file_name = "mf6/gwt_ex10_dens.ic"
+
+[[kinetics]]
+model_name = "gwt_ex10_dens"
+file_name = "rtmf6/init_kinetics.ic"
+
+[[equilibrium_phases]]
+model_name = "gwt_ex10_dens"
+file_name = "rtmf6/init_equilibrium_phases.ic"
+
+[phreeqcrm]
+number_of_threads = 8
+chemistry_name = "phreeqcrm/advect.pqi"
+database = "phreeqcrm/phreeqc.dat"
+model_yaml_file = "phreeqcrm/model.yaml"
+
+[output]
+selected_output = "out/selected_output"
+save_all = false
