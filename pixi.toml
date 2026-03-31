@@ -53,9 +53,11 @@ rtmf6 = "*"
 # General tasks
 [tasks.install-editable]
 cmd = "pixi remove rtmf6 && pip install --no-build-isolation --no-deps --disable-pip-version-check -e ."
+description = "install rtmf6 via pip"
 
 [tasks.uninstall-editable]
 cmd = "pip uninstall -y rtmf6 && pixi install"
+description = "uninstall rtmf6 via pip"
 
 [tasks.start]
 cmd = "rtmf6"
