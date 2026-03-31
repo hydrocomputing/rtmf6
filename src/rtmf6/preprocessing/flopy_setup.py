@@ -38,7 +38,7 @@ class FlopyWorker:
         self.all_cells_active = self
         self.write_simulation()
         self._make_init_concs(init_concs_config)
-        self._make_bc_concs(bc_concs_config)
+        self._make_bc_concs(bc_concs_config, defaults=config.defaults['bc_concentrations'])
         self._make_modified_file_names(config.project_path)
 
     def _make_modified_file_names(self, project_path):
@@ -60,12 +60,14 @@ class FlopyWorker:
                 )
             )
 
-    def _make_bc_concs(self, bc_concs_config):
+    def _make_bc_concs(self, bc_concs_config, defaults):
         self.bc_concs = []
         for bc_conc in bc_concs_config:
             self.bc_concs.append(
                 BCConc(
-                    config_data=bc_conc, solution_mapping=self.solution_mapping
+                    config_data=bc_conc,
+                    solution_mapping=self.solution_mapping,
+                    defaults=defaults,
                 )
             )
 
@@ -186,14 +188,14 @@ class BCConc:
     """One bc concentration."""
     # pylint: disable=too-few-public-methods
 
-    def __init__(self, config_data, solution_mapping):
+    def __init__(self, config_data, solution_mapping, defaults=None):
         self.solution_mapping = solution_mapping
         self.model_name = config_data['model_name']
         self.bc_type = config_data['bc_type']
         self.file_path = Path(config_data['file_name'])
         self.file_name = self.file_path.name
-        self.src = config_data['src']
-        self.dst = config_data['dst']
+        self.src = config_data.get('src', defaults.get('src'))
+        self.dst = config_data.get('dst', defaults.get('dst'))
 
     def update(self, sim, conc_name):
         """Update the stress period data.
@@ -201,6 +203,8 @@ class BCConc:
         Solution numbers are replaced by concentration values.
         """
         bc = sim.get_model(self.model_name).get_package(self.bc_type)
+        if bc is None:
+            raise ValueError(f'no boundary condition of type {self.bc_type} for model {self.model_name}')
         modified = {}
         for period_no, period_data in bc.stress_period_data.data.items():
             # convert column to float, maybe int
@@ -212,6 +216,10 @@ class BCConc:
                 else:
                     new_descr.append((name, dtype))
             period_data = period_data.astype(np.dtype(new_descr))
+            if self.dst not in period_data.dtype.names:
+                msg = f'{self.dst} not found in bc data for period {period_no}\n'
+                msg += f'available names: {period_data.dtype.names}'
+                raise ValueError(msg)
             conc = []
             sol_numbers_float = period_data[self.src].flatten()
             sol_numbers = sol_numbers_float.astype(int)
