@@ -5,11 +5,19 @@ from pathlib import Path
 
 import tomllib
 
+DEFAULTS = {
+    'bc_concentrations':
+        {
+            'src': 'rtmf6_sol_number',
+            'dst': 'conc'
+            },
+}
 
 class Config:
     """Configure a project."""
      # pylint: disable=too-many-instance-attributes, too-few-public-methods
     def __init__(self, project_toml):
+        self.defaults = DEFAULTS
         with open(project_toml, 'rb') as fobj:
             self.project_settings = tomllib.load(fobj)
         self._check()
@@ -17,8 +25,7 @@ class Config:
         directory = self.project_settings['project'].get('directory', '.')
         self.project_path = Path(project_toml).parent.absolute() / directory
         self.reaction_model_name = self.project_settings['models'][
-            'reaction_models'
-        ][0]
+            'reaction_models'][0]
         self.phreeqcrm_cell_value_categories = {
             'initial_concentrations': 'YAMLInitialSolutions2Module',
             'exchanges': 'YAMLInitialExchanges2Module',
@@ -106,7 +113,7 @@ class InternalPaths:
     """Internal paths for data manipulation.
 
     These paths are not intended to be modified by the model user.
-    They contain data that rtmf6 generates
+    They contain data that rtmf6 generates.
     """
     # pylint: disable=too-few-public-methods
 
