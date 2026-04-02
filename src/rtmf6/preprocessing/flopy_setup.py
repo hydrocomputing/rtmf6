@@ -8,6 +8,7 @@ import numpy as np
 from flopy.mf6.mfbase import ExtFileAction, MFDataException
 
 from rtmf6.preprocessing.phreeqc_setup import PhreeqcRMSetup
+from rtmf6.tools.domain import Domain
 
 
 class FlopyWorker:
@@ -31,11 +32,10 @@ class FlopyWorker:
         bc_types = list({entry['bc_type'] for entry in bc_concs_config})
         self.load_only = bc_types + ['ic']
         self.sim = self._load_initial_sim()
-        self.active_cells = self._get_active_cells_mask(
-            config.project_settings['models']['flow_models'][0]
-        )
-        self.nxyz = int(np.sum(self.active_cells))
-        self.all_cells_active = self.active_cells.sum() == self.active_cells.size
+        domain = Domain(self.sim, model_name=config.flow_model_name)
+        self.active_cells = domain.active_cells
+        self.nxyz = domain.nxyz
+        self.all_cells_active = domain.all_cells_active
         self.write_simulation()
         self._make_init_concs(init_concs_config)
         self.bc_concs = self._make_bc_concs(
