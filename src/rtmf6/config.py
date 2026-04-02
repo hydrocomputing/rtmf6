@@ -138,6 +138,7 @@ class InternalPaths:
         self.work_path_nam = work_path / 'nam'
         if create:
             self._make_directory_structure()
+        self.domain_db_path = self.work_path_flopy / 'domain.db'
 
     def _make_directory_structure(self):
         """Create directory tree for internal data."""
