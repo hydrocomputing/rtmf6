@@ -78,6 +78,7 @@ def run_rtmf6(config, reactions=True):
     step = 0
     last_totim = 0
     print(f'start', end='\r')
+    rm = phreeqcrm_model._rm
     while True:
         step += 1
         conc_mf6 = {}
@@ -104,11 +105,10 @@ def run_rtmf6(config, reactions=True):
                 queues_from_phrq[component].put(mf6_conc)
         if reactions:
             phreeqcrm_model.write_conc_back()
-            phreeqcrm_model._rm.SetTimeStep(delta_t)
+            rm.SetTimeStep(delta_t)
             phreeqcrm_model.update()
             if output:
                 output.save(step)
-            for component, mf6_conc in conc_mf6.items():
             for component in conc_mf6:
                 phreeqcrm_conc = phreeqcrm_model.concentrations[component]
                 queues_from_phrq[component].put(phreeqcrm_conc)
@@ -165,12 +165,12 @@ class Output:
         """Create selected output shelve files for concentrations."""
         files = {}
         rm = self.phreeqcrm_model._rm
-        count = self.phreeqcrm_model._rm.GetSelectedOutputCount()
+        count = rm.GetSelectedOutputCount()
         dir_name = self.output_config.get('selected_output')
         if dir_name:
             selected_output_dir = self._create_outdir(dir_name)
             for n in range(count):
-                sel = self.phreeqcrm_model._rm.GetNthSelectedOutputUserNumber(n)
+                sel = rm.GetNthSelectedOutputUserNumber(n)
                 if sel == self.save_all_number and not self.save_all:
                     # skip default selected output that can get huge
                     continue
