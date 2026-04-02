@@ -35,11 +35,12 @@ class FlopyWorker:
             config.project_settings['models']['flow_models'][0]
         )
         self.nxyz = int(np.sum(self.active_cells))
-        self.all_cells_active = self
         self.all_cells_active = self.active_cells.sum() == self.active_cells.size
         self.write_simulation()
         self._make_init_concs(init_concs_config)
-        self._make_bc_concs(bc_concs_config, defaults=config.defaults['bc_concentrations'])
+        self.bc_concs = self._make_bc_concs(
+            bc_concs_config,
+            defaults=config.defaults['bc_concentrations'])
         self._make_modified_file_names(config.project_path)
 
     def _make_modified_file_names(self, project_path):
@@ -62,15 +63,16 @@ class FlopyWorker:
             )
 
     def _make_bc_concs(self, bc_concs_config, defaults):
-        self.bc_concs = []
+        bc_concs = []
         for bc_conc in bc_concs_config:
-            self.bc_concs.append(
+            bc_concs.append(
                 BCConc(
                     config_data=bc_conc,
                     solution_mapping=self.solution_mapping,
                     defaults=defaults,
                 )
             )
+        return bc_concs
 
     def _load_sim(self, sim_path):
         return flopy.mf6.MFSimulation.load(
@@ -142,7 +144,6 @@ class FlopyWorker:
         if idomain is None:
             init = self.sim.get_model(model_name).get_package('ic')
             size = init.strt.array.size
-            return np.ones(size, dtype=int)
             return np.ones(size, dtype=bool)
         return (idomain > 0).flatten()
 
@@ -189,6 +190,7 @@ class InititalConc:
 class BCConc:
     """One bc concentration."""
     # pylint: disable=too-few-public-methods
+
 
     def __init__(self, config_data, solution_mapping, defaults=None):
         self.solution_mapping = solution_mapping
