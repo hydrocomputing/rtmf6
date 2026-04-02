@@ -1,6 +1,7 @@
 """Create needed Flopy data."""
 
 from pathlib import Path
+import shelve
 from shutil import copyfile, rmtree
 
 import flopy
@@ -22,6 +23,7 @@ class FlopyWorker:
             config.internal_paths.component_models_path
         )
         self.work_path = config.internal_paths.work_path_flopy
+        self.domain_db_path = config.internal_paths.domain_db_path
         self.work_components_path = self.work_path / 'component_models'
         if self.work_components_path.exists():
             rmtree(self.work_components_path)
@@ -36,12 +38,20 @@ class FlopyWorker:
         self.active_cells = domain.active_cells
         self.nxyz = domain.nxyz
         self.all_cells_active = domain.all_cells_active
+        self.domain = domain
         self.write_simulation()
         self._make_init_concs(init_concs_config)
         self.bc_concs = self._make_bc_concs(
             bc_concs_config,
             defaults=config.defaults['bc_concentrations'])
         self._make_modified_file_names(config.project_path)
+        self.domain.process_bcs(self.bc_concs)
+        self._shelve_domain()
+
+    def _shelve_domain(self):
+        """Save domain data to a shelve file."""
+        with shelve.open(self.domain_db_path) as db:
+            db['domain'] = self.domain
 
     def _make_modified_file_names(self, project_path):
         self.modified_input_files = [
@@ -67,6 +77,7 @@ class FlopyWorker:
         for bc_conc in bc_concs_config:
             bc_concs.append(
                 BCConc(
+                    sim=self.sim,
                     config_data=bc_conc,
                     solution_mapping=self.solution_mapping,
                     defaults=defaults,
@@ -137,16 +148,6 @@ class FlopyWorker:
         ]
         self.update(specie_names)
 
-    def _get_active_cells_mask(self, model_name):
-        """Get distribution of solution numbers."""
-        dis = self.sim.get_model(model_name).get_package('dis')
-        idomain = dis.idomain.array
-        if idomain is None:
-            init = self.sim.get_model(model_name).get_package('ic')
-            size = init.strt.array.size
-            return np.ones(size, dtype=bool)
-        return (idomain > 0).flatten()
-
 
 class InititalConc:
     """One initial concentration."""
@@ -191,8 +192,10 @@ class BCConc:
     """One bc concentration."""
     # pylint: disable=too-few-public-methods
 
+    inactive_name = 'cnc'
 
-    def __init__(self, config_data, solution_mapping, defaults=None):
+    def __init__(self, sim, config_data, solution_mapping, defaults=None):
+        self.sim = sim
         self.solution_mapping = solution_mapping
         self.model_name = config_data['model_name']
         self.bc_type = config_data['bc_type']
@@ -200,6 +203,15 @@ class BCConc:
         self.file_name = self.file_path.name
         self.src = config_data.get('src', defaults.get('src'))
         self.dst = config_data.get('dst', defaults.get('dst'))
+        self.inactive_indices = self._get_inactive_indices()
+
+    def _get_inactive_indices(self):
+        inactive = {}
+        if self.bc_type == self.inactive_name:
+            bc = self.sim.get_model(self.model_name).get_package(self.bc_type)
+            for period_no, period_data in bc.stress_period_data.data.items():
+                inactive[period_no] = period_data['cellid']
+        return inactive
 
     def update(self, sim, conc_name):
         """Update the stress period data.

@@ -34,16 +34,52 @@ class Domain:
 
     def __init__(self, sim, model_name):
         self.sim = sim
-        self.active_cells = self._get_active_cells_mask(model_name)
+        self.idomain_3d = self._get_active_cells_mask(model_name)
+        idomain_1d = self.idomain_3d.flatten()
+        self.active_cells = idomain_1d > 0
         self.nxyz = int(np.sum(self.active_cells))
         self.all_cells_active = self.active_cells.sum() == self.active_cells.size
+        self.domain_all = np.ones_like(self.idomain_3d, dtype=bool)
 
     def _get_active_cells_mask(self, model_name):
-        """Get distribution of solution numbers."""
+        """Find active cells."""
         dis = self.sim.get_model(model_name).get_package('dis')
-        idomain = dis.idomain.array
-        if idomain is None:
+        idomain_3d = dis.idomain.array > 0
+        if idomain_3d is None:
             init = self.sim.get_model(model_name).get_package('ic')
-            size = init.strt.array.size
-            return np.ones(size, dtype=bool)
-        return (idomain > 0).flatten()
+            idomain_3d = np.ones_like(init.strt.array, dtype=bool)
+        return idomain_3d
+
+    def process_bcs(self, bc_concs):
+        """Process bc concentrations."""
+        inactive_indices = {}
+        grid2chems = {}
+        for bc_conc in bc_concs:
+            for period_no, inactive_coords in bc_conc.inactive_indices.items():
+                mask = self.domain_all.copy()
+                for coords in inactive_coords:
+                    mask[coords] = False
+                flat_mask = mask.flatten()[self.idomain_3d.flatten()]
+                inactive = np.argwhere(~flat_mask).flatten()
+                inactive_indices[period_no] = np.array(inactive)
+                continuous_indices = iter(range(self.nxyz))
+                grid2chem = []
+                for index in range(self.nxyz):
+                    if index in inactive:
+                        grid2chem.append(-1)
+                    else:
+                        grid2chem.append(next(continuous_indices))
+                grid2chems[period_no] = np.array(grid2chem)
+        self.inactive_indices = inactive_indices
+        self.grid2chems = grid2chems
+
+    def create_mapping(self, rm, kper):
+        """Create mapping for the current stress period."""
+        inactive = self.inactive_indices.get(kper)
+        if inactive is None:
+            # if there are no inactive cells, create a one-to-one mapping
+            rm.CreateMapping(np.arange(self.nxyz))
+        else:
+            grid2chem = self.grid2chems[kper]
+            rm.CreateMapping(grid2chem)
+        return inactive

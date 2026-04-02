@@ -33,9 +33,12 @@ def run_model(
         if start <= gwt.kper <= end:
             if model_step.state == States.timestep_end:
                 var_name = f'SLN_{gwt.solution_id}/X'
-                queue_from_mf6.put({
+                queue_from_mf6.put(
+                    {
                     'totim': gwt.totim * time_conversion_factor,
-                    'conc': mf6.vars[var_name]}
+                    'conc': mf6.vars[var_name],
+                    'kper': gwt.kper,
+                    }
                     )
                 # pylint: disable=protected-access
                 mf6._mf6.set_value(var_name, queue_from_phrq.get())
@@ -48,6 +51,12 @@ def run_rtmf6(config, reactions=True):
     phreeqcrm_model = PhreeqcRMModel(
         str(config.project_settings['phreeqcrm']['model_yaml_file'])
     )
+    rm = phreeqcrm_model._rm
+    db = shelve.open(config.internal_paths.domain_db_path)
+    domain =  db['domain']
+    db.close()
+    kper = 0
+    inactive = domain.create_mapping(rm, kper)
     output_config = config.project_settings.get('output')
     output = None
     if output_config:
@@ -78,11 +87,13 @@ def run_rtmf6(config, reactions=True):
     step = 0
     last_totim = 0
     print(f'start', end='\r')
-    rm = phreeqcrm_model._rm
+    print(f'stress period: {kper + 1:5d}')
+    kper_old = 0
     while True:
         step += 1
         conc_mf6 = {}
         totims = set()
+        kpers = set()
         for component, queue in queues_from_mf6.items():
             res = queue.get()
             if res is None:
@@ -90,10 +101,17 @@ def run_rtmf6(config, reactions=True):
                 break
             conc_mf6[component] = res['conc']
             totims.add(res['totim'])
+            kpers.add(res['kper'])
         if done:
             break
-        print(f'step: {step:5d}', end='\r')
         assert len(totims) == 1
+        assert len(kpers) == 1
+        kper = kpers.pop()
+        if kper != kper_old:
+            print(f'\nstress period: {kper + 1:5d}')
+            inactive = domain.create_mapping(rm, kper)
+            kper_old = kper
+        print(f'step: {step:5d}', end='\r')
         totim = tuple(totims)[0]
         delta_t = totim - last_totim
         last_totim = totim
@@ -109,8 +127,10 @@ def run_rtmf6(config, reactions=True):
             phreeqcrm_model.update()
             if output:
                 output.save(step)
-            for component in conc_mf6:
+            for component, mf6_conc in conc_mf6.items():
                 phreeqcrm_conc = phreeqcrm_model.concentrations[component]
+                if inactive is not None:
+                    phreeqcrm_conc[inactive] = mf6_conc[inactive]
                 queues_from_phrq[component].put(phreeqcrm_conc)
     for process in processes.values():
         process.join()
