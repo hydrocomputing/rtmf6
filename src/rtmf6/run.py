@@ -109,6 +109,7 @@ def run_rtmf6(config, reactions=True):
             if output:
                 output.save(step)
             for component, mf6_conc in conc_mf6.items():
+            for component in conc_mf6:
                 phreeqcrm_conc = phreeqcrm_model.concentrations[component]
                 queues_from_phrq[component].put(phreeqcrm_conc)
     for process in processes.values():
