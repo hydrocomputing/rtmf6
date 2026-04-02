@@ -36,6 +36,7 @@ class FlopyWorker:
         )
         self.nxyz = int(np.sum(self.active_cells))
         self.all_cells_active = self
+        self.all_cells_active = self.active_cells.sum() == self.active_cells.size
         self.write_simulation()
         self._make_init_concs(init_concs_config)
         self._make_bc_concs(bc_concs_config, defaults=config.defaults['bc_concentrations'])
