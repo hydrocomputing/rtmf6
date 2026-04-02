@@ -24,8 +24,20 @@ class Config:
         self.project_name = self.project_settings['project']['name']
         directory = self.project_settings['project'].get('directory', '.')
         self.project_path = Path(project_toml).parent.absolute() / directory
-        self.reaction_model_name = self.project_settings['models'][
-            'reaction_models'][0]
+        flow_models_names = self.project_settings['models']['flow_models']
+        if len(flow_models_names) > 1:
+            raise ValueError(
+                f'Only one flow model can be used, found {len(flow_models_names)}\n'
+                f'{flow_models_names}'
+            )
+        self.flow_model_name = flow_models_names[0]
+        reaction_models_names = self.project_settings['models']['reaction_models']
+        if len(reaction_models_names) > 1:
+            raise ValueError(
+                f'Only one reaction model can be used, found {len(reaction_models_names)}\n'
+                f'{reaction_models_names}'
+            )
+        self.reaction_model_name = reaction_models_names[0]
         self.phreeqcrm_cell_value_categories = {
             'initial_concentrations': 'YAMLInitialSolutions2Module',
             'exchanges': 'YAMLInitialExchanges2Module',
