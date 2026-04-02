@@ -143,6 +143,7 @@ class FlopyWorker:
             init = self.sim.get_model(model_name).get_package('ic')
             size = init.strt.array.size
             return np.ones(size, dtype=int)
+            return np.ones(size, dtype=bool)
         return (idomain > 0).flatten()
 
 
