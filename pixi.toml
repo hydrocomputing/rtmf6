@@ -14,7 +14,6 @@ python = "3.14.*"
 matplotlib = "*"
 pandas = "*"
 pymf6 = "*"
-phreeqcrm = "*"
 phreeqpy = "*"
 gfortran = ">=15.2.0,<15.3"
 ipython = ">=9.8.0,<10"
@@ -26,8 +25,14 @@ pylint = "*"
 setuptools_scm = "*"
 pip = "*"
 
-# [pypi-dependencies]
+[pypi-dependencies]
+# use `pixi run install-editable` to install rtmf6 in editable mode via pip
+# otherwise dependencies from PyPi will override conda dependencies
 # rtmf6 = { path = ".", editable = true }
+# phreeqcrm must be at least 0.0.17
+# use `pixi run install-phreeqcrm` to install phreeqcrm from PyPi
+# phreeqcrm is a dependency of rtmf6 of phreeqpy, and will be installed
+# from conda-forge, which currently only provides version 0.0.16
 
 [feature.build.dependencies]
 twine = ">=5.0.0,<5.1"
@@ -58,6 +63,10 @@ description = "install rtmf6 via pip"
 [tasks.uninstall-editable]
 cmd = "pip uninstall -y rtmf6 && pixi install"
 description = "uninstall rtmf6 via pip"
+
+[tasks.install-phreeqcrm]
+cmd = "pip install -U phreeqcrm"
+description = "Install phreeqcrm from PyPi. Note: phreeqcrm must be at least version 0.0.17 to work with rtmf6."
 
 [tasks.start]
 cmd = "rtmf6"
