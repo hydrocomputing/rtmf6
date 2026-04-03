@@ -44,10 +44,12 @@ class Domain:
     def _get_active_cells_mask(self, model_name):
         """Find active cells."""
         dis = self.sim.get_model(model_name).get_package('dis')
-        idomain_3d = dis.idomain.array > 0
-        if idomain_3d is None:
+        idomain_array = dis.idomain.array
+        if idomain_array is None:
             init = self.sim.get_model(model_name).get_package('ic')
             idomain_3d = np.ones_like(init.strt.array, dtype=bool)
+        else:
+            idomain_3d = idomain_array > 0
         return idomain_3d
 
     def process_bcs(self, bc_concs):
