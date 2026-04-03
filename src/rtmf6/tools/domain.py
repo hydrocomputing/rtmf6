@@ -26,7 +26,9 @@ Currently, this is not implemented in rtmf6 but it is a potential future
 improvement.
 """
 
+from importlib.metadata import version
 import numpy as np
+import phreeqcrm
 
 
 class Domain:
@@ -40,6 +42,7 @@ class Domain:
         self.nxyz = int(np.sum(self.active_cells))
         self.all_cells_active = self.active_cells.sum() == self.active_cells.size
         self.domain_all = np.ones_like(self.idomain_3d, dtype=bool)
+        self.good_version = False
 
     def _get_active_cells_mask(self, model_name):
         """Find active cells."""
@@ -82,6 +85,23 @@ class Domain:
             # if there are no inactive cells, create a one-to-one mapping
             rm.CreateMapping(np.arange(self.nxyz))
         else:
+            self.check_phreeqcrm_version()
             grid2chem = self.grid2chems[kper]
             rm.CreateMapping(grid2chem)
         return inactive
+
+    def check_phreeqcrm_version(self, min_version='0.0.17'):
+        """Check minimum phreeqcrm version."""
+        if self.good_version:
+            return
+
+        def version_tuple(v):
+            return tuple(map(int, v.split('.')))
+
+        current_version = version('phreeqcrm')
+        if version_tuple(current_version) < version_tuple(min_version):
+            raise ImportError(
+                f'phreeqcrm version must be at least {min_version}, found {current_version}'
+
+        )
+        self.good_version = True
