@@ -22,6 +22,11 @@ releases/**
 ## rmf6 output files
 *.shelve
 
+## rmf6 generated files
+**/phreeqcrm/_intermediate.yaml
+**/phreeqcrm/model.yaml
+
+
 # MODFLOW output files
 *.dis.grb
 *.hds
