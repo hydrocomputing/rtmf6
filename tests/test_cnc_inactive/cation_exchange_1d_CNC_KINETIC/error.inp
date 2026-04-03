@@ -1,0 +1,84 @@
+SOLUTION_RAW                 1 Solution after simulation 1.
+  -temp                      25
+  -pressure                  1
+  -potential                 0
+  -total_h                   -1e+30
+  -total_o                   -1e+30
+  -cb                        -1e+30
+  -density                   0.99711485402573
+  -viscosity                 0.8902033196876
+  -viscos_0                  0.89002391826032
+  -totals
+    Ca                       0
+    Cl                       0
+    K                        0
+    N                        0
+    Na                       0
+    Orgc                     0
+    Tracer                   0
+  -pH                        6.9969106577866
+  -pe                        13.629995546908
+  -mu                        0.0012001045000346
+  -ah2o                      0.9999206477731
+  -mass_water                -1.8018018018018e+28
+  -soln_vol                  1
+  -total_alkalinity          -8.750379740729e-19
+  -activities
+    E                        -13.629995546908
+    H(0)                     -29.99987998955
+    K                        -3.7159437816288
+    N(-3)                    -30.017179792111
+    N(0)                     -29.99987998955
+    N(3)                     -30.017085268258
+    N(5)                     -2.9379040222099
+    Na                       -3.0167861962891
+    O(0)                     -29.99987998955
+    Tracer                   -2.698849993886
+  -gammas
+EXCHANGE_RAW                 1 Exchange assemblage after simulation 1.
+  # EXCHANGE_MODIFY candidate identifiers #
+  -exchange_gammas           1
+  -component                 X
+    # EXCHANGE_MODIFY candidate identifiers #
+    -totals
+      H                      1.2280486877003e-62
+      K                      0.00055065220435672
+      N                      3.0701217192507e-63
+      Na                     0.00054934779600373
+      X                      0.0011000000003604
+    -charge_balance          0
+    -la                      2.698454701226
+    -phase_proportion        0
+    -formula_z               0
+  # EXCHANGE_MODIFY candidates with new_def=true #
+  -new_def                   0
+  -solution_equilibria       0
+  -n_solution                -999
+  # Exchange workspace variables #
+  -totals
+KINETICS_RAW                 1 
+  # KINETICS_MODIFY candidate identifiers #
+  -step_divide               1
+  -rk                        3
+  -bad_step_max              500
+  -use_cvode                 0
+  -cvode_steps               100
+  -cvode_order               5
+  -component                 Orgc_im
+      # KINETICS_MODIFY candidate identifiers #
+      -tol                   1e-08
+      -m                     0.001
+      -m0                    0.001
+      -namecoef
+        Orgc                 1
+      -d_params
+        5e-08 
+      # KineticsComp workspace variables #
+      -moles                 0
+      -initial_moles         0.001
+  -equal_increments           0
+  -count                     0
+  -steps             
+    1 
+  # KINETICS workspace variables #
+  -totals                    
