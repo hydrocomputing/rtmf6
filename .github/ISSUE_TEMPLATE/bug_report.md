@@ -31,6 +31,8 @@ If applicable, add screenshots to help explain your problem.
 **Environment**
  - Operating system (e.g. macOS, Linux, Windows) and version
  - rtfm6 version
+- MODFLOW 6 version
+- PhreeqcRM version
  - Installation method (e.g. pip, conda, Pixi, cloned repo etc.)
 
  **Additional context**
