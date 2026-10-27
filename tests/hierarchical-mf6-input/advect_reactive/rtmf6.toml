@@ -1,0 +1,52 @@
+[project]
+name = "advect10"
+directory = "."
+
+[models]
+flow_models = ["gwf_advect10"]
+reaction_models = ["gwt_advect10"]
+# exchange for all stress periods if not specified
+reaction_start_stress_period = 1
+reaction_end_stress_period = 1
+
+[tracer]
+has_tracer = true
+use_tracer = true
+name = 'Tracer'
+
+[[bc_concentrations]]
+model_name = "gwf_advect10"
+bc_type = "chd"
+file_name = "mf6/gwf_advect10/gwf_advect10.chd"
+# src and dst columns can be the same
+src = "rtmf6_sol_number"
+dst = "concentration"
+
+[[initial_concentrations]]
+model_name = "gwt_advect10"
+file_name = "mf6/gwt_advect10/gwt_advect10.ic"
+
+[[exchanges]]
+model_name = "gwt_advect10"
+file_name = "rtmf6/init_exchanges.ic"
+
+[[equilibrium_phases]]
+
+[[gas_phases]]
+
+[[kinetics]]
+
+[[solid_solutions]]
+
+[[surfaces]]
+
+[phreeqcrm]
+number_of_threads = 1
+chemistry_name = "phreeqcrm/advect.pqi"
+database = "phreeqcrm/phreeqc.dat"
+pre_yaml_file = "phreeqcrm/pre.yaml"
+post_yaml_file = "phreeqcrm/post.yaml"
+# will be created
+intermediate_model_yaml_file = "phreeqcrm/model.yaml"
+# combination all yaml files above
+model_yaml_file = "phreeqcrm/model.yaml"
