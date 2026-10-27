@@ -1,7 +1,17 @@
 """Adjust file prefixes."""
 
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from shutil import copyfile
+
+
+def normalize_file_name(file_name):
+    """Normalize a file name relative to the directory of `mfsim.nam`.
+
+    MF6 resolves all paths in all name files relative to the simulation
+    directory. Normalizing allows comparing paths such as `./gwf/gwf.chd`
+    and `gwf\\gwf.chd` with `gwf/gwf.chd`.
+    """
+    return str(PurePosixPath(str(file_name).replace('\\', '/')))
 
 
 def get_model_file_names(file_name):
@@ -38,7 +48,7 @@ def prefix_file_paths(
     # pylint: disable=too-many-branches
     if skip_file_names is None:
         skip_file_names = []
-    skip_file_names = set(skip_file_names)
+    skip_file_names = {normalize_file_name(name) for name in skip_file_names}
     skipped = {}
     if skip_model_types:
         skip_model_types = [entry.lower() for entry in skip_model_types]
@@ -56,7 +66,7 @@ def prefix_file_paths(
                 in_block = False
         if in_block:
             entry_type, file_name, *_ = line.split()
-            if file_name in skip_file_names:
+            if normalize_file_name(file_name) in skip_file_names:
                 modified_line = line
             else:
                 key = entry_type.lower()
