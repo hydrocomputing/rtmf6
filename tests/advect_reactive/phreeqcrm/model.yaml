@@ -6,7 +6,7 @@
 - key: SetGridCellCount
   count: 10
 - key: SetErrorHandlerMode
-  mode: 0
+  mode: 1
 - key: SetComponentH2O
   tf: false
 - key: SetRebalanceFraction
@@ -31,6 +31,8 @@
   option: 1
 - key: SetUnitsKinetics
   option: 1
+- key: SetSelectedOutputOn
+  tf: true
 - key: SetTimeConversion
   conv_factor: 1.1574074074074073e-05
 - key: SetRepresentativeVolume
@@ -82,12 +84,12 @@
   - 1
   - 1
 - key: LoadDatabase
-  database: /Users/mike/Dev/pymf6-project/rtmf6/tests/advect_reactive/phreeqcrm/phreeqc.dat
+  database: /Users/mike/Dev/pymf6-project/rtmf6-hierarchical-mf6-input/tests/advect_reactive/phreeqcrm/phreeqc.dat
 - key: RunFile
   workers: true
   initial_phreeqc: true
   utility: true
-  chemistry_name: /Users/mike/Dev/pymf6-project/rtmf6/tests/advect_reactive/phreeqcrm/advect.pqi
+  chemistry_name: /Users/mike/Dev/pymf6-project/rtmf6-hierarchical-mf6-input/tests/advect_reactive/phreeqcrm/advect.pqi
 - key: RunString
   workers: true
   initial_phreeqc: false
@@ -122,5 +124,5 @@
   - 1
   - 1
 # post yaml start
-# add phreeqcrm yaml content that will be prepend to generated yaml
+# add phreeqcrm yaml content that will be append to generated yaml
 # post yaml end
