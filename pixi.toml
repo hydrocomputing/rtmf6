@@ -56,8 +56,12 @@ ansi2html = ">=1.9.2,<2"
 rtmf6 = "*"
 
 # General tasks
-[tasks.install-editable]
+[tasks.reinstall-editable]
 cmd = "pixi remove rtmf6 && pip install --no-build-isolation --no-deps --disable-pip-version-check -e ."
+description = "uninstall and re-install rtmf6 via pip"
+
+[tasks.install-editable]
+cmd = "pip install --no-build-isolation --no-deps --disable-pip-version-check -e ."
 description = "install rtmf6 via pip"
 
 [tasks.uninstall-editable]
