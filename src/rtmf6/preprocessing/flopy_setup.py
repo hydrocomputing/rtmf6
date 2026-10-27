@@ -28,6 +28,28 @@ def make_rel_path(file_path, project_path, mf6_path):
         ) from None
 
 
+def check_no_absolute_paths(sim):
+    """Make sure that no file loaded by flopy has an absolute path.
+
+    Flopy writes loaded files back to their paths. While relative paths
+    are below the work directory, absolute paths would overwrite the
+    original model input files.
+    Files not loaded by flopy can have absolute paths.
+    """
+    file_names = [package.filename for package in sim.sim_package_list]
+    for model in sim.model_dict.values():
+        file_names.append(model.name_file.filename)
+        file_names.extend(package.filename for package in model.packagelist)
+    absolute = [name for name in file_names if Path(name).is_absolute()]
+    if absolute:
+        raise ValueError(
+            'These files are read and rewritten by rtmf6 and must not use '
+            'an absolute path in a MF6 name file. Please use a relative '
+            'path:\n'
+            + '\n'.join(absolute)
+        )
+
+
 class FlopyWorker:
     """Flopy preprocessor."""
     # pylint: disable=too-many-instance-attributes
@@ -119,6 +141,7 @@ class FlopyWorker:
 
     def _load_initial_sim(self):
         sim = self._load_sim(sim_path=self.mf6_path)
+        check_no_absolute_paths(sim)
         sim.set_sim_path(self.work_path)
         return sim
 
