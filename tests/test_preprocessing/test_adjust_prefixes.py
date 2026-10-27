@@ -57,3 +57,10 @@ def test_hierarchical_same_file_name_other_dir_is_prefixed():
         nam, blocks={'packages'}, skip_file_names=['gwf/gwf.chd']
     )
     assert _package_lines(out) == ['../../../mf6/other/gwf.chd', 'gwf/gwf.chd']
+
+
+def test_absolute_path_is_not_prefixed(tmp_path):
+    abs_path = (tmp_path / 'gwf.dis').as_posix()
+    nam = NAM_HIERARCHICAL.replace('gwf/gwf.dis', abs_path)
+    _, out = prefix_file_paths(nam, blocks={'packages'})
+    assert _package_lines(out) == [abs_path, '../../../mf6/gwf/gwf.chd']
