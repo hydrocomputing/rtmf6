@@ -81,3 +81,55 @@ def test_nam_entries(project):
         assert entry.startswith('../../../mf6/')
         # paths are relative to the directory of mfsim.nam
         assert (component / entry).resolve().is_file(), entry
+
+
+def _move_to_absolute_path(project_path, rel_path, target_path):
+    """Move a package file out of the project and reference it absolutely."""
+    src = project_path / 'mf6' / rel_path
+    dst = target_path / src.name
+    src.rename(dst)
+    nam_file = project_path / 'mf6' / HIERARCHICAL['gwf_nam']
+    nam_file.write_text(
+        nam_file.read_text(encoding='utf-8').replace(rel_path, str(dst)),
+        encoding='utf-8',
+    )
+    return dst
+
+
+@pytest.fixture
+def hierarchical_copy(tmp_path):
+    """Copy of the hierarchical test model without generated inputs."""
+    project_path = tmp_path / 'project'
+    copytree(
+        HIERARCHICAL['model'],
+        project_path,
+        ignore=ignore_patterns('.internal'),
+    )
+    shared_path = tmp_path / 'shared'
+    shared_path.mkdir()
+    return project_path, shared_path
+
+
+def test_absolute_path_not_loaded_by_flopy(hierarchical_copy):
+    project_path, shared_path = hierarchical_copy
+    npf = _move_to_absolute_path(
+        project_path, 'gwf_advect10/gwf_advect10.npf', shared_path
+    )
+    config = Config(project_path / 'rtmf6.toml')
+    make_inputs(config)
+    component = config.internal_paths.component_models_path / 'H'
+    entries = _package_entries(component / HIERARCHICAL['gwf_nam'])
+    assert entries['npf6'] == str(npf)
+
+
+def test_absolute_path_loaded_by_flopy_raises(hierarchical_copy):
+    project_path, shared_path = hierarchical_copy
+    dis = _move_to_absolute_path(
+        project_path, 'gwf_advect10/gwf_advect10.dis', shared_path
+    )
+    original = dis.read_bytes()
+    config = Config(project_path / 'rtmf6.toml')
+    with pytest.raises(ValueError, match='absolute path'):
+        make_inputs(config)
+    # flopy must not overwrite the original file
+    assert dis.read_bytes() == original
