@@ -66,7 +66,11 @@ def prefix_file_paths(
                 in_block = False
         if in_block:
             entry_type, file_name, *_ = line.split()
-            if normalize_file_name(file_name) in skip_file_names:
+            if (
+                normalize_file_name(file_name) in skip_file_names
+                # absolute paths work from all directories
+                or Path(file_name).is_absolute()
+            ):
                 modified_line = line
             else:
                 key = entry_type.lower()
