@@ -20,8 +20,7 @@ def make_inputs(config):
     """Create rtmf6 input files."""
     worker = FlopyWorker(config)
     worker.update_all()
-    file_names = [entry.name for entry in worker.modified_input_files]
-    _make_nam_files(config, files_names_to_skip=file_names)
+    _make_nam_files(config, files_names_to_skip=worker.modified_rel_paths)
     make_phreeqcrm_yaml(config, flopy_worker=worker)
 
 
@@ -34,6 +33,7 @@ def _make_nam_files(config, files_names_to_skip):
     for file_names in get_model_file_names(mfsim_out).values():
         for file_name in file_names:
             nam_file = target_path / file_name
+            nam_file.parent.mkdir(parents=True, exist_ok=True)
             copyfile(config.mf6_path / file_name, nam_file)
             prefix_model_name(nam_file, skip_file_names=files_names_to_skip)
     prefix_mfsim_name(
@@ -43,13 +43,16 @@ def _make_nam_files(config, files_names_to_skip):
 
 
 def _copy_nam_files(config):
-    """Copy name files tu compnent dirs."""
+    """Copy name files to component dirs, keeping sub directories."""
     src_path = config.internal_paths.work_path_nam
     dst_parent_path = config.internal_paths.component_models_path
+    src_files = [file for file in src_path.rglob('*') if file.is_file()]
     for dst_path in dst_parent_path.iterdir():
         if dst_path.is_dir():
-            for file in src_path.iterdir():
-                copyfile(file, dst_path / file.name)
+            for file in src_files:
+                dst = dst_path / file.relative_to(src_path)
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                copyfile(file, dst)
 
 
 def make_phreeqcrm_yaml(config, flopy_worker):
