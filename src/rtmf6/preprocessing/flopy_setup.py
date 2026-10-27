@@ -12,6 +12,22 @@ from rtmf6.preprocessing.phreeqc_setup import PhreeqcRMSetup
 from rtmf6.tools.domain import Domain
 
 
+def make_rel_path(file_path, project_path, mf6_path):
+    """Make path of a species-specific file relative to `mf6_path`.
+
+    `file_path` is relative to `project_path` or absolute.
+    These files are written to each component model with the same
+    relative path as in `mf6_path`.
+    Therefore, they need to be located inside `mf6_path`.
+    """
+    try:
+        return (project_path / file_path).relative_to(mf6_path)
+    except ValueError:
+        raise ValueError(
+            f'{file_path} must be located inside the MF6 directory {mf6_path}'
+        ) from None
+
+
 class FlopyWorker:
     """Flopy preprocessor."""
     # pylint: disable=too-many-instance-attributes
@@ -19,6 +35,7 @@ class FlopyWorker:
     def __init__(self, config):
         self.project_name = config.project_settings['project']['name']
         self.mf6_path = config.mf6_path
+        self.project_path = config.project_path
         self.component_models_path = (
             config.internal_paths.component_models_path
         )
@@ -54,12 +71,16 @@ class FlopyWorker:
             db['domain'] = self.domain
 
     def _make_modified_file_names(self, project_path):
+        packages = self.init_concs + self.bc_concs
         self.modified_input_files = [
-            project_path / package.file_path
-            for package in self.init_concs + self.bc_concs
+            project_path / package.file_path for package in packages
         ]
-        for src in self.modified_input_files:
-            dst = self.work_path / src.name
+        self.modified_rel_paths = [package.rel_path for package in packages]
+        for src, rel_path in zip(
+            self.modified_input_files, self.modified_rel_paths, strict=True
+        ):
+            dst = self.work_path / rel_path
+            dst.parent.mkdir(parents=True, exist_ok=True)
             copyfile(src, dst)
 
     def _make_init_concs(self, init_concs_config):
@@ -69,6 +90,7 @@ class FlopyWorker:
                 InititalConc(
                     config_data=init_conc,
                     solution_mapping=self.solution_mapping,
+                    paths=(self.project_path, self.mf6_path),
                 )
             )
 
@@ -80,6 +102,7 @@ class FlopyWorker:
                     sim=self.sim,
                     config_data=bc_conc,
                     solution_mapping=self.solution_mapping,
+                    paths=(self.project_path, self.mf6_path),
                     defaults=defaults,
                 )
             )
@@ -123,14 +146,10 @@ class FlopyWorker:
             self.write_simulation()
             target_path = self.component_models_path / conc_name
             target_path.mkdir(exist_ok=True)
-            for bc_conc in self.bc_concs:
-                src = new_sim_path / bc_conc.file_name
-                dst = target_path / bc_conc.file_name
-                copyfile(src, dst)
-            for init_conc in self.init_concs:
-                src = new_sim_path / init_conc.file_name
-                dst = target_path / init_conc.file_name
-                copyfile(src, dst)
+            for rel_path in self.modified_rel_paths:
+                dst = target_path / rel_path
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                copyfile(new_sim_path / rel_path, dst)
 
     def update_all(self, keep_tracer=True, tracer_name='Tracer', skip=None):
         """Update concentration values for all species."""
@@ -153,11 +172,11 @@ class InititalConc:
     """One initial concentration."""
     # pylint: disable=too-few-public-methods
 
-    def __init__(self, config_data, solution_mapping):
+    def __init__(self, config_data, solution_mapping, paths):
         self.solution_mapping = solution_mapping
         self.model_name = config_data['model_name']
         self.file_path = Path(config_data['file_name'])
-        self.file_name = self.file_path.name
+        self.rel_path = make_rel_path(self.file_path, *paths)
 
     def update(self, sim, conc_name):
         """Update the initial concentration."""
@@ -194,13 +213,16 @@ class BCConc:
 
     inactive_name = 'cnc'
 
-    def __init__(self, sim, config_data, solution_mapping, defaults=None):
+    def __init__(
+        self, sim, config_data, solution_mapping, paths, defaults=None
+    ):
+        # pylint: disable=too-many-arguments, too-many-positional-arguments
         self.sim = sim
         self.solution_mapping = solution_mapping
         self.model_name = config_data['model_name']
         self.bc_type = config_data['bc_type']
         self.file_path = Path(config_data['file_name'])
-        self.file_name = self.file_path.name
+        self.rel_path = make_rel_path(self.file_path, *paths)
         self.src = config_data.get('src', defaults.get('src'))
         self.dst = config_data.get('dst', defaults.get('dst'))
         self.inactive_indices = self._get_inactive_indices()
