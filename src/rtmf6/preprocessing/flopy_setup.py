@@ -1,6 +1,7 @@
 """Create needed Flopy data."""
 
 from pathlib import Path
+import shelve
 from shutil import copyfile, rmtree
 
 import flopy
@@ -8,6 +9,7 @@ import numpy as np
 from flopy.mf6.mfbase import ExtFileAction, MFDataException
 
 from rtmf6.preprocessing.phreeqc_setup import PhreeqcRMSetup
+from rtmf6.tools.domain import Domain
 
 
 class FlopyWorker:
@@ -21,6 +23,7 @@ class FlopyWorker:
             config.internal_paths.component_models_path
         )
         self.work_path = config.internal_paths.work_path_flopy
+        self.domain_db_path = config.internal_paths.domain_db_path
         self.work_components_path = self.work_path / 'component_models'
         if self.work_components_path.exists():
             rmtree(self.work_components_path)
@@ -31,15 +34,24 @@ class FlopyWorker:
         bc_types = list({entry['bc_type'] for entry in bc_concs_config})
         self.load_only = bc_types + ['ic']
         self.sim = self._load_initial_sim()
-        self.active_cells = self._get_active_cells_mask(
-            config.project_settings['models']['flow_models'][0]
-        )
-        self.nxyz = int(np.sum(self.active_cells))
-        self.all_cells_active = self
+        domain = Domain(self.sim, model_name=config.flow_model_name)
+        self.active_cells = domain.active_cells
+        self.nxyz = domain.nxyz
+        self.all_cells_active = domain.all_cells_active
+        self.domain = domain
         self.write_simulation()
         self._make_init_concs(init_concs_config)
-        self._make_bc_concs(bc_concs_config)
+        self.bc_concs = self._make_bc_concs(
+            bc_concs_config,
+            defaults=config.defaults['bc_concentrations'])
         self._make_modified_file_names(config.project_path)
+        self.domain.process_bcs(self.bc_concs)
+        self._shelve_domain()
+
+    def _shelve_domain(self):
+        """Save domain data to a shelve file."""
+        with shelve.open(self.domain_db_path) as db:
+            db['domain'] = self.domain
 
     def _make_modified_file_names(self, project_path):
         self.modified_input_files = [
@@ -60,14 +72,18 @@ class FlopyWorker:
                 )
             )
 
-    def _make_bc_concs(self, bc_concs_config):
-        self.bc_concs = []
+    def _make_bc_concs(self, bc_concs_config, defaults):
+        bc_concs = []
         for bc_conc in bc_concs_config:
-            self.bc_concs.append(
+            bc_concs.append(
                 BCConc(
-                    config_data=bc_conc, solution_mapping=self.solution_mapping
+                    sim=self.sim,
+                    config_data=bc_conc,
+                    solution_mapping=self.solution_mapping,
+                    defaults=defaults,
                 )
             )
+        return bc_concs
 
     def _load_sim(self, sim_path):
         return flopy.mf6.MFSimulation.load(
@@ -132,16 +148,6 @@ class FlopyWorker:
         ]
         self.update(specie_names)
 
-    def _get_active_cells_mask(self, model_name):
-        """Get distribution of solution numbers."""
-        dis = self.sim.get_model(model_name).get_package('dis')
-        idomain = dis.idomain.array
-        if idomain is None:
-            init = self.sim.get_model(model_name).get_package('ic')
-            size = init.strt.array.size
-            return np.ones(size, dtype=int)
-        return (idomain > 0).flatten()
-
 
 class InititalConc:
     """One initial concentration."""
@@ -186,14 +192,26 @@ class BCConc:
     """One bc concentration."""
     # pylint: disable=too-few-public-methods
 
-    def __init__(self, config_data, solution_mapping):
+    inactive_name = 'cnc'
+
+    def __init__(self, sim, config_data, solution_mapping, defaults=None):
+        self.sim = sim
         self.solution_mapping = solution_mapping
         self.model_name = config_data['model_name']
         self.bc_type = config_data['bc_type']
         self.file_path = Path(config_data['file_name'])
         self.file_name = self.file_path.name
-        self.src = config_data['src']
-        self.dst = config_data['dst']
+        self.src = config_data.get('src', defaults.get('src'))
+        self.dst = config_data.get('dst', defaults.get('dst'))
+        self.inactive_indices = self._get_inactive_indices()
+
+    def _get_inactive_indices(self):
+        inactive = {}
+        if self.bc_type == self.inactive_name:
+            bc = self.sim.get_model(self.model_name).get_package(self.bc_type)
+            for period_no, period_data in bc.stress_period_data.data.items():
+                inactive[period_no] = period_data['cellid']
+        return inactive
 
     def update(self, sim, conc_name):
         """Update the stress period data.
@@ -201,6 +219,8 @@ class BCConc:
         Solution numbers are replaced by concentration values.
         """
         bc = sim.get_model(self.model_name).get_package(self.bc_type)
+        if bc is None:
+            raise ValueError(f'no boundary condition of type {self.bc_type} for model {self.model_name}')
         modified = {}
         for period_no, period_data in bc.stress_period_data.data.items():
             # convert column to float, maybe int
@@ -212,6 +232,10 @@ class BCConc:
                 else:
                     new_descr.append((name, dtype))
             period_data = period_data.astype(np.dtype(new_descr))
+            if self.dst not in period_data.dtype.names:
+                msg = f'{self.dst} not found in bc data for period {period_no}\n'
+                msg += f'available names: {period_data.dtype.names}'
+                raise ValueError(msg)
             conc = []
             sol_numbers_float = period_data[self.src].flatten()
             sol_numbers = sol_numbers_float.astype(int)

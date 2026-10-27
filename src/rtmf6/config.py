@@ -5,20 +5,39 @@ from pathlib import Path
 
 import tomllib
 
+DEFAULTS = {
+    'bc_concentrations':
+        {
+            'src': 'rtmf6_sol_number',
+            'dst': 'conc'
+            },
+}
 
 class Config:
     """Configure a project."""
      # pylint: disable=too-many-instance-attributes, too-few-public-methods
     def __init__(self, project_toml):
+        self.defaults = DEFAULTS
         with open(project_toml, 'rb') as fobj:
             self.project_settings = tomllib.load(fobj)
         self._check()
         self.project_name = self.project_settings['project']['name']
         directory = self.project_settings['project'].get('directory', '.')
         self.project_path = Path(project_toml).parent.absolute() / directory
-        self.reaction_model_name = self.project_settings['models'][
-            'reaction_models'
-        ][0]
+        flow_models_names = self.project_settings['models']['flow_models']
+        if len(flow_models_names) > 1:
+            raise ValueError(
+                f'Only one flow model can be used, found {len(flow_models_names)}\n'
+                f'{flow_models_names}'
+            )
+        self.flow_model_name = flow_models_names[0]
+        reaction_models_names = self.project_settings['models']['reaction_models']
+        if len(reaction_models_names) > 1:
+            raise ValueError(
+                f'Only one reaction model can be used, found {len(reaction_models_names)}\n'
+                f'{reaction_models_names}'
+            )
+        self.reaction_model_name = reaction_models_names[0]
         self.phreeqcrm_cell_value_categories = {
             'initial_concentrations': 'YAMLInitialSolutions2Module',
             'exchanges': 'YAMLInitialExchanges2Module',
@@ -106,7 +125,7 @@ class InternalPaths:
     """Internal paths for data manipulation.
 
     These paths are not intended to be modified by the model user.
-    They contain data that rtmf6 generates
+    They contain data that rtmf6 generates.
     """
     # pylint: disable=too-few-public-methods
 
@@ -119,6 +138,7 @@ class InternalPaths:
         self.work_path_nam = work_path / 'nam'
         if create:
             self._make_directory_structure()
+        self.domain_db_path = self.work_path_flopy / 'domain.db'
 
     def _make_directory_structure(self):
         """Create directory tree for internal data."""

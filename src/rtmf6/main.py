@@ -11,7 +11,7 @@ from rich.console import Console
 from rich.theme import Theme
 
 from rtmf6._version import __version__
-from rtmf6.config import Config
+from rtmf6.config import Config, DEFAULTS
 from rtmf6.preprocessing.create_inputs import make_inputs
 from rtmf6.run import run_rtmf6
 
@@ -290,6 +290,15 @@ def config_cmd(
     console.print('[info]PhreeqcRM[/info]')
     console.print(f'  Database: {phr["database"]}')
     console.print(f'  Chemistry: {phr["chemistry_name"]}')
+
+    console.print('\n[info]Defaults[/info]')
+    for key, value in DEFAULTS.items():
+        if isinstance(value, dict):
+            console.print(f'  {key}:')
+            for subkey, subvalue in value.items():
+                console.print(f'    {subkey}: {subvalue}')
+        else:
+            console.print(f'  {key}: {value}')
 
 
 # Subcommand name to function mapping for disambiguation workaround.
