@@ -2,6 +2,7 @@
 
 import multiprocessing as mp
 from pathlib import Path
+from queue import Empty
 import shelve
 import shutil
 
@@ -14,6 +15,55 @@ from pymf6.mf6 import MF6
 from pymf6.datastructures import TIME_UNIT_VALUES
 
 
+class ComponentModelError(RuntimeError):
+    """A component model stopped unexpectedly."""
+
+
+def get_component_result(queue, process, component, poll_interval=1.0):
+    """Get the next result of a component model.
+
+    Raise an error if the process stopped without sending a result,
+    for example, because MF6 terminated with an error.
+    """
+    while True:
+        try:
+            return queue.get(timeout=poll_interval)
+        except Empty:
+            if not process.is_alive():
+                break
+    # a result might have arrived just before the process stopped
+    try:
+        return queue.get(timeout=poll_interval)
+    except Empty:
+        raise ComponentModelError(
+            f'component model {component} stopped with exit code '
+            f'{process.exitcode}'
+        ) from None
+
+
+class MainProcessError(RuntimeError):
+    """The main process stopped unexpectedly."""
+
+
+def get_main_result(queue, parent=None, poll_interval=1.0):
+    """Get the next result of the main process in a component model.
+
+    Raise an error if the main process does not exist anymore,
+    for example, because it crashed. Otherwise, the component model
+    would wait forever.
+    """
+    if parent is None:
+        parent = mp.parent_process()
+    while True:
+        try:
+            return queue.get(timeout=poll_interval)
+        except Empty:
+            if parent is not None and not parent.is_alive():
+                raise MainProcessError(
+                    'main process stopped, stopping component model'
+                ) from None
+
+
 def run_model(
     model_path,
     queue_from_mf6,
@@ -22,6 +72,8 @@ def run_model(
     reaction_start_stress_range,
 ):
     """Run a model in its own process."""
+    # MF6 model names are case-insensitive, pymf6 uses lower case
+    reaction_model_name = reaction_model_name.lower()
     mf6 = MF6(sim_path=Path(model_path), do_solution_loop=False, advance_first_step=False)
     time_conversion_factor = TIME_UNIT_VALUES[mf6.simulation.TDIS.ITMUNI.value]
     gwt_models = mf6.models['gwt6']
@@ -41,7 +93,7 @@ def run_model(
                     }
                     )
                 # pylint: disable=protected-access
-                mf6._mf6.set_value(var_name, queue_from_phrq.get())
+                mf6._mf6.set_value(var_name, get_main_result(queue_from_phrq))
     queue_from_mf6.put(None)
 
 
@@ -78,60 +130,82 @@ def run_rtmf6(config, reactions=True):
                 'reaction_model_name': config.reaction_model_name,
                 'reaction_start_stress_range': config.reaction_start_stress_range,
             },
+            # stop if the main process stops
+            daemon=True,
         )
         processes[model_name] = process
         queues_from_mf6[model_name] = queue_from_mf6
         queues_from_phrq[model_name] = queue_from_phrq
         process.start()
-    done = False
-    step = 0
-    last_totim = 0
-    print(f'start', end='\r')
-    print(f'stress period: {kper + 1:5d}')
-    kper_old = 0
-    while True:
-        step += 1
-        conc_mf6 = {}
-        totims = set()
-        kpers = set()
-        for component, queue in queues_from_mf6.items():
-            res = queue.get()
-            if res is None:
-                done = True
+    try:
+        done = False
+        step = 0
+        last_totim = 0
+        print(f'start', end='\r')
+        print(f'stress period: {kper + 1:5d}')
+        kper_old = 0
+        while True:
+            step += 1
+            conc_mf6 = {}
+            totims = set()
+            kpers = set()
+            for component, queue in queues_from_mf6.items():
+                try:
+                    res = get_component_result(
+                        queue, processes[component], component
+                    )
+                except ComponentModelError as err:
+                    lst_file = (
+                        config.internal_paths.component_models_path
+                        / component
+                        / 'mfsim.lst'
+                    )
+                    raise ComponentModelError(
+                        f'{err}\nPlease check {lst_file}'
+                    ) from None
+                if res is None:
+                    done = True
+                    break
+                conc_mf6[component] = res['conc']
+                totims.add(res['totim'])
+                kpers.add(res['kper'])
+            if done:
                 break
-            conc_mf6[component] = res['conc']
-            totims.add(res['totim'])
-            kpers.add(res['kper'])
-        if done:
-            break
-        assert len(totims) == 1
-        assert len(kpers) == 1
-        kper = kpers.pop()
-        if kper != kper_old:
-            print(f'\nstress period: {kper + 1:5d}')
-            inactive = domain.create_mapping(rm, kper)
-            kper_old = kper
-        print(f'step: {step:5d}', end='\r')
-        totim = tuple(totims)[0]
-        delta_t = totim - last_totim
-        last_totim = totim
-        for component, mf6_conc in conc_mf6.items():
-            if reactions:
-                phreeqcrm_conc = phreeqcrm_model.concentrations[component]
-                phreeqcrm_conc[:] = mf6_conc
-            else:
-                queues_from_phrq[component].put(mf6_conc)
-        if reactions:
-            phreeqcrm_model.write_conc_back()
-            rm.SetTimeStep(delta_t)
-            phreeqcrm_model.update()
-            if output:
-                output.save(step)
+            assert len(totims) == 1
+            assert len(kpers) == 1
+            kper = kpers.pop()
+            if kper != kper_old:
+                print(f'\nstress period: {kper + 1:5d}')
+                inactive = domain.create_mapping(rm, kper)
+                kper_old = kper
+            print(f'step: {step:5d}', end='\r')
+            totim = tuple(totims)[0]
+            delta_t = totim - last_totim
+            last_totim = totim
             for component, mf6_conc in conc_mf6.items():
-                phreeqcrm_conc = phreeqcrm_model.concentrations[component]
-                if inactive is not None:
-                    phreeqcrm_conc[inactive] = mf6_conc[inactive]
-                queues_from_phrq[component].put(phreeqcrm_conc)
+                if reactions:
+                    phreeqcrm_conc = phreeqcrm_model.concentrations[component]
+                    phreeqcrm_conc[:] = mf6_conc
+                else:
+                    queues_from_phrq[component].put(mf6_conc)
+            if reactions:
+                phreeqcrm_model.write_conc_back()
+                rm.SetTimeStep(delta_t)
+                phreeqcrm_model.update()
+                if output:
+                    output.save(step)
+                for component, mf6_conc in conc_mf6.items():
+                    phreeqcrm_conc = phreeqcrm_model.concentrations[component]
+                    if inactive is not None:
+                        phreeqcrm_conc[inactive] = mf6_conc[inactive]
+                    queues_from_phrq[component].put(phreeqcrm_conc)
+    except BaseException:
+        # do not leave component models behind
+        for process in processes.values():
+            process.terminate()
+        for process in processes.values():
+            process.join()
+        raise
     for process in processes.values():
         process.join()
 
