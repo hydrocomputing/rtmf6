@@ -133,9 +133,13 @@ class InternalPaths:
         self.base = project_path / '.internal'
         work_path = self.base / 'work'
         self.component_models_path = self.base / 'component_models'
+        # files used by all component models
+        self.shared_path = self.base / 'shared'
         self.work_path_flopy = work_path / 'flopy'
         self.work_path_phreeqcrm = work_path / 'phreeqcrm'
         self.work_path_nam = work_path / 'nam'
+        # nam files with DIS files that do not write binary grid files
+        self.work_path_nam_nogrb = work_path / 'nam_nogrb'
         if create:
             self._make_directory_structure()
         self.domain_db_path = self.work_path_flopy / 'domain.db'

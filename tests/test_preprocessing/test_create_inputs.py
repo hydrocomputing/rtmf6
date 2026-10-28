@@ -1,6 +1,7 @@
 """Tests for creating the species-specific component models."""
 
 from pathlib import Path
+import re
 from shutil import copytree, ignore_patterns
 
 import pytest
@@ -98,9 +99,60 @@ def test_nam_entries(project):
     assert entries['chd6'] == model['chd']
     for package_type in ['dis6', 'ic6', 'npf6', 'oc6']:
         entry = entries[package_type]
-        assert entry.startswith('../../../mf6/')
+        assert entry.startswith(('../../../mf6/', '../../shared/'))
         # paths are relative to the directory of mfsim.nam
         assert (component / entry).resolve().is_file(), entry
+
+
+REFERENCE = re.compile(
+    r'\b(?:open/close|filein)\s+[\'"]?([^\s\'"]+)', flags=re.IGNORECASE
+)
+NAM_REFERENCE = re.compile(
+    r'^\s*\S+6\s+(\S+)', flags=re.IGNORECASE | re.MULTILINE
+)
+
+
+def _referenced_files(path):
+    text = path.read_text(encoding='utf-8')
+    lines = [
+        line for line in text.splitlines()
+        if not line.strip().startswith(('#', '!'))
+    ]
+    text = '\n'.join(lines)
+    if path.suffix == '.nam':
+        return NAM_REFERENCE.findall(text)
+    return REFERENCE.findall(text)
+
+
+def test_only_one_component_writes_grb(project):
+    config, model = project
+    components = sorted(
+        path
+        for path in config.internal_paths.component_models_path.iterdir()
+        if path.is_dir()
+    )
+    nogrb = []
+    for component in components:
+        entries = _package_entries(component / model['gwf_nam'])
+        nogrb.append('/_nogrb/' in entries['dis6'])
+    assert nogrb == [False] + [True] * (len(components) - 1)
+
+
+def test_all_references_resolve(project):
+    config, _ = project
+    component = config.internal_paths.component_models_path / 'H'
+    to_check = [component / 'mfsim.nam']
+    checked = set()
+    while to_check:
+        path = to_check.pop()
+        if path in checked or path.suffix == '.dat':
+            continue
+        checked.add(path)
+        for name in _referenced_files(path):
+            # MF6 resolves all paths relative to the directory of mfsim.nam
+            referenced = (component / name).resolve()
+            assert referenced.is_file(), f'{path}: {name}'
+            to_check.append(referenced)
 
 
 def _move_to_absolute_path(project_path, rel_path, target_path):
