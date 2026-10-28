@@ -70,7 +70,7 @@ K  307.0 mg/L
 Tds 26667.0 mg/L
 END
 
-EXCHANGE 1
+EXCHANGE 5
     X 0.06064 	# mol X/L bulk; calculated with density: 2.65 kg/l solid phase, average porosity: 0.379572832; CEC: 14 meq/kg DS=0.014 mol X/kg DS; X = CEC * density/(1000*porosity)
     -equilibrate 1
 END
