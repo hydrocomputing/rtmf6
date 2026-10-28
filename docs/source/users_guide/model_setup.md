@@ -28,7 +28,7 @@ Create the model and calibrate the flow and transport calculations.
 Once you your satisfied with the transport results,
 place all input files in the directory `mf6`.
 
-### Create a `rtmf6.toml` file
+## Create a `rtmf6.toml` file
 
 ```toml
 # general information
@@ -117,6 +117,8 @@ selected_output = "out/selected_output"
 save_all = false
 ```
 
+## Initial conditions
+
 Example initial condition input file in MODFLOW 6 IC format.
 
 ```
@@ -134,6 +136,8 @@ Solution 1 will be use for cells as initial condition.
 For example, the concentration in the components model `Ca` is 0.6 and `Cl` is
 1.2.
 See `my_model.pqi` below for the numbers.
+
+## Boundary conditions
 
 Example boundary condition file in WEL format.
 
@@ -192,3 +196,15 @@ END
 
 Solution 0 is used for the boundary condition in WEL.
 Solution 1 is used as initial condition.
+
+## File locations
+
+MODFLOW 6 allows to specify absolute and relative paths for input files.
+There are more restrictions for `rtmf6`:
+
+- Species-specific files for initial conditions and boundary conditions
+  specified in `rtmf6.toml` must be inside `mf6/`.
+- Files flopy loads during preprocessing such as `*.nam`, TDIS, DIS, IC must
+  use relative paths.
+- All other files may be relative, including paths outside `mf6/`
+  (e.g. `../shared/x.npf`), or absolute.
