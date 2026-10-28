@@ -143,6 +143,10 @@ class FlopyWorker:
         sim = self._load_sim(sim_path=self.mf6_path)
         check_no_absolute_paths(sim)
         sim.set_sim_path(self.work_path)
+        # Copy external files of loaded packages, i.e. `open/close`, needed
+        # to load the data from `work_path` again.
+        # `write_simulation()` does not copy them with lazy loading.
+        sim.simulation_data.mfpath.copy_files()
         return sim
 
     def load_simulation(self):
@@ -228,6 +232,8 @@ class InititalConc:
                 for sol_number in sol_numbers
             ]
             init.strt.set_data(conc)
+        # species-specific data must not go into shared external files
+        init.strt.store_internal()
 
 
 class BCConc:
@@ -295,3 +301,5 @@ class BCConc:
             period_data[self.dst][:] = conc
             modified[period_no] = period_data
         bc.stress_period_data.set_data(modified)
+        # species-specific data must not go into shared external files
+        bc.stress_period_data.store_internal()

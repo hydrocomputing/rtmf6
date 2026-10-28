@@ -22,6 +22,13 @@ HIERARCHICAL = {
     'ic': 'gwt_advect10/gwt_advect10.ic',
     'gwf_nam': 'gwf_advect10/gwf_advect10.nam',
 }
+# MF6 input files use `open/close` to read data from other files
+OPEN_CLOSE = {
+    'model': TESTS_PATH / 'hierarchical-mf6-input' / 'vmp_5',
+    'chd': 'VMP_5_gwf/chd.chd',
+    'ic': 'VMP_5_gwt/ic.ic',
+    'gwf_nam': 'VMP_5_gwf/VMP_5_gwf.nam',
+}
 
 
 def _package_entries(nam_file):
@@ -39,17 +46,22 @@ def _package_entries(nam_file):
     return entries
 
 
-@pytest.fixture(params=[FLAT, HIERARCHICAL], ids=['flat', 'hierarchical'])
-def project(request, tmp_path):
+@pytest.fixture(
+    scope='module',
+    params=[FLAT, HIERARCHICAL, OPEN_CLOSE],
+    ids=['flat', 'hierarchical', 'open_close'],
+)
+def project(request, tmp_path_factory):
     """Copy of a test model with freshly created inputs."""
     model = request.param
+    project_path = tmp_path_factory.mktemp('project')
     copytree(
         model['model'],
-        tmp_path,
+        project_path,
         dirs_exist_ok=True,
         ignore=ignore_patterns('.internal'),
     )
-    config = Config(tmp_path / 'rtmf6.toml')
+    config = Config(project_path / 'rtmf6.toml')
     make_inputs(config)
     return config, model
 
@@ -69,6 +81,14 @@ def test_species_files_differ_from_template(project):
         assert (component / model[key]).read_text(encoding='utf-8') != (
             config.mf6_path / model[key]
         ).read_text(encoding='utf-8')
+
+
+def test_species_files_self_contained(project):
+    config, model = project
+    component = config.internal_paths.component_models_path / 'Na'
+    for key in ['chd', 'ic']:
+        text = (component / model[key]).read_text(encoding='utf-8')
+        assert 'open/close' not in text.lower(), model[key]
 
 
 def test_nam_entries(project):
