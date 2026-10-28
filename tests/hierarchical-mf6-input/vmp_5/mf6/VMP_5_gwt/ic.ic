@@ -1,0 +1,9 @@
+# File written with iMOD Python version: 1.1.0
+
+begin options
+end options
+
+begin griddata
+  strt
+    open/close VMP_5_gwt/ic/strt.dat
+end griddata

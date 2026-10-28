@@ -1,0 +1,12 @@
+# File written with iMOD Python version: 1.1.0
+
+begin options
+end options
+
+begin sources
+  CHD aux concentration
+  RCH auxmixed concentration
+#  EVT auxmixed concentration
+#  RIV aux concentration
+#  DRN aux concentration
+end sources

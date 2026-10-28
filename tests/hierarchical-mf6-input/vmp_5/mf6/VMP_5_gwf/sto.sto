@@ -1,0 +1,25 @@
+# File written with iMOD Python version: 1.1.0
+
+begin options
+  save_flows
+end options
+
+begin griddata
+  iconvert layered
+    constant 1
+    constant 0
+    constant 0
+    constant 0
+    constant 0
+    constant 0
+    constant 0
+    constant 0
+  ss
+    open/close VMP_5_gwf/sto/ss.dat
+  sy
+    open/close VMP_5_gwf/sto/sy.dat
+end griddata
+
+begin period 1
+  transient
+end period

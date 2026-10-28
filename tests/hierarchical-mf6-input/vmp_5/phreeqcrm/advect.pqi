@@ -1,0 +1,92 @@
+#DATABASE C:\IP_MF6\VMP_5_C3_RTMF6_1\phreeqcrm\phreeqc.dat
+#DATABASE phreeqcrm\phreeqc.dat # NH4 as Amm with element_gfw of 14.0067; Meaning: N(+3) specified as Amm in mgN/L
+#Tds added to database for use of BUY and VSC
+#Solutions simplified for testing
+
+#0 = CHD = Simplified Lake Grevelingen water
+#1 = DRN = Simplified Runoff
+#2 = EVT = Simplified Evapotranspiration
+#3 = RCH = Simplified Precipitation (Local rain water)
+#4 = RIV = Simplified Flooding
+#5 = IC  = Simplified Initial Conditions (Orginal pore water)
+
+SOLUTION 0
+units mg/L
+density 1 calculate
+temp	10.0
+pH	7.0
+Cl 16100.0 mg/L
+Na 10260.0 mg/L
+K  307.0 mg/L
+Tds 26667.0 mg/L
+END
+
+SOLUTION 1
+units mg/L
+density 1 calculate
+temp	10.0
+Cl 4.87 mg/L
+Ca 2.75 mg/L
+Tds 7.62 mg/L
+END
+
+SOLUTION 2
+units mg/L
+density 1 calculate
+temp	10.0
+Cl 4.87 mg/L
+Ca 2.75 mg/L
+Tds 7.62 mg/L
+END
+
+SOLUTION 3
+units mg/L
+density 1 calculate
+temp	10.0
+Cl 4.87 mg/L
+Ca 2.75 mg/L
+Tds 7.62 mg/L
+END
+
+SOLUTION 4
+units mg/L
+density 1 calculate
+temp	10.0
+pH	7.0
+Cl 16100.0 mg/L
+Na 10260.0 mg/L
+K  307.0 mg/L
+Tds 26667.0 mg/L
+END
+
+SOLUTION 5
+units mg/L
+density 1 calculate
+temp	10.0
+pH	7.0
+Cl 16100.0 mg/L
+Na 10260.0 mg/L
+K  307.0 mg/L
+Tds 26667.0 mg/L
+END
+
+EXCHANGE 1
+    X 0.06064 	# mol X/L bulk; calculated with density: 2.65 kg/l solid phase, average porosity: 0.379572832; CEC: 14 meq/kg DS=0.014 mol X/kg DS; X = CEC * density/(1000*porosity)
+    -equilibrate 1
+END
+
+SELECTED_OUTPUT 1
+        -file            advect.sel
+        -reset           false
+USER_PUNCH 1
+-heading  CELL_NO TIME pH Cl Ca Na K Tds
+-start
+  10 PUNCH CELL_NO TOTAL_TIME
+  20 PUNCH -LA("H+") # pH
+  30 PUNCH tot("Cl")
+  40 PUNCH tot("Ca")
+  50 PUNCH tot("Na")
+  60 PUNCH tot("K")
+  70 PUNCH tot("Tds")
+
+-end

@@ -1,0 +1,38 @@
+[project]
+name = "VMP_5_C15_CHD_RCH___RTMF6"
+
+[models]
+flow_models = ["VMP_5_gwf"]
+reaction_models = ["VMP_5_gwt"]
+
+[[bc_concentrations]]
+model_name = "VMP_5_gwf"
+bc_type = "CHD"
+file_name = "mf6/VMP_5_gwf/chd.chd"
+src = "rtmf6_sol_number" 						#0 = CHD = Grevelingen
+dst = "concentration"							# Field that will be filled with concentration for each individual component
+
+[[bc_concentrations]]
+model_name = "VMP_5_gwf"
+bc_type = "RCH"
+file_name = "mf6/VMP_5_gwf/rch.rch"
+src = "rtmf6_sol_number" 						#3 = RCH = Precipitation
+dst = "concentration"
+
+[[initial_concentrations]]
+model_name = "VMP_5_gwt"
+file_name = "mf6/VMP_5_gwt/ic.ic" 				#5 = IC; NB: Bevatte voor alle gridcellen NAN of 29.686...; 29.686...vervangen door 5
+
+[[exchanges]]
+model_name = "VMP_5_gwt"
+file_name = "rtmf6/init_exchanges.ic"
+
+[phreeqcrm]
+number_of_threads = 8							# Number of component models
+chemistry_name = "phreeqcrm/advect.pqi"
+database = "phreeqcrm/phreeqc.dat"
+model_yaml_file = "phreeqcrm/model.yaml"
+
+[output]
+selected_output = "out/selected_output"
+save_all = false # default

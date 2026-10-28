@@ -1,0 +1,146 @@
+# File written with iMOD Python version: 1.1.0
+
+begin options
+  auxiliary TDS concentration rtmf6_sol_number
+  save_flows
+end options
+
+begin dimensions
+  maxbound 6
+end dimensions
+
+begin period 1
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 2
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 3
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 4
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 5
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 6
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 7
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 8
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 9
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 10
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 11
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 12
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 13
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 14
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 15
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 16
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 17
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 18
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 19
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 20
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 21
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 22
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 23
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 24
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 25
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 26
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 27
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 28
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 29
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 30
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 31
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 32
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 33
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 34
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 35
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 36
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 37
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 38
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 39
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 40
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 41
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 42
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 43
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 44
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period
+begin period 45
+  open/close VMP_5_gwf/chd/chd-0.dat
+end period

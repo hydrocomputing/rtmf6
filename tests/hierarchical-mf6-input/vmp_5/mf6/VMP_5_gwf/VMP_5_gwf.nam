@@ -1,0 +1,14 @@
+# File written with iMOD Python version: 1.1.0
+
+begin options
+end options
+
+begin packages
+  dis6 VMP_5_gwf/dis.dis dis
+  ic6 VMP_5_gwf/ic.ic ic
+  npf6 VMP_5_gwf/npf.npf npf
+  sto6 VMP_5_gwf/sto.sto sto
+  chd6 VMP_5_gwf/chd.chd chd
+  rch6 VMP_5_gwf/rch.rch rch
+  oc6 VMP_5_gwf/oc.oc oc
+end packages

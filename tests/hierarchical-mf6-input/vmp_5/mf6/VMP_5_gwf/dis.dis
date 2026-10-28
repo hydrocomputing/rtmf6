@@ -1,0 +1,25 @@
+# File written with iMOD Python version: 1.1.0
+
+begin options
+  xorigin 57500.0
+  yorigin 415500.0
+end options
+
+begin dimensions
+  nlay 8
+  nrow 3
+  ncol 2
+end dimensions
+
+begin griddata
+  delr
+    constant 1500.0
+  delc
+    constant 1500.0
+  top
+    open/close VMP_5_gwf/dis/top.dat
+  botm
+    open/close VMP_5_gwf/dis/botm.dat
+  idomain
+    open/close VMP_5_gwf/dis/idomain.dat
+end griddata

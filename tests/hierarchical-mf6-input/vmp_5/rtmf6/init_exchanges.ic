@@ -1,0 +1,8 @@
+# File manual modified on 17/09/2026 at 11:29
+BEGIN griddata
+  strt
+    INTERNAL  FACTOR  1.0
+5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5
+END griddata
+
+

@@ -1,0 +1,22 @@
+# File written with iMOD Python version: 1.1.0
+
+begin options
+end options
+
+begin timing
+  tdis6 time_discretization.tdis
+end timing
+
+begin models
+  gwf6 VMP_5_gwf/VMP_5_gwf.nam VMP_5_gwf
+  gwt6 VMP_5_gwt/VMP_5_gwt.nam VMP_5_gwt
+end models
+
+begin exchanges
+  GWF6-GWT6 VMP_5_gwf_VMP_5_gwt.gwfgwt VMP_5_gwf VMP_5_gwt
+end exchanges
+
+begin solutiongroup 1
+  ims6 ims_gwf.ims VMP_5_gwf
+  ims6 ims_gwt.ims VMP_5_gwt
+end solutiongroup
