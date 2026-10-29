@@ -18,6 +18,7 @@ tests/advect
 tests/advect_reactive_*
 _tmp/
 releases/**
+.local_helpers
 
 ## rmf6 output files
 *.shelve
