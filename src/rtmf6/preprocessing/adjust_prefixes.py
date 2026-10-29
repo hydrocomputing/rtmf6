@@ -58,9 +58,9 @@ class SharedFiles:
             return file_name
         shared_name = self._make_shared_copy(file_name)
         if nogrb:
-            return self.shared_prefix + self._make_nogrb_copy(
-                file_name, shared_name
-            )
+            nogrb_name = self._make_nogrb_copy(file_name, shared_name)
+            if nogrb_name is not None:
+                return self.shared_prefix + nogrb_name
         if shared_name is None:
             return self.mf6_prefix + file_name
         return self.shared_prefix + shared_name
@@ -70,16 +70,19 @@ class SharedFiles:
 
         All component models write the same binary grid file.
         Writing it once is sufficient.
+        Return `None` if the file already has the option `NOGRB`.
         """
         key = normalize_file_name(file_name)
+        if shared_name is None:
+            src = self.mf6_path / key
+        else:
+            src = self.shared_path / shared_name
+        text = src.read_text(encoding='utf-8', errors='surrogateescape')
+        if NOGRB.search(text):
+            return None
         nogrb_name = '_nogrb/' + key.replace('..', '_up_')
         target = self.shared_path / nogrb_name
         if not target.exists():
-            if shared_name is None:
-                src = self.mf6_path / key
-            else:
-                src = self.shared_path / shared_name
-            text = src.read_text(encoding='utf-8', errors='surrogateescape')
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(
                 add_nogrb(text), encoding='utf-8', errors='surrogateescape'

@@ -154,3 +154,19 @@ def test_nogrb_copy_without_options_block(shared_files):
         encoding='utf-8'
     )
     assert text == 'BEGIN options\n  NOGRB\nEND options\n\n' + dis
+
+
+def test_no_nogrb_copy_if_option_set(shared_files):
+    dis = DIS.replace('BEGIN options\n', 'BEGIN options\n  nogrb\n')
+    (shared_files.mf6_path / 'gwf/dis.dis').write_text(dis, encoding='utf-8')
+    (shared_files.mf6_path / 'ims.dis').write_text(
+        'BEGIN options\n  NOGRB\nEND options\n', encoding='utf-8'
+    )
+    # with references
+    reference = shared_files.reference('gwf/dis.dis', nogrb=True)
+    assert reference == '../../shared/gwf/dis.dis'
+    # without references
+    assert shared_files.reference('ims.dis', nogrb=True) == (
+        '../../../mf6/ims.dis'
+    )
+    assert not (shared_files.shared_path / '_nogrb').exists()
