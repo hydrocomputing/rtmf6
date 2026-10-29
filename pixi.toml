@@ -126,13 +126,13 @@ description = "Build a Python wheel for PyPi upload"
 cmd = "python -m twine upload --verbose --config-file=$PYPI_HYDRO"
 description = "Upload to PyPi"
 
-# Build conda package with Pixi
-[package]
-name = "rtmf6"
-version = "0.1.1"  # TODO: make dynamic
+# # Build conda package with Pixi
+# [package]
+# name = "rtmf6"
+# version = "0.2.0"  # TODO: make dynamic
 
 [package.build]
-backend = { name = "pixi-build-python", version = "0.4.*" }
+backend = { name = "pixi-build-python", version = "0.*" }
 
 [package.host-dependencies]
 setuptools = "*"
