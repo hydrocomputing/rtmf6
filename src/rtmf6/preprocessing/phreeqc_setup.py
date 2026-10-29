@@ -253,7 +253,7 @@ class YAMLCreator:
 def _set_yaml_basics(yrm):
     """Set basic YAMl options."""
     yrm.YAMLSetComponentH2O(False)
-    yrm.YAMLSetRebalanceFraction(0.5)
+    yrm.YAMLSetRebalanceFraction(0.0)
     yrm.YAMLSetRebalanceByCell(True)
     yrm.YAMLUseSolutionDensityVolume(False)
     yrm.YAMLSetPartitionUZSolids(False)
