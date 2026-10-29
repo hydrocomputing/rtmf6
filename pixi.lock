@@ -116,7 +116,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/openssl-3.6.1-h35e630c_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pandas-3.0.2-py314hb4ffadd_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pcre2-10.47-haa7fec5_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/phreeqcrm-0.0.16-py314ha0b5721_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/phreeqcrm-0.0.17-py314ha0b5721_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pillow-12.2.0-py314h8ec4b1a_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pixman-0.46.4-h54a6638_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/psutil-7.2.2-py314h0f05182_0.conda
@@ -556,7 +556,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/openjpeg-2.5.4-hd9e9057_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/openssl-3.6.1-hd24854e_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pandas-3.0.2-py314he609de1_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.16-py314h775732e_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.17-py314h759a76e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.2.0-py314hab283cf_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/psutil-7.2.2-py314ha14b1ff_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pthread-stubs-0.4-hd74edd7_1002.conda
@@ -685,7 +685,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/openssl-3.6.1-h35e630c_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pandas-3.0.2-py314hb4ffadd_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pcre2-10.47-haa7fec5_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/phreeqcrm-0.0.16-py314ha0b5721_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/phreeqcrm-0.0.17-py314ha0b5721_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pillow-12.2.0-py314h8ec4b1a_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pixman-0.46.4-h54a6638_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/psutil-7.2.2-py314h0f05182_0.conda
@@ -1091,7 +1091,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/openjpeg-2.5.4-hd9e9057_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/openssl-3.6.1-hd24854e_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pandas-3.0.2-py314he609de1_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.16-py314h775732e_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.17-py314h759a76e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.2.0-py314hab283cf_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/psutil-7.2.2-py314ha14b1ff_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pthread-stubs-0.4-hd74edd7_1002.conda
@@ -1221,7 +1221,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/openssl-3.6.1-h35e630c_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pandas-3.0.2-py314hb4ffadd_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pcre2-10.47-haa7fec5_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/phreeqcrm-0.0.16-py314ha0b5721_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/phreeqcrm-0.0.17-py314ha0b5721_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pillow-12.2.0-py314h8ec4b1a_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pixman-0.46.4-h54a6638_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/psutil-7.2.2-py314h0f05182_0.conda
@@ -1684,7 +1684,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/openjpeg-2.5.4-hd9e9057_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/openssl-3.6.1-hd24854e_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pandas-3.0.2-py314he609de1_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.16-py314h775732e_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.17-py314h759a76e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.2.0-py314hab283cf_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/psutil-7.2.2-py314ha14b1ff_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pthread-stubs-0.4-hd74edd7_1002.conda
@@ -1815,7 +1815,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/openssl-3.6.1-h35e630c_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pandas-3.0.2-py314hb4ffadd_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pcre2-10.47-haa7fec5_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/phreeqcrm-0.0.16-py314ha0b5721_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/phreeqcrm-0.0.17-py314ha0b5721_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pillow-12.2.0-py314h8ec4b1a_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pixman-0.46.4-h54a6638_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/psutil-7.2.2-py314h0f05182_0.conda
@@ -2231,7 +2231,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/openjpeg-2.5.4-hd9e9057_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/openssl-3.6.1-hd24854e_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pandas-3.0.2-py314he609de1_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.16-py314h775732e_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.17-py314h759a76e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.2.0-py314hab283cf_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/psutil-7.2.2-py314ha14b1ff_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pthread-stubs-0.4-hd74edd7_1002.conda
@@ -3536,21 +3536,22 @@ packages:
   license_family: BSD
   size: 1222481
   timestamp: 1763655398280
-- conda: https://conda.anaconda.org/conda-forge/linux-64/phreeqcrm-0.0.16-py314ha0b5721_1.conda
-  sha256: 8a893f076189455589e54270a637a6a09318b80b212c995399025fd7b1880070
-  md5: 69e399d5a4afe0c195b3fc405d77acc2
+- conda: https://conda.anaconda.org/conda-forge/linux-64/phreeqcrm-0.0.17-py314ha0b5721_0.conda
+  sha256: 6dd20a6c6109a5413e94d163673826605c99aea2ba5c143e87a01c730523972f
+  md5: d42ca592f9142629f8a42a4869183366
   depends:
   - __glibc >=2.17,<3.0.a0
   - _openmp_mutex
   - libgcc >=14
   - libstdcxx >=14
   - numpy >=1.23,<3
-  - python >=3.14.0rc2,<3.15.0a0
+  - python >=3.14,<3.15.0a0
   - python_abi 3.14.* *_cp314
   - pyyaml
   license: CC0-1.0
-  size: 1843102
-  timestamp: 1757600670732
+  run_exports: {}
+  size: 1842010
+  timestamp: 1777677608520
 - conda: https://conda.anaconda.org/conda-forge/linux-64/pillow-12.2.0-py314h8ec4b1a_0.conda
   sha256: 123d8a7c16c88658b4f29e9f115a047598c941708dade74fbaff373a32dbec5e
   md5: 76c4757c0ec9d11f969e8eb44899307b
@@ -7387,21 +7388,22 @@ packages:
   license_family: BSD
   size: 14349246
   timestamp: 1774916749510
-- conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.16-py314h775732e_1.conda
-  sha256: 17eaf8eb662cf41ebfdd1d7e53c829d6ab7c65e6d979f8b48f398b76b8ebf3fe
-  md5: 6d91038f1984e17125576273edca7fc2
+- conda: https://conda.anaconda.org/conda-forge/osx-arm64/phreeqcrm-0.0.17-py314h759a76e_0.conda
+  sha256: 679b72d9ff4ef8c796cd94d33a2f93554b4d42cb62ac2628743cfa99c37327b2
+  md5: 32369edcc0453135b1720d7226407e61
   depends:
   - __osx >=11.0
   - libcxx >=19
   - llvm-openmp
   - numpy >=1.23,<3
-  - python >=3.14.0rc2,<3.15.0a0
-  - python >=3.14.0rc2,<3.15.0a0 *_cp314
+  - python >=3.14,<3.15.0a0
+  - python >=3.14,<3.15.0a0 *_cp314
   - python_abi 3.14.* *_cp314
   - pyyaml
   license: CC0-1.0
-  size: 1270047
-  timestamp: 1757602010519
+  run_exports: {}
+  size: 1277822
+  timestamp: 1777678331676
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pillow-12.2.0-py314hab283cf_0.conda
   sha256: 3d8a86c8cf69ea4bdfeaa3e89e7218bcdc1522e58c9c6298263bfede8ab48cee
   md5: adf49537da0e0c34cf735e71fe579506

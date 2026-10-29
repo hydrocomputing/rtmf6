@@ -24,6 +24,7 @@ typer = ">=0.21.1,<0.22"
 pylint = "*"
 setuptools_scm = "*"
 pip = "*"
+phreeqcrm = "0.0.17.*"
 
 [pypi-dependencies]
 # use `pixi run install-editable` to install rtmf6 in editable mode via pip
